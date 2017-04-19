@@ -3,7 +3,7 @@
 	<link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
   	<meta charset="utf-8">
   	<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-	<script src="problem_set_data/election_results_2000_2016.json"></script>
+	<script src="http://stephanietuerk.github.io/week10/problem_set_data/election_results_2000_2016.json"></script>
 	<style>
 		body {
 			font-family: "Roboto", Helvetica, sans-serif;
@@ -22,13 +22,17 @@
     		position: relative;
     		top: 650px;
 		}
+		#legend{
+			margin: auto;
+			width: 200px;
+		}
 	</style>
 	<title>Problem Set 7</title>
 </head>
 <body>
 	<h1>Presidential Election Results</h1>
 	<h3>By State &middot; 2000 - 2016</h3>
-	<h2></h2>
+	<div id="legend"></div>
 	<div id="sliderContainer">
 	    <input id="timeslide" type="range" min="0" max="4" value="0" step="1"/><br>
 	    <span id="range">2000</span>
