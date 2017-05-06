@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Building a D3 Visualization</title>
+	<style>
+		.tracts {
+			stroke: none;
+			//stroke: #bebebe;
+      		stroke-linejoin: round;
+		}
+	</style>
+	  <script src="https://d3js.org/d3.v4.min.js"></script>
+      <script src="https://d3js.org/d3-array.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+      <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+      <script src="https://d3js.org/topojson.v2.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
+
+</head>
+<body>
+	<h2>2016 Presidential Race</h2>
+	<div id="president"></div>
+	<h2>2016 US Senate Race</h2>
+	<div id="senate"></div>
+	<h2>2016 US Congressional Race</h2>
+	<div id="congress"></div>
+	<h2>Rate of Population Change, 2010 - 2015</h2>
+	<div id="popchange"></div>
+	<h2>Normalized Rate of Population Change, 2010 - 2015</h2>
+	<div id="stdevpop"></div>
+	<h2><a href="grid.html">Stephanie's Amazing Population Grid Fuck Yeah</a></h2>
+	<div id = "grid"></div>
+
+	<!-- Page elements and content go here. -->
+	<script>
+		var width = 1200,
+		    height = 650;
+
+		var projection = d3.geoAlbers()
+		    .scale(10000)
+		    .rotate( [77.1945,0] )
+    		.center( [0, 41.2033] )
+		    .translate([width / 2, height / 2]);
+
+    	var path = d3.geoPath()
+		    .projection(projection);
+
+		var svg1 = d3.select("#president")
+			.append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+		var svg2 = d3.select("#senate")
+			.append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+		var svg3 = d3.select("#congress")
+			.append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+	    var svg4 = d3.select("#popchange")
+			.append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+		var svg5 = d3.select("#stdevpop")
+			.append("svg")
+		    .attr("width", width)
+		    .attr("height", height);
+
+
+		var votecolor = d3.scaleThreshold()
+          .domain([-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0])
+          .range(['#3c5bff','#5c79ff','#7c98ff','#9cb7ff','#bcd6ff','#ffd5d4','#f8aab4','#f17f94','#ea5574','#dd0035']);
+
+        var popcolor = d3.scaleThreshold()
+        
+          .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
+          .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
+          // .domain([0, 1])
+          // .range(['#f1eef6','#006d2c']);
+
+        var stdevpopcolor = d3.scaleThreshold()
+          .domain([-3, -2, -1, -0.5, 0, 0.5, 1, 2, 3, 100])
+          .range(['#59d564','#5ee36a','#63f170','#8efa96','#c9fccc','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
+
+
+  
+
+		// Queue up datasets using d3 Queue
+		d3.queue()
+		    .defer(d3.json, "PA_CensusTracts_2010.json") 
+		    .defer(d3.tsv, "Votesby2010CT.tsv") 
+		    .defer(d3.tsv, "Pop_1015.txt")
+		    .await(ready); 
+
+
+		function ready(error, pa, votes, pop) {
+			if (error) throw error;
+		  
+		  	var uspMarginByTract = {};
+		  	votes.forEach(function(d) {
+		  		uspMarginByTract[d.GEO_ID] = +d.margin_usp;
+		  	});
+		  
+		  	var ussMarginByTract = {};
+		  	votes.forEach(function(d) {
+		  		ussMarginByTract[d.GEO_ID] = +d.margin_uss;
+		  	});
+
+		  	var uscMarginByTract = {};
+		  	votes.forEach(function(d) {
+		  		uscMarginByTract[d.GEO_ID] = +d.margin_usc;
+		  	});
+
+		  	var uscMarginByTract = {};
+		  	votes.forEach(function(d) {
+		  		uscMarginByTract[d.GEO_ID] = +d.margin_usc;
+		  	});
+
+		  	var popChangeByTract = {};
+		  	pop.forEach(function(d) {
+		  		popChangeByTract[d.GEO_ID] = +d.TotalPop_1015;
+		  	});
+
+		  	var stDevByTract = {};
+		  	pop.forEach(function(d) {
+		  		stDevByTract[d.GEO_ID] = +d.StDevPop_1015;
+		  	});
+
+
+		  	svg1.append("g")
+		    	.attr("class", "tracts")
+		    .selectAll("path")
+		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010_2).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("fill", function(d) { 
+		      		var name = d.properties.GEO_ID;
+		      		// console.log(name);
+		      		return votecolor(uspMarginByTract[name]); });
+
+
+		  	svg2.append("g")
+		      	.attr("class", "tracts")
+		    .selectAll("path")
+		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010_2).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("fill", function(d) { 
+		      		var name = d.properties.GEO_ID;
+		      		// console.log(name);
+		      		return votecolor(ussMarginByTract[name]); });
+
+
+			svg3.append("g")
+		    	.attr("class", "tracts")
+		    .selectAll("path")
+		      	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010_2).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("fill", function(d) { 
+		      		var name = d.properties.GEO_ID;
+		      		// console.log(name);
+		      		return votecolor(uscMarginByTract[name]); });
+
+
+		  	svg4.append("g")
+		    	.attr("class", "tracts")
+		    .selectAll("path")
+		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010_2).features) 
+		    	.enter().append("path")
+		    	.attr("d", path)
+		    	.attr("fill", function(d) { 
+		      		var name = d.properties.GEO_ID;
+		      		//console.log(name);
+		      		//console.log(popChangeByTract[name])
+		      		return popcolor(popChangeByTract[name]); });
+
+
+		  	svg5.append("g")
+		      	.attr("class", "tracts")
+		    .selectAll("path")
+		     	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010_2).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("fill", function(d) { 
+		      		var name = d.properties.GEO_ID;
+		      		console.log(name);
+		      		console.log(stDevByTract[name])
+		      		return stdevpopcolor(stDevByTract[name]); });
+
+		  
+
+		      
+		}
+	
+	</script>	
+</body>
+</html>
