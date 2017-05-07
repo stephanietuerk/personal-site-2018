@@ -8,6 +8,10 @@
 			//stroke: #bebebe;
       		stroke-linejoin: round;
 		}
+		.hover {
+			stroke: "#ffffff";
+		}
+
 	</style>
 	  <script src="https://d3js.org/d3.v4.min.js"></script>
       <script src="https://d3js.org/d3-array.v1.min.js"></script>
@@ -18,6 +22,9 @@
 
 </head>
 <body>
+	<h2>2016 PA Congressional Districts</h2>
+	<div id="cds"></div>
+	<div id ="grid"></div>
 	<h2>2016 Presidential Race</h2>
 	<div id="president"></div>
 	<h2>2016 US Senate Race</h2>
@@ -29,12 +36,19 @@
 	<h2>Normalized Rate of Population Change, 2010 - 2015</h2>
 	<div id="stdevpop"></div>
 	<h2><a href="grid.html">Stephanie's Amazing Population Grid Fuck Yeah</a></h2>
-	<div id = "grid"></div>
+	
 
 	<!-- Page elements and content go here. -->
 	<script>
+		var repRed = "#e81d41";
+
+		var demBlue = "#406fea";
+
 		var width = 1200,
 		    height = 650;
+
+		var width_sm = 700,
+			height_sm = 500;
 
 		var projection = d3.geoAlbers()
 		    .scale(10000)
@@ -70,6 +84,18 @@
 		    .attr("width", width)
 		    .attr("height", height);
 
+		var svg6 = d3.select("#cds")
+			.append("svg")
+			.attr("width", width_sm)
+			.attr("height", height_sm);
+
+		// var svg7 = d3.select("#grid")
+		// 	.append("svg")
+		// 	.attr("width", width_sm)
+		// 	.attr("height", height_sm);
+
+
+
 
 		var votecolor = d3.scaleThreshold()
           .domain([-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0])
@@ -87,19 +113,80 @@
           .range(['#59d564','#5ee36a','#63f170','#8efa96','#c9fccc','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
 
-  
-
 		// Queue up datasets using d3 Queue
+		d3.queue ()
+			.defer(d3.json, "PA_CongDist_2015.json")
+			.defer(d3.tsv, "CD_Data.txt")
+			.await(drawCDs)
+
 		d3.queue()
 		    .defer(d3.json, "PA_CensusTracts_2010.json") 
 		    .defer(d3.tsv, "Votesby2010CT.tsv") 
 		    .defer(d3.tsv, "Pop_1015.txt")
-		    .await(ready); 
+		    .await(drawMaps); 
+
+		
+		function drawCDs(error, pa, cddata) {
+			if (error) throw error;
+
+			var projection = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [77.1945,0] )
+    		.center( [0, 41.2033] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+		    var path = d3.geoPath()
+		    .projection(projection);
+
+			var uscMarginByCD = {};
+			cddata.forEach(function(d) {
+				uscMarginByCD[d.USCongDistrict] = +d.margin_usc;
+			});
+
+			svg6.append("g")
+				.attr("class", "cds")
+				.selectAll("path")
+		    .data(topojson.feature(pa, pa.objects.PA_CongDist_2015).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("fill", function(d) { 
+		      		var name = d.properties.CD114FP;
+		      		console.log(name);
+		      		if (uscMarginByCD[name] > 0) {
+		      			console.log(uscMarginByCD[name])
+		      			return repRed;
+		      		}
+		      		else {return demBlue;
+		      		}
+		      	})
+		      	.attr("stroke", function(d) { 
+		      		var name = d.properties.CD114FP;
+		      		console.log(name);
+		      		if (uscMarginByCD[name] > 0) {
+		      			console.log(uscMarginByCD[name])
+		      			return repRed;
+		      		}
+		      		else {return demBlue;
+		      		}
+		      	})
+		      	.on("mouseover", function(d){
+					d3.select(this).attr("class","hover");
+				})
+				.on("mouseout", function(d){
+					d3.select(this).attr("class","incident");
+		      		
+		      		
+				});
 
 
-		function ready(error, pa, votes, pop) {
+		}
+
+		function drawMaps(error, pa, votes, pop) {
 			if (error) throw error;
 		  
+		  	
+
+
 		  	var uspMarginByTract = {};
 		  	votes.forEach(function(d) {
 		  		uspMarginByTract[d.GEO_ID] = +d.margin_usp;
@@ -184,13 +271,84 @@
 		      	.attr("d", path)
 		      	.attr("fill", function(d) { 
 		      		var name = d.properties.GEO_ID;
-		      		console.log(name);
-		      		console.log(stDevByTract[name])
+		      		// console.log(name);
+		      		// console.log(stDevByTract[name])
 		      		return stdevpopcolor(stDevByTract[name]); });
+		};
 
-		  
+		function drawGrid(error) { 
+			if (error) throw error;
+			
+			var square = 5,
+			  w = 400,
+			  h = 400;
 
-		      
+			//create the svg
+			var svg = d3.select("#grid").append("svg")
+			//var svg = d3.select('#grid').append('svg')
+			  .attr({
+			    width: w,
+			    height: h
+			  });
+
+			// calculate number of rows and columns
+			var squaresRow = _.round(w / square);
+			var squaresColumn = _.round(h / square);
+
+			var percentYes = 0.54;
+			var percentNo = 0.46;
+
+			var yesColor = "#e81d41";
+			var noColor = "#406fea";
+
+			// loop over number of columns
+			_.times(squaresColumn, function(n) {
+
+			  // create each set of rows
+			  	var rows = svg.selectAll('rect' + ' .row-' + (n + 1))
+		    	
+		    	.data(d3.range(squaresRow))
+		    	.enter().append('rect')
+		    	.attr({
+		      		class: function(d, i) {
+		        	return 'square row-' + (n + 1) + ' ' + 'col-' + (i + 1);
+		      		},
+		      		id: function(d, i) {
+		        	return 's-' + (n + 1) + (i + 1);
+		      		},
+				    width: square,
+				    height: square,
+				    x: function(d, i) {
+				        return i * square;
+				      },
+				    y: n * square,
+				    cellnum: function(d, i) {
+				        return ((n*squaresRow) + (i));
+				      },
+				    fill: '#cccccc',
+				    stroke: '#ffffff'
+				})
+				.transition()
+		     		.delay(function(d) {
+			     		//var x = this.getAttribute('x')
+			     		var cell = this.getAttribute('cellnum')
+			     		//var cellnum = ((y/square)*squaresColumn) + (x/square)
+			     		if (cell < (percentYes * (squaresColumn * squaresRow))) {
+			     			return (cell * 1);
+			     		}
+			     		if (cell >= (percentYes * (squaresColumn * squaresRow))) { return (((squaresRow*squaresColumn) - cell)*1);
+						}
+					})
+			    	.style("fill", function(d, i) {
+				      	var cell = this.getAttribute('cellnum')
+				      	if (cell < (percentYes * (squaresColumn * squaresRow))) {
+				      		return yesColor;
+				      	} 
+				      	else {
+				      		return noColor;
+						}
+					})
+		    	});
 		}
 	
 	</script>	
