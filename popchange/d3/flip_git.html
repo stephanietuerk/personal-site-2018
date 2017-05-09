@@ -45,7 +45,7 @@
 	
 
 	//Read in Data and create visualization from that 
-	d3.tsv("d3/data/CD_Data_sm.tsv", function(data) {
+	d3.tsv("data/CD_Data_sm.tsv", function(data) {
 		
 		//nest data by CD	
 		var cdData = d3.nest()
@@ -104,7 +104,7 @@
 			.attr("x", 50);
 
 
-		d3.json("d3/jsons/PA_CongDist_2015.json", function(error, pa) {
+		d3.json("jsons/PA_CongDist_2015.json", function(error, pa) {
 		  if (error) return console.error(error);
 		  
 		
