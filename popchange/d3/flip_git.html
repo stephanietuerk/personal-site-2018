@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  	<title>Flip the District</title> 
+  	<style>
+  	.bar {
+	}
+	.background {
+		fill: none;
+	}
+	.square {
+		/*fill: '#cccccc';
+		stroke: '#ffffff';*/
+	}
+	/*line.line5050 {
+		stroke: "gray";
+		stroke-width: "4";
+		stroke-linecap: "round";
+		stroke-dasharray: "10";
+	}*/
+
+  	</style>
+	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3-array.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script> -->
+</head>
+<body>
+<div id ="flipTop"></div>
+<div id ="flipDisplay"></div>
+<div id ="flipBars"></div>
+</body>
+	<script>
+	
+
+
+	//Visualization "global" variables
+	var rColor = "#f4003d",
+		dColor = "#2437ff",
+		oColor = "#f6b500",
+		initialColor = "#cccccc";
+
+	
+
+	//Read in Data and create visualization from that 
+	d3.tsv("d3/data/CD_Data_sm.tsv", function(data) {
+		
+		//nest data by CD	
+		var cdData = d3.nest()
+			.key(function(d) {return d.CD;}) 
+			.entries(data);
+
+		console.log(cdData);
+
+	//
+	//
+	//Get overall vote numbers
+	//////////////////////////////////////////////
+
+		var dVotes = {};
+			cdData.forEach(function(cdData) {
+				dVotes[cdData.key] = +cdData.values[0].DEM_USC;
+			});
+			
+		var rVotes = {};
+		cdData.forEach(function(cdData) {
+			rVotes[cdData.key] = +cdData.values[0].REP_USC;
+		});
+
+		var oVotes = {};
+		cdData.forEach(function(cdData) {
+			oVotes[cdData.key] = +cdData.values[0].OTHERS_USC;
+		});
+
+		var dTotal = d3.sum(cdData, function(d) {return d.values[0].DEM_USC;});
+		var rTotal = d3.sum(cdData, function(d) {return d.values[0].REP_USC;});
+		var oTotal = d3.sum(cdData, function(d) {return d.values[0].OTHERS_USC;});
+		var paTotalVotes = (dTotal + rTotal + oTotal);
+
+	//
+	//
+	//Create top container (to hold map and vote grid)
+	/////////////////////////////////////////////
+		var topBoxWidth = 900,
+			topBoxHeight = 300;
+
+		var topContainer = d3.select("#flipTop").append("svg")
+			.attr("width", topBoxWidth)
+			.attr("height", topBoxHeight);
+
+	//
+	//
+	//Create small map of Pennsylvania in top container
+	/////////////////////////////////////////////
+		var mapBoxWidth = 475,
+			mapBoxHeight = 300;
+
+		//Create container to hold map graphic
+		var mapContainer = topContainer.append("svg")
+			.attr("width", mapBoxWidth)
+			.attr("height", mapBoxHeight)
+			.attr("x", 50);
+
+
+		d3.json("d3/jsons/PA_CongDist_2015.json", function(error, pa) {
+		  if (error) return console.error(error);
+		  
+		
+			var projection = d3.geoAlbers()
+		    .scale(6000)
+		    .rotate( [77.1945,0] )
+    		.center( [0, 41.2033] )
+		    .translate([mapBoxWidth / 2, mapBoxHeight / 2]);
+
+		    var path = d3.geoPath()
+		    .projection(projection);
+
+
+			mapContainer.append("g")
+				.attr("class", "map")
+				.selectAll("path")
+		    .data(topojson.feature(pa, pa.objects.PA_CongDist_2015).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("winner", function(d) {
+		      		var cdNum = +d.properties.CD114FP;
+		      		if ((dVotes[cdNum] > rVotes[cdNum]) && (dVotes[cdNum] > oVotes[cdNum])) {
+		      		//if (dVotes[cdNum] > rVotes[cdNum]) {
+		      			return "DEM";
+		      		}
+		      		//if (rVotes[cdNum] > dVotes[cdNum]) {
+		      		if ((rVotes[cdNum] > dVotes[cdNum]) && (rVotes[cdNum] > oVotes[cdNum])) {
+		      			return "REP";
+		      		}
+		      		if ((oVotes[cdNum] > dVotes[cdNum]) && (oVotes[cdNum] > rVotes[cdNum])) {
+		      			return "OTH";
+		      		}
+		      	})
+		      	.style("fill", initialColor)
+		      	.style("stroke", initialColor)
+		      	.transition()
+		      		.delay(function(d) {
+		      			var cdNum = +d.properties.CD114FP;
+		      			return (300+(cdNum*50));
+		      		})
+		      		.duration(420)   	
+			     	.style("fill", function(d) {
+						var cdNum = +d.properties.CD114FP;
+		      			console.log(this.getAttribute("winner"))
+		      			if (this.getAttribute("winner") == "DEM") {
+		      				return dColor;
+		      			}
+		      			if (this.getAttribute("winner") == "REP") {
+		      				return rColor;
+		      			}
+		      			if (this.getAttribute("winner") == "REP") {
+		      				return oColor;
+						}
+			    	})
+			    	.style("stroke", function(d) { 
+		      			return this.getAttribute("fill");
+		      		});
+		//end d3.json function call
+		});
+	//end of small map 
+
+	//
+	//
+	//Create vote grid for Pennsylvania at large in top container
+	/////////////////////////////////////////////
+		var voteGridWidth = 250,
+			voteGridHeight = 250;
+
+		//Create container to hold vote grid graphic
+		var voteGridContainer = topContainer.append("svg")
+			.attr("width", voteGridWidth)
+			.attr("height", voteGridHeight)
+			.attr("x", 600)
+			.attr("y", 50)
+			.append("g");
+			
+			
+
+		var grid = voteGridContainer.each(makeVoteGrid);
+		//makeVoteGrid;
+
+		function makeVoteGrid () {
+
+			//var svg = voteGridContainer.append("svg");
+			var svg = d3.select(this);
+
+			var sq = 5;
+
+			var gridRows = voteGridHeight/sq,
+				gridCols = voteGridWidth/sq;
+
+			perD = (dTotal/paTotalVotes),
+			perR = (rTotal/paTotalVotes),
+			perO = (oTotal/paTotalVotes),
+			cutD = perD*gridRows*gridCols,
+			cutOther = ((dTotal+oTotal)/paTotalVotes)*gridRows*gridCols;
+
+			var delayTime = 4,
+				pauseTime = 0;
+
+			//makes squares as "rect" elements
+			var squares = svg.selectAll(".square")
+				.data(d3.range(gridRows*gridCols))
+		  	  .enter()
+				.append('rect')
+				.attr("class", "square")
+				.attr("width", sq)
+				.attr("height", sq)
+				.attr("cellnum", function (i) {return ((gridRows*gridCols)-i);})
+				.attr("x", function(i) {return (sq*(i%gridCols));})
+				.attr("y", function(i) {return (sq*Math.floor((i/gridCols)));})
+				.style("fill",initialColor)
+				.style("stroke", "ffffff")
+				.style("stroke-width", .4)      
+    			.style("stroke-linecap", "butt")		
+				.attr("squareColor", function() {
+					if (this.getAttribute('cellnum') <= cutD) {
+					    return dColor;
+					}
+					if (this.getAttribute('cellnum') > cutD && (this.getAttribute('cellnum') <= cutOther)) {
+						return oColor;
+					}
+					else {return rColor;}
+				})
+				.transition()
+			     	.delay(function() {
+						if (this.getAttribute('squareColor') == dColor) {
+		   					return (pauseTime+this.getAttribute("cellnum")*delayTime);
+		     			}
+		     			if (this.getAttribute('squareColor') == oColor) {
+		     				if (cutOther < (gridCols*gridRows)/2) {
+		   						return (pauseTime+(((gridCols*gridRows)-(this.getAttribute("cellnum"))+1)*delayTime)+(100*delayTime));
+		     				}
+		     				else {
+		   						return (pauseTime+((this.getAttribute("cellnum"))+1)*delayTime)+(100*delayTime);
+		     				}
+		     			}
+		     			if (this.getAttribute('squareColor') == rColor) {
+		     				return (pauseTime+((gridCols*gridRows)-this.getAttribute("cellnum")+1)*delayTime);
+		     				}
+						})     	
+			     	.style("fill", function() {
+							return this.getAttribute('squareColor')
+						});
+		//end makeVoteGrid function
+		}
+	//end of vote grid
+	//end of top container 
+
+	//
+	//
+	//Create display to show numbers
+	/////////////////////////////////////////////
+		var displayBoxWidth = 900,
+			displayBoxHeight = 150;
+
+		//Create container to hold vote grid graphic
+		var displayContainer = d3.select("#flipDisplay").append("svg")
+			.attr("width", displayBoxWidth)
+			.attr("height", displayBoxHeight);
+
+
+	//
+	//
+	//Create bars for each Congressional District
+	/////////////////////////////////////////////
+		var	numBars = cdData.length,
+			w_bar = 25,
+			h_bar = 200,
+			barMargin = {top: 0, right: 11, bottom: 0, left: 11},
+			boxMargin = {top: 30, right: 30, bottom: 0, left: 30};
+
+		var barsBoxWidth = ((numBars*(barMargin.left+w_bar+barMargin.right))+(boxMargin.left+boxMargin.right)),
+			barsBoxHeight = h_bar;
+
+		//Create container to hold bars graphic
+		var barsContainer = d3.select("#flipBars").append("svg")
+			.attr("width", barsBoxWidth)
+			.attr("height", barsBoxHeight);
+
+
+		//Create dashed line to represent 50% of the votes	
+		var lineLength = barsBoxWidth;
+
+		var line = barsContainer.append("line")
+			.attr("class", "line5050")
+			.attr("x1", 0)
+			.attr("x2", lineLength)
+			.attr("y1", 100)
+			.attr("y2", h_bar/2)
+			.style("stroke", "#909090")
+			.style("stroke-width", "2px")
+			.style("stroke-dasharray", ("2,2"))
+			.style("stroke-linecap", "butt");
+
+		//Add an SVG holder for each bar/congressional district, with the desired dimensions and margin.
+		//Append a "svg: g" to each SVG that moves bar into the center of the SVG mentioned above, creating space between bars
+		var svg = barsContainer.selectAll("svg")
+			.data(cdData)
+		  .enter()
+			.append("svg") //svg container for one bar element
+			.attr("width", w_bar+barMargin.left+barMargin.right)
+			.attr("height", h_bar+barMargin.top+barMargin.bottom)
+			.attr({"x": function (d, i) {
+				return (boxMargin.left+(i*(w_bar+barMargin.right+barMargin.left)));
+			}})
+		  .append("g") //g for bar itself, placed in svg container
+	    	.attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
+
+
+	    //Append placeholder "svg:g" for each bar that rectangles will be appended to
+	    var svgbar = svg.append("g")
+	    	.attr("class", "bar")
+			.attr("width", w_bar)
+			.attr("height", h_bar)
+			.each(makeBar);
+
+		
+
+		//Makes one bar
+		function makeBar(CD) {	
+
+			var svg = d3.select(this);
+
+			//sets dimension of cell in bar
+			var sq = 5;
+
+			var barRows = h_bar/sq,
+				barCols = w_bar/sq;
+
+			var dVotes = +CD.values[0].DEM_USC,
+				rVotes = +CD.values[0].REP_USC,
+				oVotes = +CD.values[0].OTHERS_USC,
+				cdTotalVotes = (dVotes+rVotes+oVotes),
+				perD = (dVotes/cdTotalVotes),
+				perR = (rVotes/cdTotalVotes),
+				perO = (oVotes/cdTotalVotes),
+				cutD = perD*barRows*barCols,
+				cutOther = ((dVotes+oVotes)/cdTotalVotes)*barRows*barCols;
+
+			var delayTime = 8,
+				delayTimeOther = delayTime*2
+				pauseTime = 500;
+
+			//makes squares as "rect" elements
+			var squares = svg.selectAll(".square")
+				.data(d3.range(barRows*barCols))
+		  	  .enter()
+				.append('rect')
+				.attr("class", "square")
+				.attr("width", sq)
+				.attr("height", sq)
+				.attr("cellnum", function (i) {return ((barRows*barCols)-i);})
+				.attr("x", function(i) {return (sq*(i%barCols));})
+				.attr("y", function(i) {return (sq*Math.floor((i/barCols)));})
+				.style("fill",initialColor)
+				.style("stroke", "ffffff")
+				.style("stroke-width", .4)      
+    			.style("stroke-linecap", "butt")		
+				.attr("squareColor", function() {
+					if (this.getAttribute('cellnum') <= cutD) {
+					    return dColor;
+					}
+					if (this.getAttribute('cellnum') > cutD && (this.getAttribute('cellnum') <= cutOther)) {
+						return oColor;
+					}
+					else {return rColor;}
+				})
+				.transition()
+			     	.delay(function() {
+						if (this.getAttribute('squareColor') == dColor) {
+		   					return (pauseTime+this.getAttribute("cellnum")*delayTime);
+		     			}
+		     			if (this.getAttribute('squareColor') == oColor) {
+		   					return (pauseTime+((this.getAttribute("cellnum")*delayTimeOther)+(cutOther*delayTime)));
+		     			}
+		     			if (this.getAttribute('squareColor') == rColor) {
+		     	
+		     				return (pauseTime+((cutD*delayTime)+((barCols*barRows)-this.getAttribute("cellnum")+1)*delayTime));
+		     				}
+						})     	
+			     	.style("fill", function() {
+							return this.getAttribute('squareColor')
+						});
+			    //end makeBar function
+			    }
+	//end d3.tsv function call
+	})	
+
+	// 	.on("mouseover", tip.show)
+	// 	.on("mouseout", tip.hide)
+
+
+
+</script>
+</body>
+</html>
+
