@@ -13,12 +13,12 @@
 		stroke-width: .4)      
     	stroke-linecap: "butt")
 	}*/
-	.cdBoundariesOnDrag{
+	/*.cdBoundariesOnDrag{
 		stroke: "white";
 		width: 400px;
 		stroke-dasharray: "10";
 	    stroke-linecap: "round";
-	}
+	}*/
 
 	.dragBar {
 		fill: none;
@@ -395,8 +395,8 @@
 			    //
 			    /////////Update map
 			    d3.selectAll(".cdBoundaries").filter(function(){return this.getAttribute("CD") == CD.key})
-			    	.attr("class", "cdBoundariesOnDrag")
-			    	.raise()
+			    	// .attr("class", "cdBoundariesOnDrag")
+			    	// .raise()
 			    	.attr("winner", function() {
 		      			if ((dVotesDrag > rVotesDrag) && (dVotesDrag > oVotesDrag)) {
 		      				return "DEM";
@@ -667,8 +667,11 @@
 			    	// })
 			    	// .style("stroke", function(d) { 
 		      // 			return this.getAttribute("fill");
-		      		});
-		      		
+		      		})
+		      		.style("stroke", "white")
+		      		.style("width", "300px")
+		      		.style("stroke-dasharray", "2")
+		      		.style("stroke-linecap", "round");
 		      		
 		//end d3.json function call ->
 		});
