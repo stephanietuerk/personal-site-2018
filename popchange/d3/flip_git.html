@@ -26,6 +26,9 @@
 		}
 		.bars-line {
 		}
+		.bars-line-label{
+			font: 10px "Helvetica Neue";
+		}
 		.cd-boundaries {
 
 		}
@@ -93,7 +96,6 @@
 		oColor = "#f6b500",
 		initialColor = "#cccccc";
 
-	//<button class="button">load 2016 election data</button>
 
 	//Read in Data and create visualization from that 
 	d3.tsv("data/CD_Data_all.tsv", function(data) {
@@ -115,7 +117,6 @@
 			voteDataHolder.push(0);
 		};
 
-		console.log(voteDataHolder);
 
 
 	//		
@@ -152,6 +153,22 @@
 			.style("stroke-width", "2px")
 			.style("stroke-dasharray", ("2,2"))
 			.style("stroke-linecap", "butt");
+
+		var linelabel = barsContainer.append("text")
+			.attr("class", "bars-line-label")
+			.attr("x", 872)
+			.attr("y", 112)
+			.style("text-anchor", "right")
+			.text("50% of")
+
+		var linelabel2 = barsContainer.append("text")
+			.attr("class", "bars-line-label")
+			.attr("x", 880)
+			.attr("y", 122)
+			.style("text-anchor", "right")
+			.text("votes")
+
+
 
 		//Add an SVG holder for each bar/congressional district, with the desired dimensions and margin.
 		//Append a "svg: g" to each SVG that moves bar into the center of the SVG mentioned above, creating space between bars
@@ -1017,7 +1034,7 @@
 	//Create display to show numbers
 	/////////////////////////////////////////////
 		var displayBoxWidth = 900,
-			displayBoxHeight = 180;
+			displayBoxHeight = 160;
 
 		//Create container to hold vote grid graphic
 		var displayContainer = d3.select("#flipDisplay").append("svg")
@@ -1070,14 +1087,14 @@
 		var votesFixedDisplay = displayContainer.append("text")
 			.attr("class", "display-static")
 			.attr("x", displayBoxWidth/2)
-			.attr("y", (displayBoxHeight/2)-20+30)
+			.attr("y", (displayBoxHeight/2)-20+25)
 			.style("text-anchor", "middle")
 			.text("votes");
 
 		var districtsFixedDisplay = displayContainer.append("text")
 			.attr("class", "display-static")
 			.attr("x", displayBoxWidth/2)
-			.attr("y", (displayBoxHeight/2)+40+30)
+			.attr("y", (displayBoxHeight/2)+40+25)
 			.style("text-anchor", "middle")
 			.text("districts");
 
@@ -1095,7 +1112,7 @@
 			.attr("id", "dVotesDisplay")
 			.attr("width", 300)
 			.attr("x", displayBoxWidth/4)
-			.attr("y", (displayBoxHeight/2)-15+30)
+			.attr("y", (displayBoxHeight/2)-15+25)
 			.style("text-anchor", "middle")
 			.style("fill", dColor)
 			.style("stroke", "none")
@@ -1121,7 +1138,7 @@
 			.attr("id", "rVotesDisplay")
 			.attr("width", 300)
 			.attr("x", displayBoxWidth*(3/4))
-			.attr("y", (displayBoxHeight/2)-15+30)
+			.attr("y", (displayBoxHeight/2)-15+25)
 			.style("text-anchor", "middle")
 			.style("fill", rColor)
 			.style("stroke", "none")
@@ -1147,7 +1164,7 @@
 			.attr("class", "display-data-dem display-districts")
 			.attr("id", "dDistrictsDisplay")
 			.attr("x", displayBoxWidth*(1/4))
-			.attr("y", (displayBoxHeight/2)+40+30)
+			.attr("y", (displayBoxHeight/2)+40+25)
 			.style("text-anchor", "middle")
 			.style("fill", dColor)
 			.text("");
@@ -1172,7 +1189,7 @@
 			.attr("class", "display-data-rep display-districts")
 			.attr("id", "rDistrictsDisplay")
 			.attr("x", displayBoxWidth*(3/4))
-			.attr("y", (displayBoxHeight/2)+40+30)
+			.attr("y", (displayBoxHeight/2)+40+25)
 			.style("text-anchor", "middle")
 			.style("fill", rColor)
 			.text("");
