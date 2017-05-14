@@ -92,7 +92,7 @@
 		    .await(drawMaps); 
 
 		
-		function drawCDs(error, pa, cddata) {
+		function drawCDs(error, cd, cddata) {
 			if (error) throw error;
 
 			var projection = d3.geoAlbers()
@@ -180,43 +180,8 @@
 		  	});
 
 
+
 		  	svg1.append("g")
-		    	.attr("class", "tracts")
-		    .selectAll("path")
-		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
-		      	.enter().append("path")
-		      	.attr("d", path)
-		      	.attr("fill", function(d) { 
-		      		var name = d.properties.GEO_ID;
-		      		// console.log(name);
-		      		return votecolor(uspMarginByTract[name]); });
-
-
-		  	svg2.append("g")
-		      	.attr("class", "tracts")
-		    .selectAll("path")
-		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
-		      	.enter().append("path")
-		      	.attr("d", path)
-		      	.attr("fill", function(d) { 
-		      		var name = d.properties.GEO_ID;
-		      		// console.log(name);
-		      		return votecolor(ussMarginByTract[name]); });
-
-
-			svg3.append("g")
-		    	.attr("class", "tracts")
-		    .selectAll("path")
-		      	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
-		      	.enter().append("path")
-		      	.attr("d", path)
-		      	.attr("fill", function(d) { 
-		      		var name = d.properties.GEO_ID;
-		      		// console.log(name);
-		      		return votecolor(uscMarginByTract[name]); });
-
-
-		  	svg4.append("g")
 		    	.attr("class", "tracts")
 		    .selectAll("path")
 		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
@@ -229,7 +194,7 @@
 		      		return popcolor(popChangeByTract[name]); });
 
 
-		  	svg5.append("g")
+		  	svg2.append("g")
 		      	.attr("class", "tracts")
 		    .selectAll("path")
 		     	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
