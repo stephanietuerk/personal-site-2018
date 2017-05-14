@@ -92,62 +92,11 @@
 		    .await(drawMaps); 
 
 		
-		function drawCDs(error, cd, cddata) {
-			if (error) throw error;
-
-			var projection = d3.geoAlbers()
-		    .scale(7000)
-		    .rotate( [77.1945,0] )
-    		.center( [0, 41.2033] )
-		    .translate([width_sm / 2, height_sm / 2]);
-
-		    var path = d3.geoPath()
-		    .projection(projection);
-
-			var uscMarginByCD = {};
-			cddata.forEach(function(d) {
-				uscMarginByCD[d.USCongDistrict] = +d.margin_usc;
-			});
-
-			svg3.append("g")
-				.attr("class", "cds")
-				.selectAll("path")
-		    .data(topojson.feature(pa, pa.objects.PA_CongDist_2015).features) 
-		      	.enter().append("path")
-		      	.attr("d", path)
-		      	.attr("fill", function(d) { 
-		      		var name = d.properties.CD114FP;
-		      		console.log(name);
-		      		if (uscMarginByCD[name] > 0) {
-		      			console.log(uscMarginByCD[name])
-		      			return repRed;
-		      		}
-		      		else {return demBlue;
-		      		}
-		      	})
-		      	.attr("stroke", function(d) { 
-		      		var name = d.properties.CD114FP;
-		      		console.log(name);
-		      		if (uscMarginByCD[name] > 0) {
-		      			console.log(uscMarginByCD[name])
-		      			return repRed;
-		      		}
-		      		else {return demBlue;
-		      		}
-		      	})
-		      	.on("mouseover", function(d){
-					d3.select(this).attr("class","hover");
-				})
-				.on("mouseout", function(d){
-					d3.select(this).attr("class","incident");
-		      		
-		      		
-				});
 
 
 		}
 
-		function drawMaps(error, pa, votes, pop) {
+		function drawMaps(error, cd, votes, pop) {
 			if (error) throw error;
 		  
 		  	
