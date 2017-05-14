@@ -4,6 +4,9 @@
 	<meta charset="utf-8">
   	<title>Flip the District</title> 
   	<style>
+	  	body {
+	  		font-family: "Helvetica Neue", Helvetica, sans-serif;
+	  	}
 	  	.active-drag {
 	  		/*stroke: white;*/
 	  		/*stroke-width: 1.5px;*/
@@ -35,28 +38,58 @@
 		.cd-boundaries-drag {
 
 		}
+		.cd-info-text {
+			font: 10.5px "Helvetica Neue";
+			
+		}
+		.cd-info-text-header {
+			font: 11px "Helvetica Neue";
+			
+			
+		}
+		.cd-info-text-label-sm {
+			font: 10px "Helvetica Neue";
+			
+			
+		}
+		.cd-info-text-num {
+			
+			
+		}
+		.cd-info-text-cand {
+			
+			
+		}
+		.text-dem {
+			fill: #2437ff;
+		}
+		.text-rep {
+			fill: #f4003d;
+		}
+		.text-oth {
+			fill: #f6b500;
+		}
 		.congbar-square {
 			opacity: .8;
 		}
 		.display-data-dem {
 			/*font: bold 48px monospace;*/
 			font: bold 48px "Helvetica Neue";
-			fill: "#2437ff";
-			stroke: "none";
+			fill: #2437ff;
+			stroke: none;
 			/*color: "#2437ff";*/
 		}
 		.display-data-rep {
 			font: bold 48px "Helvetica Neue";
-			fill: "#f4003d";
+			fill: #f4003d;
 		}
 		.display-districts {
 			
 		}
 		.display-label {
-			font: 10px "Helvetica Neue";
+			font: 10.5px "Helvetica Neue";
 		}
 		.display-static {
-			/*font: 36px "Helvetica Neue";*/
 			font: 36px monospace;
 		}
 		.display-votes {
@@ -67,7 +100,32 @@
 		.grid-square {
 
 		}
-
+		.reset-box {
+			fill: #cccccc;
+			stroke: "none";
+			stroke-width: 1.5px;
+			/*border-radius: 8px;*/
+			stroke-linecap: round;
+		}
+		.reset-text {
+			font: 12px monospace;
+			fill: white;
+			text-align: center;
+			width: auto;
+		}
+		.tooltip {
+		  position: absolute;
+		  text-align: center;
+		  width: auto;
+		  height: 10px;
+		  padding: 4px;
+		  margin-top: -20px;
+		  font: 10px sans-serif;
+		  background: white;
+		  opacity: 0;
+		  pointer-events: none;
+		  border-radius: 2px;
+		}
   	</style>
 <!-- 	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
 	<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -76,12 +134,14 @@
       <script src="https://d3js.org/d3-geo.v1.min.js"></script>
       <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
+      <script src="d3-tip.js"></script>
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script> -->
 </head>
 <body>
 <div id ="flipTop"></div>
 <div id ="flipDisplay"></div>
 <div id ="flipBars"></div>
+<div id ="resetAll"></div>
 
 
 </body>
@@ -96,10 +156,13 @@
 			oColor = "#f6b500",
 			initialColor = "#cccccc";
 
-		//<button class="button">load 2016 election data</button>
+		
+	makeFlipViz();	
+		
+	function makeFlipViz () {
 
 		//Read in Data and create visualization from that 
-		d3.tsv("data/CD_Data_sm.tsv", function(data) {
+		d3.tsv("data/CD_Data_all.tsv", function(data) {
 			
 			//nest data by CD	
 			var cdData = d3.nest()
@@ -138,6 +201,7 @@
 
 			//Create container to hold bars graphic
 			var barsContainer = d3.select("#flipBars").append("svg")
+				.attr("class", "container")
 				.attr("width", barsBoxWidth)
 				.attr("height", barsBoxHeight);
 
@@ -170,7 +234,9 @@
 				.style("text-anchor", "right")
 				.text("votes")
 
-				
+			var tooltipAttempt = d3.select("body").append("div")
+					.attr("class", "tooltip")
+    				.style("display", "none");	
 
 			//Add an SVG holder for each bar/congressional district, with the desired dimensions and margin.
 			//Append a "svg: g" to each SVG that moves bar into the center of the SVG mentioned above, creating space between bars
@@ -185,10 +251,6 @@
 				})
 			  .append("g") //g for bar itself, placed in svg container
 		    	.attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
-
-	    	//make tooltip
-		    var barToolTip = svg.append("div")
-				.attr("class", "bar-tip")
 
 
 
@@ -221,6 +283,7 @@
 					topBoxHeight = 300;
 
 				var topContainer = d3.select("#flipTop").append("svg")
+					.attr("class", "container")
 					.attr("width", topBoxWidth)
 					.attr("height", topBoxHeight);
 
@@ -292,9 +355,7 @@
 				      			if (this.getAttribute("winner") == "REP") {
 				      				return oColor;
 								}
-				      		});
-
-				      		
+				      		});				      		
 				//end d3.json function call ->
 				});
 			
@@ -355,32 +416,12 @@
 
 				//Create container to hold vote grid graphic
 				var displayContainer = d3.select("#flipDisplay").append("svg")
+					.attr("class", "container")
 					.attr("width", displayBoxWidth)
 					.attr("height", displayBoxHeight)
 					.append("g");
 			
 				//Make display boxes for text elements
-
-				//Reset Button
-				// var resetGroup = displayContainer.append("g");
-
-				// var resetBox = resetGroup.append("rect")
-				// 	.attr("class", "reset-button")
-				// 	.attr("width", 250)
-				// 	.attr("height", 30)
-				// 	.attr("x", 325)
-				// 	.attr("y", 25)
-				// 	.style("stroke", "red")
-				// 	.on("click", clickToReset);
-
-				// var resetText = resetGroup.append("text")
-				// 	.attr("class", "reset-button")
-				// 	.attr("width", 250)
-				// 	.attr("x", displayBoxWidth/2)
-				// 	.attr("y", 25)
-				// 	.style("text-anchor", "middle")
-				// 	.style("pointer-events", "none")
-				// 	.text("reset to 2016 results");
 
 				//For static text
 				var popBoxLabel = displayContainer.append("text")
@@ -416,6 +457,46 @@
 
 				//Convert floating point numbers to something normal
 				var format = d3.format(",d");
+
+
+				var cdInfoTextContainer = displayContainer.append("g")
+					.style("opacity", 0);
+
+				// Map text
+				var cdInfoName = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-header")
+					
+				var cdInfoVotes = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-label-sm")
+					.attr("x", 212)
+					.text("2016 votes:")
+					.style("text-anchor", "end");
+
+				var cdInfoVotesNum = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-num")
+					.style("text-anchor", "end");
+
+				var cdInfoDCand = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-cand text-dem")
+
+				var cdInfoDCandPer = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-num text-dem")
+					.style("text-anchor", "end");
+
+				var cdInfoRCand = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-cand text-rep")
+
+				var cdInfoRCandPer = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-num text-rep")
+					.style("text-anchor", "end");
+
+				var cdInfoOCand = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-cand text-oth")
+
+				var cdInfoOCandPer = cdInfoTextContainer.append("text")
+					.attr("class", "cd-info-text cd-info-text-num text-oth")
+					.style("text-anchor", "end");
+				
 
 				//Dem Votes
 				var demVotesDisplay = displayContainer.append("g");
@@ -494,7 +575,6 @@
 								};
 						});
 
-				
 				//Rep districts
 				var repDistrictsDisplay = displayContainer.append("g");
 
@@ -521,9 +601,11 @@
 						});
 
 			//
-			//
-			//Makes one bar//////////////////////////
+			//FUNCTIONS within makeFlipViz/d3.tsv call
+			/////////////////////////////////////////
 			function makeBar(CD) {	
+			//Makes one bar//////////////////////////
+			//Because the visualization is controlled by dragging on a bar, all update functions are nested in makeBar
 
 				// get values from loaded data
 				var cdVoteData = {};
@@ -543,7 +625,7 @@
 					isDragging = false,
 					startVotes = [],
 					startParty = "none";
-									
+    				
 				//Set dimensions of bar elements
 				var barSq = 5;
 
@@ -569,8 +651,7 @@
 				var svg = d3.select(this)
 					.attr("class", "bar")
 					.attr("CD", CD.key)
-					.style("fill", "none");				
-
+					.style("fill", "none");	
 				
 				//make transparent rectangle to pick up drag
 				svg.append("rect")
@@ -580,12 +661,16 @@
 				    .attr("width", w_bar)
 				    .attr("height", h_bar)
 				    .style("fill", "none")
+				    // .on("mouseover", bar_tooltip.show)
+				    // .on("mouseout", bar_tooltip.hide)
 				    .on("mouseover", handleMouseOver)
+				    .on("mousemove", handleMouseMove)
 				    .on("mouseout", handleMouseOut)
 				    .call(d3.drag()
 				    	.on("start", initiateDrag)
 						.on("drag", dragChange)
 				    	.on("end", dragEnd));
+
 			    	
 				//makes squares as "rect" elements
 				var squares = svg.selectAll(".bar-square")
@@ -642,6 +727,7 @@
 				//Updates global variables "startVotes", "startParty", and dragTimes
 
 					isDragging = true;
+					tooltipAttempt.style("display", "none");
 
 					startVotes = initializeVotes(dragTimes);
 
@@ -760,6 +846,7 @@
 									});
 					}
 					
+
 					function updateMap() {
 
 					    d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
@@ -845,6 +932,7 @@
 					}
 				//end dragChange function ->
 				}
+
 
 				function dragEnd(d) {
 
@@ -1003,47 +1091,183 @@
 					d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
 						.classed("active-mouseover", true)
 						.raise();
+						
+
+					var dVotes2016 = +CD.values[0].DEM_USC
+						rVotes2016 = +CD.values[0].REP_USC,
+						oVotes2016 = +CD.values[0].OTHERS_USC;
+						voteTotal2016 = (dVotes+rVotes+oVotes)
+
+					//tooltipAttempt.style("display", "inline");
+
+					var formatPercent = d3.format(".0%");
+
+					cdInfoTextContainer.style("opacity", 1);
+				
+					var infoNameX = 55,
+						infoNumX = 250,
+						startY = 0,
+						infoLineSpacing = 12;
+
+					makeCDInfo();	
+
+					function makeCDInfo() {	
 					
-					// if (isDragging == "true") {
-					// 	console.log("turning off mouseover!");
-					// d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
-					// 	.classed("active-mouseover", false);	
-					// }
+						cdInfoName
+							.attr("x", infoNameX)
+							.attr("y", startY+infoLineSpacing)
+							.text("PA District "+CD.key);
+						
+						cdInfoVotes
+							.attr("x", 212)
+							.attr("y", startY+infoLineSpacing)
+						
+						cdInfoVotesNum
+							.attr("x", infoNumX)
+							.attr("y", startY+infoLineSpacing)
+							.style("text-anchor", "end")
+							.text(voteTotal2016);
+						
+						var dLine = 0,
+							rLine = 0,
+							oLine = 0;
+
+						if (CD.values[0]["DEM_CAND"] != 0 && typeof CD.values[0]["DEM_CAND"] !== 'undefined') {
+							dLine = 2;
+							if (CD.values[0]["REP_CAND"] != 0 && typeof CD.values[0]["REP_CAND"] !== 'undefined') {
+								rLine = 3;
+								if (CD.values[0]["OTH_CAND"] != 0 && typeof CD.values[0]["OTH_CAND"] !== 'undefined') {
+									oLine = 4;
+								}
+								else {oLine = 0;}
+							}
+							else if (CD.values[0]["REP_CAND"] == 0 | typeof CD.values[0]["REP_CAND"] == 'undefined') {
+								rLine = 0;
+								if (CD.values[0]["OTH_CAND"] != 0 && typeof CD.values[0]["OTH_CAND"] !== 'undefined') {
+									oLine = 3;
+								}
+								else {oLine = 0;}
+							}
+						}
+						else if (CD.values[0]["DEM_CAND"] == 0 | typeof CD.values[0]["DEM_CAND"] == 'undefined') {
+							dLine = 0;
+							if (CD.values[0]["REP_CAND"] != 0 && typeof CD.values[0]["REP_CAND"] !== 'undefined') {
+								rLine = 2;
+								if (CD.values[0]["OTH_CAND"] != 0 && typeof CD.values[0]["OTH_CAND"] !== 'undefined') {
+									oLine = 3
+								}
+								else {oLine = 0;}
+							}
+							else if (CD.values[0]["REP_CAND"] == 0 | typeof CD.values[0]["REP_CAND"] == 'undefined') {
+								rLine = 0;
+								if (CD.values[0]["OTH_CAND"] != 0 && typeof CD.values[0]["OTH_CAND"] !== 'undefined') {
+									oLine = 2;
+								}
+								else {oLine = 0;}
+							}
+						}
+
+						if (dLine != 0) {
+							cdInfoDCand
+								.attr("x", infoNameX)
+								.attr("y", (startY+(infoLineSpacing*dLine)))
+								.text(CD.values[0]["DEM_CAND"]);
+
+							cdInfoDCandPer
+								.attr("x", infoNumX)
+								.attr("y", (startY+(infoLineSpacing*dLine)))
+								.text(formatPercent(dVotes2016/voteTotal2016));
+						}
+						else {
+							cdInfoDCand
+								.attr("x", null)
+								.attr("y", null)
+								.text(null);
+
+							cdInfoDCandPer
+								.attr("x", null)
+								.attr("y", null)
+								.text(null);
+						}
+
+						if (rLine != 0) {
+							cdInfoRCand
+								.attr("x", infoNameX)
+								.attr("y", (startY+(infoLineSpacing*rLine)))
+								.text(CD.values[0]["REP_CAND"]);
+
+							cdInfoRCandPer
+								.attr("x", infoNumX)
+								.attr("y", startY+(infoLineSpacing*rLine))
+								.text(formatPercent(rVotes2016/voteTotal2016));
+						}
+						else {
+							cdInfoRCand
+								.attr("x", null)
+								.attr("y", null)
+								.text(null);
+
+							cdInfoRCandPer
+								.attr("x", null)
+								.attr("y", null)
+								.text(null);
+						}
+
+						if (oLine != 0) {		
+							cdInfoOCand
+								.attr("x", infoNameX)
+								.attr("y", (startY+(infoLineSpacing*oLine)))
+								.text(CD.values[0]["OTH_CAND"]);
+
+							cdInfoOCandPer
+								.attr("x", infoNumX)
+								.attr("y", (startY+(infoLineSpacing*oLine)))
+								.text(formatPercent(oVotes2016/voteTotal2016));
+						}
+						else {
+							cdInfoOCand
+								.attr("x", null)
+								.attr("y", null)
+								.text(null);
+
+							cdInfoOCandPer
+								.attr("x", null)
+								.attr("y", null)
+								.text(null);
+						}
+					}
 				}
+
+				function handleMouseMove () {
+					tooltipAttempt
+					.text("PA District "+CD.key)
+      				.style("left", (d3.event.pageX + 4) + "px")
+      				.style("top", (d3.event.pageY - 12) + "px");
+      			}
 				
 				function handleMouseOut () {
 					d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
 						.classed("active-mouseover", false);
+						
+					// tooltipAttempt.style("display", "none");
+					cdInfoTextContainer.style("opacity", 0);
+
+					cdInfoDCand.select("text").remove;
+					cdInfoDCandPer.select("text").remove;
+					cdInfoRCand.select("text").remove;
+					cdInfoRCandPer.select("text").remove;
+					cdInfoOCand.select("text").remove;
+					cdInfoOCandPer.select("text").remove;
 				}
 
-
-
-				
 			//end makeBar function ->
 			}
 
-			
 
 			function makeVoteGrid () {
 
 				//var svg = voteGridContainer.append("svg");
 				var svg = d3.select(this);
-				
-				//get vote data from voteDataHolder
-				var dSum = 0;
-				for (var key in voteDataHolder) {
-					dSum += voteDataHolder[key]["DEM"];
-				};
-
-				var rSum = 0;
-				for (var key in voteDataHolder) {
-					rSum += voteDataHolder[key]["REP"];
-				};
-
-				var oSum = 0;
-				for (var key in voteDataHolder) {
-					oSum += voteDataHolder[key]["OTH"];
-				};
 
 				var paSum = (dSum + rSum + oSum),
 					perDGrid = (dSum/paSum),
@@ -1107,55 +1331,6 @@
 
 				//var svg = voteGridContainer.append("svg");
 				var svg = d3.select(this);
-				
-				//Get data variables	
-				var dSum = 0;
-				var rSum = 0;
-				var oSum = 0;
-				for (var key in voteDataHolder) {
-					dSum += voteDataHolder[key]["DEM"];
-					rSum += voteDataHolder[key]["REP"];
-					oSum += voteDataHolder[key]["OTH"];
-				};
-
-				var dDistrictSum = 0;
-				var rDistrictSum = 0;
-				var oDistrictSum = 0;
-				for (var key in voteDataHolder) {
-					if (voteDataHolder[key]["DEM"] >= voteDataHolder[key]["REP"] && voteDataHolder[key]["DEM"] >= voteDataHolder[key]["OTH"]) {
-						dDistrictSum += 1;
-					}
-					if (voteDataHolder[key]["REP"] >= voteDataHolder[key]["DEM"] && voteDataHolder[key]["REP"] >= voteDataHolder[key]["OTH"]) {
-						rDistrictSum += 1;
-					}
-					if (voteDataHolder[key]["OTH"] >= voteDataHolder[key]["DEM"] && voteDataHolder[key]["OTH"] >= voteDataHolder[key]["REP"]) {
-						oDistrictSum += 1;
-					}
-				};
-				console.log(dDistrictSum);
-				console.log(rDistrictSum);
-				// //get vote data from voteDataHolder
-				// var dSum = 0;
-				// for (var key in voteDataHolder) {
-				// 	dSum += voteDataHolder[key]["DEM"];
-				// };
-
-				// var rSum = 0;
-				// for (var key in voteDataHolder) {
-				// 	rSum += voteDataHolder[key]["REP"];
-				// };
-
-				// var oSum = 0;
-				// for (var key in voteDataHolder) {
-				// 	oSum += voteDataHolder[key]["OTH"];
-				// };
-
-				// var paSum = (dSum + rSum + oSum),
-				// 	perDGrid = (dSum/paSum),
-				// 	perRGrid = (rSum/paSum),
-				// 	perOGrid = (oSum/paSum),
-				// 	cutDGrid = perDGrid*gridRows*gridCols,
-				// 	cutOtherGrid = ((dSum+oSum)/paSum)*gridRows*gridCols;
 
 				var delayTime = 200,
 					pauseTime = 0;
@@ -1186,9 +1361,6 @@
 						    return rColor;
 						}
 					})
-					// .style("fill", function() {
-					// 			return this.getAttribute('squareColor')
-					// 		})
 					.transition()
 				     	.delay(function() {
 							if (this.getAttribute('squareColor') == dColor) {
@@ -1212,42 +1384,6 @@
 			//end makecongBar function ->
 			}
 
-
-			function getVoteDataSums() {
-
-				var dSum = 0,
-					rSum = 0,
-					oSum = 0;
-
-				for (var key in voteDataHolder) {
-					dSum += voteDataHolder[key]["DEM"];
-					rSum += voteDataHolder[key]["REP"];
-					oSum += voteDataHolder[key]["OTH"];
-				};
-				
-				var dDistrictSum = 0,
-					rDistrictSum = 0,
-					oDistrictSum = 0;
-
-				for (var key in voteDataHolder) {
-					if (voteDataHolder[key]["DEM"] >= voteDataHolder[key]["REP"] && voteDataHolder[key]["DEM"] >= voteDataHolder[key]["OTH"]) {
-						dDistrictSum += 1;
-					}
-					if (voteDataHolder[key]["REP"] >= voteDataHolder[key]["DEM"] && voteDataHolder[key]["REP"] >= voteDataHolder[key]["OTH"]) {
-						rDistrictSum += 1;
-					}
-					if (voteDataHolder[key]["OTH"] >= voteDataHolder[key]["DEM"] && voteDataHolder[key]["OTH"] >= voteDataHolder[key]["REP"]) {
-						oDistrictSum += 1;
-					}
-				};
-
-				var voteSums = [dSum, dSum, oSum],
-					districtSums = [dDistrictSum, rDistrictSum, oDistrictSum];
-
-				var voteDataSums = [voteSums, districtSums]
-
-				return voteDataSums;
-			}
 
 			function getStateSums() {
 
@@ -1292,16 +1428,42 @@
 	  			};
 			}
 
-			function clickToReset() {
-				console.log("clicked!")
-				dragTimes = 0;
-			}
+			
 
 	console.log(voteDataHolder);
 	
 	//end d3.tsv function call ->
 	})	
+}
 
+	
+				//Reset Button
+				var resetContainer = d3.select("#resetAll").append("svg")
+					.attr("width", 900)
+					.attr("height", 50)
+
+				var resetBox = resetContainer.append("rect")
+					.attr("class", "reset-button reset-box")
+					.attr("width", 160)
+					.attr("height", 22)
+					.attr("x", 370)
+					.attr("y", 25)
+					.on("click", clickToReset);
+
+				var resetText = resetContainer.append("text")
+					.attr("class", "reset-button reset-text")
+					.attr("x", 450)
+					.attr("y", 40)
+					.style("text-anchor", "middle")
+					.style("pointer-events", "none")
+					.text("reset to 2016 results");
+
+
+	function clickToReset() {
+		console.log("clicked!")
+		d3.selectAll(".container > *").remove();
+		makeFlipViz();
+	}
 	// 	.on("mouseover", tip.show)
 	// 	.on("mouseout", tip.hide)
 
