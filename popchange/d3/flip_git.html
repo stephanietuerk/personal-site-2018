@@ -134,7 +134,6 @@
 		  border-radius: 2px;
 		}
   	</style>
-<!-- 	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="//d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-array.v1.min.js"></script>
@@ -150,9 +149,11 @@
 <div id ="resetAll"></div>
 
 
-</body>
+
 	<script>
 	
+
+
 		//Visualization "global" variables
 		var rColor = "#f4003d",
 			dColor = "#2437ff",
@@ -255,6 +256,8 @@
 			  .append("g") //g for bar itself, placed in svg container
 		    	.attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
+
+
 		    //Append placeholder "svg:g" for each bar that rectangles will be appended to
 		    var svgbar = svg.append("g")
 				.attr("width", w_bar)
@@ -314,6 +317,7 @@
 
 				    var path = d3.geoPath()
 				    .projection(projection);
+
 
 					mapContainer.append("g")
 						.selectAll("path")
