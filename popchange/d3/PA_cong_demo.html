@@ -12,7 +12,6 @@
 		.hover {
 			stroke: "#ffffff";
 		}
-
 	</style>
 	  <script src="https://d3js.org/d3.v4.min.js"></script>
       <script src="https://d3js.org/d3-array.v1.min.js"></script>
@@ -31,77 +30,102 @@
 	<!-- Page elements and content go here. -->
 	<script>
 		var repRed = "#e81d41";
-
 		var demBlue = "#406fea";
-
 		var width = 1200,
 		    height = 650;
-
 		var width_sm = 700,
 			height_sm = 500;
-
 		var projection = d3.geoAlbers()
 		    .scale(10000)
 		    .rotate( [77.1945,0] )
     		.center( [0, 41.2033] )
 		    .translate([width / 2, height / 2]);
-
     	var path = d3.geoPath()
 		    .projection(projection);
-
 	    var svg1 = d3.select("#popchange")
 			.append("svg")
 		    .attr("width", width)
 		    .attr("height", height);
-
 		var svg2 = d3.select("#stdevpop")
 			.append("svg")
 		    .attr("width", width)
 		    .attr("height", height);
-
 		var svg3 = d3.select("#cds")
 			.append("svg")
 			.attr("width", width_sm)
 			.attr("height", height_sm);
-
 		// var svg7 = d3.select("#grid")
 		// 	.append("svg")
 		// 	.attr("width", width_sm)
 		// 	.attr("height", height_sm);
-
-
-
         var popcolor = d3.scaleThreshold()
         
           .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
           // .domain([0, 1])
           // .range(['#f1eef6','#006d2c']);
-
         var stdevpopcolor = d3.scaleThreshold()
           .domain([-3, -2, -1, -0.5, 0, 0.5, 1, 2, 3, 100])
           .range(['#59d564','#5ee36a','#63f170','#8efa96','#c9fccc','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
-
-
 		// Queue up datasets using d3 Queue
-
 		d3.queue()
 		    .defer(d3.json, "jsons/CD01_CT.json") 
 		    .defer(d3.tsv, "data/Votesby2010CT.tsv") 
 		    .defer(d3.tsv, "data/Pop_1015.txt")
 		    .await(drawMaps); 
-
 		
-
-
+		function drawCDs(error, cd, cddata) {
+			if (error) throw error;
+			var projection = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [77.1945,0] )
+    		.center( [0, 41.2033] )
+		    .translate([width_sm / 2, height_sm / 2]);
+		    var path = d3.geoPath()
+		    .projection(projection);
+			var uscMarginByCD = {};
+			cddata.forEach(function(d) {
+				uscMarginByCD[d.USCongDistrict] = +d.margin_usc;
+			});
+			svg3.append("g")
+				.attr("class", "cds")
+				.selectAll("path")
+		    .data(topojson.feature(pa, pa.objects.PA_CongDist_2015).features) 
+		      	.enter().append("path")
+		      	.attr("d", path)
+		      	.attr("fill", function(d) { 
+		      		var name = d.properties.CD114FP;
+		      		console.log(name);
+		      		if (uscMarginByCD[name] > 0) {
+		      			console.log(uscMarginByCD[name])
+		      			return repRed;
+		      		}
+		      		else {return demBlue;
+		      		}
+		      	})
+		      	.attr("stroke", function(d) { 
+		      		var name = d.properties.CD114FP;
+		      		console.log(name);
+		      		if (uscMarginByCD[name] > 0) {
+		      			console.log(uscMarginByCD[name])
+		      			return repRed;
+		      		}
+		      		else {return demBlue;
+		      		}
+		      	})
+		      	.on("mouseover", function(d){
+					d3.select(this).attr("class","hover");
+				})
+				.on("mouseout", function(d){
+					d3.select(this).attr("class","incident");
+		      		
+		      		
+				});
 		}
-
-		function drawMaps(error, cd, votes, pop) {
+		function drawMaps(error, pa, votes, pop) {
 			if (error) throw error;
 		  
 		  	
-
-
 		  	var uspMarginByTract = {};
 		  	votes.forEach(function(d) {
 		  		uspMarginByTract[d.GEO_ID] = +d.margin_usp;
@@ -111,25 +135,18 @@
 		  	votes.forEach(function(d) {
 		  		ussMarginByTract[d.GEO_ID] = +d.margin_uss;
 		  	});
-
 		  	var uscMarginByTract = {};
 		  	votes.forEach(function(d) {
 		  		uscMarginByTract[d.GEO_ID] = +d.margin_usc;
 		  	});
-
-
 		  	var popChangeByTract = {};
 		  	pop.forEach(function(d) {
 		  		popChangeByTract[d.GEO_ID] = +d.TotalPop_1015;
 		  	});
-
 		  	var stDevByTract = {};
 		  	pop.forEach(function(d) {
 		  		stDevByTract[d.GEO_ID] = +d.StDevPop_1015;
 		  	});
-
-
-
 		  	svg1.append("g")
 		    	.attr("class", "tracts")
 		    .selectAll("path")
@@ -141,8 +158,6 @@
 		      		//console.log(name);
 		      		//console.log(popChangeByTract[name])
 		      		return popcolor(popChangeByTract[name]); });
-
-
 		  	svg2.append("g")
 		      	.attr("class", "tracts")
 		    .selectAll("path")
@@ -155,14 +170,12 @@
 		      		// console.log(stDevByTract[name])
 		      		return stdevpopcolor(stDevByTract[name]); });
 		};
-
 		function drawGrid(error) { 
 			if (error) throw error;
 			
 			var square = 5,
 			  w = 400,
 			  h = 400;
-
 			//create the svg
 			var svg = d3.select("#grid").append("svg")
 			//var svg = d3.select('#grid').append('svg')
@@ -170,20 +183,15 @@
 			    width: w,
 			    height: h
 			  });
-
 			// calculate number of rows and columns
 			var squaresRow = _.round(w / square);
 			var squaresColumn = _.round(h / square);
-
 			var percentYes = 0.54;
 			var percentNo = 0.46;
-
 			var yesColor = "#e81d41";
 			var noColor = "#406fea";
-
 			// loop over number of columns
 			_.times(squaresColumn, function(n) {
-
 			  // create each set of rows
 			  	var rows = svg.selectAll('rect' + ' .row-' + (n + 1))
 		    	
