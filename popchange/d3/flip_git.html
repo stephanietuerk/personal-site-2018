@@ -153,8 +153,6 @@
 </body>
 	<script>
 	
-
-
 		//Visualization "global" variables
 		var rColor = "#f4003d",
 			dColor = "#2437ff",
@@ -175,7 +173,7 @@
 				.key(function(d) {return d.CD;}) 
 				.entries(data);
 
-			console.log(cdData);
+			// console.log(cdData);
 		//
 		//
 		//Create global data holder.
@@ -187,8 +185,7 @@
 				voteDataHolder.push(0);
 			};
 
-			console.log(voteDataHolder);
-
+			// console.log(voteDataHolder);
 
 		//		
 		//
@@ -258,8 +255,6 @@
 			  .append("g") //g for bar itself, placed in svg container
 		    	.attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
-
-
 		    //Append placeholder "svg:g" for each bar that rectangles will be appended to
 		    var svgbar = svg.append("g")
 				.attr("width", w_bar)
@@ -319,7 +314,6 @@
 
 				    var path = d3.geoPath()
 				    .projection(projection);
-
 
 					mapContainer.append("g")
 						.selectAll("path")
@@ -826,8 +820,6 @@
 							rSum = stateVoteSums[1],
 							oSum = stateVoteSums[2];
 
-							console.log(rSum);
-
 						var paSum = (dSum+rSum+oSum),
 							perDGrid = (dSum/paSum),
 							perRGrid = (rSum/paSum),
@@ -895,8 +887,6 @@
 						var dSum = stateVoteSums[0],
 							rSum = stateVoteSums[1],
 							osum = stateVoteSums[2];
-						
-						console.log(rSum);
 
 						var dDistrictSum = stateDistrictSums[0],
 							rDistrictSum = stateDistrictSums[1],
@@ -981,7 +971,6 @@
 						dStartVotes = voteDataHolder[CD.key-1]["DEM"];
 						rStartVotes = voteDataHolder[CD.key-1]["REP"];
 						oStartVotes = voteDataHolder[CD.key-1]["OTH"];
-						console.log(voteDataHolder);
 					}
 
 					votes = [dStartVotes, rStartVotes, oStartVotes];
@@ -1433,36 +1422,32 @@
 	    		return a + t * (b - a);
 	  			};
 			}
-
-			
-
-	console.log(voteDataHolder);
 	
 	//end d3.tsv function call ->
 	})	
-}
-
+	//end of makeFlipViz function -->
+	}
 	
-				//Reset Button
-				var resetContainer = d3.select("#resetAll").append("svg")
-					.attr("width", 900)
-					.attr("height", 50)
+	//Reset Button
+	var resetContainer = d3.select("#resetAll").append("svg")
+		.attr("width", 900)
+		.attr("height", 50)
 
-				var resetBox = resetContainer.append("rect")
-					.attr("class", "reset-button reset-box")
-					.attr("width", 160)
-					.attr("height", 22)
-					.attr("x", 370)
-					.attr("y", 25)
-					.on("click", clickToReset);
+	var resetBox = resetContainer.append("rect")
+		.attr("class", "reset-button reset-box")
+		.attr("width", 160)
+		.attr("height", 22)
+		.attr("x", 370)
+		.attr("y", 25)
+		.on("click", clickToReset);
 
-				var resetText = resetContainer.append("text")
-					.attr("class", "reset-button reset-text")
-					.attr("x", 450)
-					.attr("y", 40)
-					.style("text-anchor", "middle")
-					.style("pointer-events", "none")
-					.text("reset to 2016 results");
+	var resetText = resetContainer.append("text")
+		.attr("class", "reset-button reset-text")
+		.attr("x", 450)
+		.attr("y", 40)
+		.style("text-anchor", "middle")
+		.style("pointer-events", "none")
+		.text("reset to 2016 results");
 
 
 	function clickToReset() {
@@ -1470,9 +1455,6 @@
 		d3.selectAll(".container > *").remove();
 		makeFlipViz();
 	}
-	// 	.on("mouseover", tip.show)
-	// 	.on("mouseout", tip.hide)
-
 
 
 </script>
