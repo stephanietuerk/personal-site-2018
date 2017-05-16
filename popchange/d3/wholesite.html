@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
+  	<title>PROJECT TITLE</title> 
+  	<style>
+  		body {
+	  		font-family: "Roboto", Helvetica, sans-serif;
+	  	}
+	</style>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3-array.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
+</head>
+<body>
+<div id = "mapSelector"></div>
+<div id = "perCDDemos"></div>
+<div id = "perCDChange"></div>
+<div id = "flipTheDistrict"></div>
+
+<script>
+
+	//Visualization "global" variables
+		var rColor = "#f4003d",
+			dColor = "#2437ff",
+			dMapColor = "#394bff",
+			oColor = "#f6b500",
+			initialColor = "#cccccc";
+
+	//Read in Vote Data and create map from that 
+		d3.tsv("data/CD_Data_all.tsv", function(data) {
+
+			//nest data by CD	
+			var cdData = d3.nest()
+				.key(function(d) {return d.CD;}) 
+				.entries(data);
+
+			//
+			//
+			//Create top container (to hold selector map and PA vote grid)
+			/////////////////////////////////////////////
+				var topBoxWidth = 700,
+					topBoxHeight = 250;
+
+				var topContainer = d3.select("#mapSeletor").append("svg")
+					.attr("class", "container")
+					.attr("width", topBoxWidth)
+					.attr("height", topBoxHeight);
+
+
+			//
+			//
+			//Create small map of Pennsylvania in topSelection
+			/////////////////////////////////////////////
+				var mapBoxWidth = 400,
+					mapBoxHeight = 260,
+					mapBoxMarginLeft = 40;
+
+				//Create container to hold map graphic
+				var mapContainer = topContainer.append("svg")
+					.attr("width", mapBoxWidth)
+					.attr("height", mapBoxHeight)
+					.attr("x", mapBoxMarginLeft);
+
+
+				d3.json("jsons/PA_CongDist_2015.json", function(error, pa) {
+				  if (error) return console.error(error);
+				  
+				
+					var projection = d3.geoAlbers()
+				    .scale(5000)
+				    .rotate( [77.1945,0] )
+		    		.center( [0, 41.2033] )
+				    .translate([mapBoxWidth / 2, mapBoxHeight / 2]);
+
+				    var path = d3.geoPath()
+				    .projection(projection);
+
+
+					mapContainer.append("g")
+						.selectAll("path")
+				    .data(topojson.feature(pa, pa.objects.PA_CongDist_2015).features) 
+				      	.enter().append("path")
+				      	.attr("class", "cd-boundaries")
+				      	.attr("d", path)
+				      	.attr("CD", function(d) {return +d.properties.CD114FP})
+				      	.attr("winner", function(d) {
+				      		var cd = this.getAttribute("CD");
+				      		var dVotes = voteDataHolder[cd-1]["DEM"];
+				      		var rVotes = voteDataHolder[cd-1]["REP"];
+				      		var oVotes = voteDataHolder[cd-1]["OTH"];
+				      		if ((dVotes > rVotes) && (dVotes > oVotes)) {
+				      			return "DEM";
+				      		}
+				      		if ((rVotes > dVotes) && (rVotes > oVotes)) {
+				      			return "REP";
+				      		}
+				      		if ((oVotes > dVotes) && (oVotes > rVotes)) {
+				      			return "OTH";
+				      		}
+				      	})
+				      	.style("fill", initialColor)
+				      	.transition()
+				      		.delay(function(d) {
+				      			var cdNum = +d.properties.CD114FP;
+				      			return (300+(cdNum*70));
+				      		})
+				      		.duration(420)   	
+					     	.style("fill", function(d) {
+								var cdNum = +d.properties.CD114FP;
+				      			if (this.getAttribute("winner") == "DEM") {
+				      				return dMapColor;
+				      			}
+				      			if (this.getAttribute("winner") == "REP") {
+				      				return rColor;
+				      			}
+				      			if (this.getAttribute("winner") == "REP") {
+				      				return oColor;
+								}
+				      		});				      		
+				//end d3.json function call ->
+				});
+
+		}
