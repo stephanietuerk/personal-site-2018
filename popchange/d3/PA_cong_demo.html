@@ -144,35 +144,35 @@
 
 		  	var popChangeByTract = {};
 		  	pop.forEach(function(d) {
-		  		popChangeByTract[d.GEO_ID] = +d.CT_demo_data;
+		  		popChangeByTract[d.GEO_ID] = +d.pop_change;
 		  	});
 
 
 		  	var nonwhiteChangeByTract = {};
 		  	pop.forEach(function(d) {
-		  		nonwhiteChangeByTract[d.GEO_ID] = +d.CT_demo_data;
+		  		nonwhiteChangeByTract[d.GEO_ID] = +d.non_white_change;
 		  	});
 
 
 		  	var employChangeByTract = {};
 		  	pop.forEach(function(d) {
-		  		employChangeByTract[d.GEO_ID] = +d.CT_demo_data;
+		  		employChangeByTract[d.GEO_ID] = +d.unemploy_change;
 		  	});
 
 
 		  	var eduChangeByTract = {};
 		  	pop.forEach(function(d) {
-		  		eduChangeByTract[d.GEO_ID] = +d.CT_demo_data;
-		  	});
-
-		  	var meanByTract = {};
-		  	pop.forEach(function(d) {
-		  		meanByTract[d.GEO_ID] = +d.CT_demo_data;
+		  		eduChangeByTract[d.GEO_ID] = +d.edu_change;
 		  	});
 
 		  	var medByTract = {};
 		  	pop.forEach(function(d) {
-		  		medByTract[d.GEO_ID] = +d.CT_demo_data;
+		  		MedB[d.GEO_ID] = +d.med_income_change;
+		  	});
+
+		  	var meanByTract = {};
+		  	pop.forEach(function(d) {
+		  		meanByTract[d.GEO_ID] = +d.mean_income_change;
 		  	});
 
 
