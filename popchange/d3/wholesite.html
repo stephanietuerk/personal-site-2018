@@ -2,12 +2,31 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
-	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
-  	<title>PROJECT TITLE</title> 
+	<style>
+	@import url('https://fonts.googleapis.com/css?family=Catamaran:100,300,600|Crimson+Text');
+	</style>
+<!-- 	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'> -->
   	<style>
+  		h1 {
+  			font-family: "Crimson Text", serif;
+  			font-size: 90px;
+  			position: 50px; 
+  			text-align: justify-all;
+  		}
+
+  		h2 {font-family: "Catamaran:300", sans-serif;
+  			font-size: 20px;
+  			position: 50px; 
+  			text-align: justify-all;
+  			
+  		}
   		body {
-	  		font-family: "Roboto", Helvetica, sans-serif;
+	  		font-family: "Catamaran", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		width: 500px;
+	  		position: 50px ;
+	  		text-align: justify-all;
 	  	}
 	</style>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -18,57 +37,49 @@
     <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
 </head>
+<h1>
+	The Thin Blue Line
+</h1>
+<h2> Are congressional districts drawn to accurately elect congressman who can best represent Pennsylvania’s rapidly changing demographics?</h2>
 <body>
-<div id = "text0">
-	This is our title. It's div id is "text0". Someone can write and style this text.
-</div>
 <div id = "viz1"></div>
 <div id = "text1">
-	Here is the next text block. Fill out accordingly. I live in the HTML section of the .html file, in div tag "text1".
+	During the 2016 election, Pennsylvania, a traditionally swing state, went red.  More surprising is that despite having nearly equal popular votes between Democrats (46%) and Republicans (52%), only 5 Congressional seats went to Democrats, while 13 seats have gone to Republicans. Meanwhile, Pennsylvania has undergone significant demographic changes in the last 5 years with heavy influxes of non-white immigrants, a [change] in education, and [changes] in income. Subsequently, concentrated pockets of blue votes have begun forming in traditionally red zones. To understand pecularities in Congressional District boundaries, this visualization seeks to compare voting patterns between Congressional Districts and census tracts, changing demographics. Are congressional district districts drawn to accurately elect congressmen who can best represent Pennsylvania’s rapidly changing demographics?
 </div>
 <div id = "perCDDemos"></div>
 <div id = "text2">
-	More text that needs to be written! I'm div id "text2".
+	The way that the Congressional District lines are drawn often swallow up socioeconomic outliers. For instance, [census tract x] near [x city] is [strong static here], but is included in Congressional District [x]. [Census Tract y] flipped blue this year, and they have also seen rapidly increasing influxes of [x demographic changes]. Yet these notable changes are diffused since [Census Tract y] is in the boundaries of Congressional District [y].  33 States, including Pennsylvania, has a [insert law], that allows the incumbent party to decide district boundaries. Are Pennsylvania’s electoral policies intended to retain the status quo, and stagnant in recognizing change?
 </div>
 <div id = "perCDChange"></div>
 <div id = "text3">
-	I CAN HAZ TEXXXXXXXTTTT. And I can haz it in "text3".
+	How many votes would it take to flip the district? Just from the 2016 election, CDs [x], [y]. [z], were very close to the 50% threshold prior to turning blue., but ultimately, went red. This interaction seeks to demonstrate just how large areas can swallow up areas that already may be mostly represented by blue counts.
 </div>
 <div id = "flipTheDistrict"></div>
 
 
 
 <script>
-
 	//Visualization "global" variables
 		var rColor = "#f4003d",
 			dColor = "#2437ff",
 			dMapColor = "#394bff",
 			oColor = "#f6b500",
 			initialColor = "#cccccc";
-
 		d3.queue()
 			.defer(d3.tsv, "data/CD_VoteData.tsv")
 			.defer(d3.tsv, "data/CT_VoteData.tsv")
 			.await(makeCensusTractViz);
-
 	//Read in Vote Data and create map from that 
 		function makeCensusTractViz (error, cdVotes, ctVotes) {
-
 			//nest data by CD	
 			var cdVoteData = d3.nest()
 				.key(function(d) {return d.CD;}) 
 				.entries(cdVotes);
-
 			console.log(cdVoteData);
-
 			var ctVoteData = d3.nest()
 				.key(function(d) {return d.GEO_ID;}) 
 				.entries(ctVotes);
-
 			console.log(ctVoteData);
-
-
 			//
 			//
 			//Create global data holder.
@@ -79,7 +90,6 @@
 				// for (i in cdData.length) {
 				// 	voteDataHolder.push(0);
 				// };
-
 			//Make dictionary of CD data 
 			var dCDVotesHolder = {};
 			cdVoteData.forEach(function(cdVoteData) {
@@ -90,19 +100,15 @@
 			cdVoteData.forEach(function(cdVoteData) {
 				rCDVotesHolder[cdVoteData.key] = +cdVoteData.values[0].REP_USC;
 			});
-
 			var oCDVotesHolder = {};
 			cdVoteData.forEach(function(cdVoteData) {
 				oCDVotesHolder[cdVoteData.key] = +cdVoteData.values[0].OTHERS_USC;
 			});
-
 			var dSum = d3.sum(cdVoteData, function(d) {return d.values[0].DEM_USC;});
 			var rSum = d3.sum(cdVoteData, function(d) {return d.values[0].REP_USC;});
 			var oSum = d3.sum(cdVoteData, function(d) {return d.values[0].OTHERS_USC;});
 			var paSum = (dSum + rSum + oSum);
-
 		
-
 			//Make dictionary of CT data
 			var dCTVotesHolder = {};
 			ctVoteData.forEach(function(ctVoteData) {
@@ -113,33 +119,27 @@
 			ctVoteData.forEach(function(ctVoteData) {
 				rCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].REP_USC;
 			});
-
 			var oCTVotesHolder = {};
 			ctVoteData.forEach(function(ctVoteData) {
 				oCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].OTHERS_USC;
 			});
-
 			// var dSum = d3.sum(ctVoteData, function(d) {return d.values[0].DEM_USC;});
 			// var rSum = d3.sum(ctVoteData, function(d) {return d.values[0].REP_USC;});
 			// var oSum = d3.sum(ctVoteData, function(d) {return d.values[0].OTHERS_USC;});
 			// var paSum = (dSum + rSum + oSum);
 			console.log(dCTVotesHolder);
-
 			//
 			//
 			//Create top container (to hold selector map and PA vote grid)
 			/////////////////////////////////////////////
 				var viz1BoxWidth = 800,
 					viz1BoxHeight = 300;
-
 				var viz1Container = d3.select("#viz1").append("svg")
 					.attr("class", "container")
 					.attr("width", viz1BoxWidth)
 					.attr("height", viz1BoxHeight);
-
 				// var trying = cdData.values[0].["DEM_USC"];
 				// console.log(trying);
-
 			//
 			//
 			//Create small map of Pennsylvania in topSelection
@@ -147,19 +147,16 @@
 				var mapBoxWidth = 500,
 					mapBoxHeight = 300,
 					mapBoxMarginLeft = 40;
-
 				//Create container to hold map graphic
 				var mapSmContainer = viz1Container.append("svg")
 					.attr("width", mapBoxWidth)
 					.attr("height", mapBoxHeight)
 					.attr("x", mapBoxMarginLeft);
-
 				d3.queue()
           			.defer(d3.json, "jsons/PA_CongDist_2015.json")
 			        .defer(d3.json, "jsons/PA_CensusTractsbyCD_2010.json")
 			        .await(makeSelectorMap);
 				
-
 				function makeSelectorMap(error, cdMap, ctMap) {
 					if (error) return console.error(error);
 				  
@@ -168,10 +165,8 @@
 				    .rotate( [77.1945,0] )
 		    		.center( [0, 41.2033] )
 				    .translate([mapBoxWidth / 2, mapBoxHeight / 2]);
-
 				    var path = d3.geoPath()
 				    .projection(projection);
-
 				    //
 				    //make map for CDs
 				    //set visibility to "visible" (until click)
@@ -220,7 +215,6 @@
 				      				return oColor;
 								}
 				      		});			
-
 					     
 					//
 					//make map for CTs
@@ -277,8 +271,6 @@
 				      		.style("stroke-width", "0");				      		
 				//end makeSelectorMap function ->
 				}
-
-
 			//
 			//
 			//Create vote grid for Pennsylvania at large in top container
@@ -289,7 +281,6 @@
 					gridRows = voteGridHeight/gridSq,
 					gridCols = voteGridWidth/gridSq,
 					numGridSquares = gridRows*gridCols;
-
 				//Create container to hold vote grid graphic
 				var voteGridContainer = viz1Container.append("svg")
 					.attr("width", voteGridWidth)
@@ -299,50 +290,35 @@
 					.append("g");
 						
 				var grid = voteGridContainer.each(makeVoteGrid);
-
 			//end of vote grid
-
 			function handleMapMouseOver() {
-
 				//select cd boundary of mouseover and class as "active-mouseover"
 				//d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
 						// .classed("active-mouseover", true)
 						// .raise();
-
 				//display data?
-
 			}
-
 			function handleMapMouseOut() {
-
 				//unclass selection (i.e. mouseover element) as "active-mouseover"
 				// d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
 				// 		.classed("active-mouseover", false);
-
 			}
-
 			function handleMapClick() {
-
 				var cdSelection = function() {return this.getAttribute("CD");}
 				
 				d3.selectAll(".ct-boundaries").filter(function(){return this.getAttribute("CD") == cdSelection})
 					.style("visibility", "visible");
-
 				d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == cdSelection})
 					.style("visibility", "hidden");
-
 				d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") != cdSelection})
 					.style("opacity", 0.3);
-
 			}
 				//shift text down
 				//make two sets of graphics:
 				//1. CD map showing 2015 data + bars
 				//2. CD map showing change + bars
 			
-
 			function makeVoteGrid() {
-
 				//var svg = voteGridContainer.append("svg");
 				var svg = d3.select(this);
  
@@ -351,11 +327,8 @@
 					perOGrid = (oSum/paSum),
 					cutDGrid = perDGrid*gridRows*gridCols,
 					cutOtherGrid = ((dSum+oSum)/paSum)*gridRows*gridCols;
-
-
 				var delayTime = 2.8,
 					pauseTime = 0;
-
 				//makes squares as "rect" elements
 				var gridSquares = svg.selectAll(".grid-square")
 					.data(d3.range(numGridSquares))
@@ -402,38 +375,27 @@
 							});
 			//end makeVoteGrid function ->
 			}
-
 			// function updateSelectorMap() {
-
 			// 	d3.queue
 			// 		.delay("data/CD_VoteData.tsv")
 			// 		.delay()
-
 			// 	d3.tsv("data/CD_Data_all.tsv", function(data) {
-
 			// 		//nest data by CD	
 			// 		var cdData = d3.nest()
 			// 			.key(function(d) {return d.CD;}) 
 			// 			.entries(data);
-
 			// 		console.log(cdData);
-
 			// 		d3.json("jsons/PA_CensusTracts_2010.json", function(error, pa) {
 			// 			if (error) return console.error(error);
-
 			// 			d3.select(mapSmContainer).selectAll("g")
 			// 				.remove();
-
 			// 			var projection = d3.geoAlbers()
 			// 		    .scale(5000)
 			// 		    .rotate( [77.1945,0] )
 			//     		.center( [0, 41.2033] )
 			// 		    .translate([mapBoxWidth / 2, mapBoxHeight / 2]);
-
 			// 		    var path = d3.geoPath()
 			// 		    .projection(projection);
-
-
 			// 			mapSmContainer.append("g")
 			// 				.selectAll("path")
 			// 		    .data(topojson.feature(pa, pa.objects.PA_CensusTracts_2015).features) 
@@ -480,33 +442,17 @@
 			// 		      				return oColor;
 			// 						}
 			// 		      		});
-
-
 			// 		}	  
 			// 	}
 			// }
-
-
 			function updateVoteGrid() {
-
 			}
-
-
 			function makeCDStatsMap() {
-
 			}
-
-
 			function makeCDStatsBars() {
-
 			}
-
-
 			function makeCDChangeMap() {
-
 			}
-
-
 			function makeCDChangeBars() {
 				
 			}
