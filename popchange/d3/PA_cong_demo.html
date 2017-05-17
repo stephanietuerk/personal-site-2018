@@ -257,7 +257,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		//console.log(name);
 		      		//console.log(popChangeByTract[name])
-		      		return meanchange(meanByTract[name]); });
+		      		return medchange(medChangeByTract[name]); });
 
 
 		  	svg6.append("g")
@@ -270,7 +270,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		// console.log(name);
 		      		// console.log(stDevByTract[name])
-		      		return medchange(medByTract[name]); });		      	
+		      		return mean(meanChangeByTract[name]); });		      	
 
 		};
 
