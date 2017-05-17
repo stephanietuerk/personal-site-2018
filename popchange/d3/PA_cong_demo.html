@@ -78,12 +78,12 @@
 			.attr("width", width_sm)
 			.attr("height", height_sm);
 			
-		var svg5 = d3.select("#med")
+		var svg5 = d3.select("#medchange")
 			.append("svg")
 			.attr("width", width_sm)
 			.attr("height", height_sm);
 
-		var svg6 = d3.select("#mea")
+		var svg6 = d3.select("#meanchange")
 			.append("svg")
 			.attr("width", width_sm)
 			.attr("height", height_sm);	
@@ -140,9 +140,14 @@
     		.center( [0, 41.2033] )
 		    .translate([width_sm / 2, height_sm / 2]);
 
+	    	var path = d3.geoPath()
+		    .projection(projection);
 
+			var uscMarginByCD = {};
+			cddata.forEach(function(d) {
+				uscMarginByCD[d.USCongDistrict] = +d.margin_usc;
+			});
 
-				});
 
 
 		}
