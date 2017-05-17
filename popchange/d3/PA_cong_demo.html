@@ -78,12 +78,12 @@
 			.attr("width", width_sm)
 			.attr("height", height_sm);
 			
-		var svg5 = d3.select("#meanchange")
+		var svg5 = d3.select("#med")
 			.append("svg")
 			.attr("width", width_sm)
 			.attr("height", height_sm);
 
-		var svg6 = d3.select("#medchange")
+		var svg6 = d3.select("#mea")
 			.append("svg")
 			.attr("width", width_sm)
 			.attr("height", height_sm);	
@@ -131,12 +131,23 @@
 		    .defer(d3.csv, "data/CT_demo_data.csv") 
 		    .await(drawMaps); 
 
-		
+		function drawCDs(error, pa, cddata) {
+			if (error) throw error;
+
+			var projection = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [77.1945,0] )
+    		.center( [0, 41.2033] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+
+				});
 
 
 		}
 
-		function drawMaps(error, cd, votes, pop) {
+		function drawMaps(error, pa, votes, pop) {
 			if (error) throw error;
 		  
 		  	
