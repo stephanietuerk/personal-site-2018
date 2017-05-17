@@ -70,23 +70,23 @@
 
 		var svg3 = d3.select("#employchange")
 			.append("svg")
-			.attr("width", width_sm)
-			.attr("height", height_sm);
+			.attr("width", width)
+			.attr("height", height);
 
 		var svg4 = d3.select("#educhange")
 			.append("svg")
-			.attr("width", width_sm)
-			.attr("height", height_sm);
+			.attr("width", width)
+			.attr("height", height);
 			
 		var svg5 = d3.select("#medchange")
 			.append("svg")
-			.attr("width", width_sm)
-			.attr("height", height_sm);
+			.attr("width", width)
+			.attr("height", height);
 
 		var svg6 = d3.select("#meanchange")
 			.append("svg")
-			.attr("width", width_sm)
-			.attr("height", height_sm);	
+			.attr("width", width)
+			.attr("height", height);	
 
 		// var svg7 = d3.select("#grid")
 		// 	.append("svg")
@@ -152,7 +152,7 @@
 
 		}
 
-		function drawMaps(error, pa, votes, pop) {
+		function drawMaps(error, pa, pop) {
 			if (error) throw error;
 		  
 		  	
@@ -181,12 +181,12 @@
 		  		eduChangeByTract[d.GEO_ID] = +d.edu_change;
 		  	});
 
-		  	var medByTract = {};
+		  	var medChangeByTract = {};
 		  	pop.forEach(function(d) {
 		  		medChangeByTract[d.GEO_ID] = +d.med_income_change;
 		  	});
 
-		  	var meanByTract = {};
+		  	var meanChangeByTract = {};
 		  	pop.forEach(function(d) {
 		  		meanChangeByTract[d.GEO_ID] = +d.mean_income_change;
 		  	});
@@ -218,7 +218,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		// console.log(name);
 		      		// console.log(stDevByTract[name])
-		      		return nonwhitechange(nonwhiteChangeByTract[name]); });
+		      		return nonwhitecolor(nonwhiteChangeByTract[name]); });
 
 
 		  	svg3.append("g")
@@ -231,7 +231,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		//console.log(name);
 		      		//console.log(popChangeByTract[name])
-		      		return employchange(employChangeByTract[name]); });
+		      		return employcolor(employChangeByTract[name]); });
 
 
 		  	svg4.append("g")
@@ -244,7 +244,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		// console.log(name);
 		      		// console.log(stDevByTract[name])
-		      		return educhange(eduChangeByTract[name]); });
+		      		return educolor(eduChangeByTract[name]); });
 
 
 		  	svg5.append("g")
@@ -257,7 +257,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		//console.log(name);
 		      		//console.log(popChangeByTract[name])
-		      		return medchange(medChangeByTract[name]); });
+		      		return medcolor (medChangeByTract[name]); });
 
 
 		  	svg6.append("g")
@@ -270,7 +270,7 @@
 		      		var name = d.properties.GEO_ID;
 		      		// console.log(name);
 		      		// console.log(stDevByTract[name])
-		      		return mean(meanChangeByTract[name]); });		      	
+		      		return meancolor(meanChangeByTract[name]); });		      	
 
 		};
 
