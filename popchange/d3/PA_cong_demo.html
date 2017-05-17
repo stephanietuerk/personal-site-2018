@@ -114,11 +114,11 @@
           .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
           
-        var meancolor = d3.scaleThreshold()
+        var medcolor = d3.scaleThreshold()
           .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
-        var medcolor = d3.scaleThreshold()
+        var meancolor = d3.scaleThreshold()
           .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
@@ -183,12 +183,12 @@
 
 		  	var medByTract = {};
 		  	pop.forEach(function(d) {
-		  		MedB[d.GEO_ID] = +d.med_income_change;
+		  		medChangeByTract[d.GEO_ID] = +d.med_income_change;
 		  	});
 
 		  	var meanByTract = {};
 		  	pop.forEach(function(d) {
-		  		meanByTract[d.GEO_ID] = +d.mean_income_change;
+		  		meanChangeByTract[d.GEO_ID] = +d.mean_income_change;
 		  	});
 
 
