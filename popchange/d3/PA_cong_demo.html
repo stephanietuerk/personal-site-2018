@@ -128,7 +128,7 @@
 
 		d3.queue()
 		    .defer(d3.json, "jsons/PA_CensusTracts_2010.json") 
-		    .defer(d3.csv, "data/CT_demo_data.csv") 
+		    .defer(d3.tsv, "data/CT_demo_data.tsv") 
 		    .await(drawMaps); 
 
 		function drawCDs(error, pa, cddata) {
