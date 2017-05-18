@@ -106,6 +106,17 @@
 		.grid-square {
 
 		}
+		.start-text {
+			font: 42px "Roboto Mono";
+			font-weight: 400;
+		}
+		.start-smtext {
+			font: 18px "Roboto Mono";
+			font-weight: 400;
+		}
+		.start-button {
+			.style("border-radius", "8px")
+		}
 		.reset-box {
 			fill: #cccccc;
 			stroke: "none";
@@ -131,10 +142,8 @@
 </head>
 <body>
 
-<div id ="flipDisplay"></div>
-<div id ="flipBars"></div>
-<div id ="flipTop"></div>
-<div id ="resetAll"></div>
+<div id ="flip" style=text-align:center></div>
+<div id ="resetAll" style=text-align:center></div>
 
 
 
@@ -142,17 +151,131 @@
 	
 
 
-		//Visualization "global" variables
-		var rColor = "#f4003d",
-			dColor = "#2437ff",
-			dMapColor = "#394bff",
-			oColor = "#f6b500",
-			initialColor = "#cccccc";
+	//Visualization "global" variables
+	var rColor = "#f4003d",
+		dColor = "#2437ff",
+		dMapColor = "#394bff",
+		oColor = "#f6b500",
+		initialColor = "#cccccc";
+
+	//
+	//
+	//
+	//Create visualization container
+	//////////////////////////////////////////////
+		var flipContainer = d3.select("#flip").append("svg")
+			.attr("class", "container")
+			.attr("width", 906)
+			.attr("height", 900);
+
+
+	//
+	//Create start page
+	/////////////////////////////////////////////
+
+		var startButtonContainer = flipContainer.append("svg")
+			.attr("class", "container")
+			.attr("width", 906)
+			.attr("height", 700)
+			.attr("x", 0)
+			.attr("y", 0);
+
+
+
+		var startBackground = startButtonContainer.append("image")
+			.attr("xlink:href", "background_text_big.png")
+			.attr("x", 0)
+			.attr("y", 0)
+
+		var	startButtonBox = startButtonContainer.append("rect")
+			.attr("class", "start-button")
+			.attr("x", 270)
+			.attr("y", 270)
+			.attr("width", 360)
+			.attr("height", 80)
+			.style("fill", initialColor);
+
+
+		var startTitle = startButtonContainer.append("text")
+			.attr("class", "start-text")
+			.attr("x", 450)
+			.attr("y", 230)
+			.style("text-anchor", "middle")
+			.style("fill", "white")
+			.text("Flip the District")
+			.transition()
+			    .delay(function(d, i) { return i * 50; })
+			    .on("start", function repeat() {
+			        d3.active(this)
+			            .duration(200)
+			            .style("fill", rColor)
+			          .transition()
+			          	.duration(200)
+			            .style("fill", initialColor)
+			          .transition()
+			          	.duration(200)
+			            .style("fill", dColor)
+			          .transition()
+			          	.duration(200)
+			            .on("start", repeat);
+			      });
+
+		var startSub = startButtonContainer.append("text")
+			.attr("class", "start-smtext")
+			.attr("x", 450)
+			.attr("y", 295)
+			.style("text-anchor", "middle")
+			.style("fill", "white")
+			.text("drag the bars - change the vote");
+
+
+		var startEnterBox = startButtonContainer.append("rect")
+			.attr("class", "start-text_sm")
+			.attr("width", 100)
+			.attr("height", 35)
+			.attr("x", 400)
+			.attr("y", 305)
+			.style("fill", "#bbbbbb")
+			.on("click", makeFlipViz)
+			.on("mouseover", function(d) {
+				d3.select(this).style("stroke", "white");
+			})
+			.on("mouseout", function(d) {
+				d3.select(this).style("stroke", "#bbbbbb");
+			});
+			
+
+		var startEnterText = startButtonContainer.append("text")
+			.attr("class", "start-smtext")
+			.attr("x", 450)
+			.attr("y", 328)
+			.style("text-anchor", "middle")
+			.style("fill", "white")
+			.text("LET'S GO")
+			.on("click", makeFlipViz)
+			.on("mouseover", function(d) {
+				startEnterBox.style("stroke", "white");
+			})
+			.on("mouseout", function(d) {
+				startEnterBox.style("stroke", "#bbbbbb");
+			});
+
 
 		
-	makeFlipViz();	
-		
 	function makeFlipViz () {
+
+		d3.selectAll("svg").remove();
+
+		//
+		//
+		//
+		//Create visualization container
+		//////////////////////////////////////////////
+		var flipContainer = d3.select("#flip").append("svg")
+				.attr("class", "container")
+				.attr("width", 906)
+				.attr("height", 740);
+
 
 		//Read in Data and create visualization from that 
 		d3.tsv("data/CD_VoteData.tsv", function(data) {
@@ -163,6 +286,7 @@
 				.entries(data);
 
 			// console.log(cdData);
+
 		//
 		//
 		//Create global data holder.
@@ -175,6 +299,11 @@
 			};
 
 			// console.log(voteDataHolder);
+
+
+	
+
+
 
 		//		
 		//
@@ -192,10 +321,12 @@
 				barsBoxHeight = h_bar;
 
 			//Create container to hold bars graphic
-			var barsContainer = d3.select("#flipBars").append("svg")
+			var barsContainer = flipContainer.append("svg")
 				.attr("class", "container")
 				.attr("width", barsBoxWidth)
-				.attr("height", barsBoxHeight);
+				.attr("height", barsBoxHeight)
+				.attr("x", 0)
+				.attr("y", 160);
 
 
 			//Create dashed line to represent 50% of the votes	
@@ -271,10 +402,12 @@
 				var topBoxWidth = 900,
 					topBoxHeight = 350;
 
-				var topContainer = d3.select("#flipTop").append("svg")
+				var topContainer = flipContainer.append("svg")
 					.attr("class", "container")
 					.attr("width", topBoxWidth)
-					.attr("height", topBoxHeight);
+					.attr("height", topBoxHeight)
+					.attr("x", 3)
+					.attr("y", 360);
 
 				//small text info - static and dynamic
 				var popBoxLabel = topContainer.append("text")
@@ -462,10 +595,12 @@
 					displayBoxHeight = 160;
 
 				//Create container to hold vote grid graphic
-				var displayContainer = d3.select("#flipDisplay").append("svg")
+				var displayContainer = flipContainer.append("svg")
 					.attr("class", "container")
 					.attr("width", displayBoxWidth)
 					.attr("height", displayBoxHeight)
+					.attr("x", 3)
+					.attr("y", 0)
 					.append("g");
 
 
@@ -607,6 +742,7 @@
 								that.text(format(i(t)));
 								};
 						});
+
 
 			//
 			//FUNCTIONS within makeFlipViz/d3.tsv call
@@ -1420,13 +1556,13 @@
 	
 	//end d3.tsv function call ->
 	})	
-	//end of makeFlipViz function -->
-	}
-	
-	//Reset Button
+
+		//Reset Button
 	var resetContainer = d3.select("#resetAll").append("svg")
 		.attr("width", 900)
 		.attr("height", 50)
+		.attr("x", 3)
+		.attr("y", 710);
 
 	var resetBox = resetContainer.append("rect")
 		.attr("class", "reset-button reset-box")
@@ -1447,8 +1583,35 @@
 
 	function clickToReset() {
 		d3.selectAll("svg").remove();
+
+		var resetContainer = d3.select("#resetAll").append("svg")
+			.attr("width", 900)
+			.attr("height", 50)
+			.attr("x", 3)
+			.attr("y", 710);
+
+		var resetBox = resetContainer.append("rect")
+			.attr("class", "reset-button reset-box")
+			.attr("width", 160)
+			.attr("height", 22)
+			.attr("x", 370)
+			.attr("y", 25)
+			.on("click", clickToReset);
+
+		var resetText = resetContainer.append("text")
+			.attr("class", "reset-button reset-text")
+			.attr("x", 450)
+			.attr("y", 40)
+			.style("text-anchor", "middle")
+			.style("pointer-events", "none")
+			.text("reset to 2016 results");
+		
 		makeFlipViz();
 	}
+	//end of makeFlipViz function -->
+	}
+	
+
 
 
 </script>
