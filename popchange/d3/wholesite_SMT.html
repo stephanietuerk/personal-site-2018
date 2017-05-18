@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
+  	<title>PROJECT TITLE</title> 
+  	<style>
+  		body {
+	  		font-family: "Roboto", Helvetica, sans-serif;
+	  	}
+	  	.active-mouseover {
+	  		stroke: white;
+	  		stroke-width: 2px;
+	  		opacity: .5;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	</style>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3-array.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
+</head>
+<body>
+<div id = "text0">
+	This is our title. It's div id is "text0". Someone can write and style this text.
+</div>
+<div id = "viz1"></div>
+<div id = "text1">
+	Here is the next text block. Fill out accordingly. I live in the HTML section of the .html file, in div tag "text1".
+</div>
+<div id = "perCDDemos"></div>
+<div id = "text2">
+	More text that needs to be written! I'm div id "text2".
+</div>
+<div id = "perCDChange"></div>
+<div id = "text3">
+	I CAN HAZ TEXXXXXXXTTTT. And I can haz it in "text3".
+</div>
+<div id = "flipTheDistrict"></div>
+
+
+
+<script>
+
+	//Visualization "global" variables
+		var rColor = "#f4003d",
+			dColor = "#2437ff",
+			dMapColor = "#394bff",
+			oColor = "#f6b500",
+			initialColor = "#cccccc";
+
+		d3.queue()
+			.defer(d3.tsv, "data/CD_VoteData.tsv")
+			.defer(d3.tsv, "data/CT_VoteData.tsv")
+			.await(makeCensusTractViz);
+
+	//Read in Vote Data and create map from that 
+		function makeCensusTractViz (error, cdVotes, ctVotes) {
+
+			//nest data by CD	
+			var cdVoteData = d3.nest()
+				.key(function(d) {return d.CD;}) 
+				.entries(cdVotes);
+
+			console.log(cdVoteData);
+
+			var ctVoteData = d3.nest()
+				.key(function(d) {return d.GEO_ID;}) 
+				.entries(ctVotes);
+
+			console.log(ctVoteData);
+
+
+			//
+			//
+			//Create global data holder.
+			//Initialize to zero, fill from within makeBar()
+			//////////////////////////////////////////////
+				// var voteDataHolder = [];
+				
+				// for (i in cdData.length) {
+				// 	voteDataHolder.push(0);
+				// };
+
+			//Make dictionary of CD data 
+			var dCDVotesHolder = {};
+			cdVoteData.forEach(function(cdVoteData) {
+				dCDVotesHolder[cdVoteData.key] = +cdVoteData.values[0].DEM_USC;
+				});
+				
+			var rCDVotesHolder = {};
+			cdVoteData.forEach(function(cdVoteData) {
+				rCDVotesHolder[cdVoteData.key] = +cdVoteData.values[0].REP_USC;
+			});
+
+			var oCDVotesHolder = {};
+			cdVoteData.forEach(function(cdVoteData) {
+				oCDVotesHolder[cdVoteData.key] = +cdVoteData.values[0].OTHERS_USC;
+			});
+
+			var dSum = d3.sum(cdVoteData, function(d) {return d.values[0].DEM_USC;});
+			var rSum = d3.sum(cdVoteData, function(d) {return d.values[0].REP_USC;});
+			var oSum = d3.sum(cdVoteData, function(d) {return d.values[0].OTHERS_USC;});
+			var paSum = (dSum + rSum + oSum);
+
+		
+
+			//Make dictionary of CT data
+			var dCTVotesHolder = {};
+			ctVoteData.forEach(function(ctVoteData) {
+				dCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].DEM_USC;
+				});
+				
+			var rCTVotesHolder = {};
+			ctVoteData.forEach(function(ctVoteData) {
+				rCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].REP_USC;
+			});
+
+			var oCTVotesHolder = {};
+			ctVoteData.forEach(function(ctVoteData) {
+				oCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].OTHERS_USC;
+			});
+
+			// var dSum = d3.sum(ctVoteData, function(d) {return d.values[0].DEM_USC;});
+			// var rSum = d3.sum(ctVoteData, function(d) {return d.values[0].REP_USC;});
+			// var oSum = d3.sum(ctVoteData, function(d) {return d.values[0].OTHERS_USC;});
+			// var paSum = (dSum + rSum + oSum);
+			console.log(dCTVotesHolder);
+
+			//
+			//
+			//Create top container (to hold selector map and PA vote grid)
+			/////////////////////////////////////////////
+				var viz1BoxWidth = 800,
+					viz1BoxHeight = 300;
+
+				var viz1Container = d3.select("#viz1").append("svg")
+					.attr("class", "container")
+					.attr("width", viz1BoxWidth)
+					.attr("height", viz1BoxHeight);
+
+				// var trying = cdData.values[0].["DEM_USC"];
+				// console.log(trying);
+
+			//
+			//
+			//Create small map of Pennsylvania in topSelection
+			/////////////////////////////////////////////
+				var mapBoxWidth = 500,
+					mapBoxHeight = 300,
+					mapBoxMarginLeft = 40;
+
+				//Create container to hold map graphic
+				var mapSmContainer = viz1Container.append("svg")
+					.attr("width", mapBoxWidth)
+					.attr("height", mapBoxHeight)
+					.attr("x", mapBoxMarginLeft);
+
+				d3.queue()
+          			.defer(d3.json, "jsons/PA_CongDist_2015.json")
+			        .defer(d3.json, "jsons/PA_CensusTractsbyCD_2010.json")
+			        .await(makeSelectorMap);
+				
+
+				function makeSelectorMap(error, cdMap, ctMap) {
+					if (error) return console.error(error);
+				  
+					var projection = d3.geoAlbers()
+				    .scale(6000)
+				    .rotate( [77.1945,0] )
+		    		.center( [0, 41.2033] )
+				    .translate([mapBoxWidth / 2, mapBoxHeight / 2]);
+
+				    var path = d3.geoPath()
+				    .projection(projection);
+
+				    var clickTimes = 0;
+				    //
+				    //make map for CDs
+				    //set visibility to "visible" (until click)
+					mapSmContainer.append("g")
+						.selectAll("path")
+				    .data(topojson.feature(cdMap, cdMap.objects.PA_CongDist_2015).features) 
+				      	.enter().append("path")
+				      	.attr("class", "cd-boundaries selector-map")
+				      	.attr("d", path)
+				      	.attr("CD", function(d) {return +d.properties.CD114FP})
+				      	.attr("cdWinner", function(d, cdData) {
+				      		var cd = this.getAttribute("CD");
+				      		console.log("cd");
+				      		var dVotes = +dCDVotesHolder[cd];
+				      		var rVotes = +rCDVotesHolder[cd];
+				      		var oVotes = +oCDVotesHolder[cd];
+				      		if ((dVotes > rVotes) && (dVotes > oVotes)) {
+				      			return "DEM";
+				      		}
+				      		if ((rVotes > dVotes) && (rVotes > oVotes)) {
+				      			return "REP";
+				      		}
+				      		if ((oVotes > dVotes) && (oVotes > rVotes)) {
+				      			return "OTH";
+				      		}
+				      	})
+				      	.style("fill", initialColor)
+				      	.style("visibility", "visible")
+				      	.on("mouseover", handleMapMouseOver)
+				      	.on("mouseout", handleMapMouseOut)
+				      	.on("click", handleMapClick)
+				      	.transition()
+				      		.delay(function(d) {
+				      			var cdNum = d.properties.CD114FP;
+				      			return (300+(cdNum*70));
+				      		})
+				      		.duration(420)   	
+					     	.style("fill", function(d) {
+				      			if (this.getAttribute("cdWinner") == "DEM") {
+				      				return dMapColor;
+				      			}
+				      			if (this.getAttribute("cdWinner") == "REP") {
+				      				return rColor;
+				      			}
+				      			if (this.getAttribute("cdWinner") == "REP") {
+				      				return oColor;
+								}
+				      		});
+
+					function handleMapClick(d) {
+
+						var cdSel = this.getAttribute("CD")
+						// var cdSel = function() {return this.getAttribute("CD");}
+						console.log(cdSel);
+
+						console.log(clickTimes);
+
+						var demoVizBoxWidth = 800,
+							demoVizBoxHeight = 300;
+
+						if (clickTimes == 0) { 
+							var demoVizContainer = d3.select("#perCDDemos").append("svg")
+								.attr("class", "container")
+								.attr("width", demoVizBoxWidth)
+								.attr("height", demoVizBoxHeight);
+
+						}
+
+						else {
+							d3.select("#perCDDemos").selectAll(".container").remove();
+
+							var demoVizContainer = d3.select("#perCDDemos").append("svg")
+								.attr("class", "container")
+								.attr("width", demoVizBoxWidth)
+								.attr("height", demoVizBoxHeight);
+
+						}
+						
+						// d3.selectAll(".ct-boundaries").filter(function(){return this.getAttribute("CD") == cdSelection})
+						// 	.style("visibility", "visible");
+
+						// d3.selectAll(".ct-boundaries").filter(function(){return this.getAttribute("CD") != cdSelection})
+						// 	.style("visibility", "hidden");
+
+						// d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == cdSelection})
+						// 	.style("visibility", "hidden");
+
+						// d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") != cdSelection})
+						// 	.style("opacity", 0.3);
+
+						makeCDDemosElement();
+
+						makeCDChangeElement();
+
+						//
+						//FUNCTIONS within handleMouseClick
+						/////////////////////////////////////////
+						clickTimes += 1;
+
+
+						function makeCDDemosElement() {
+
+						var mapBoxWidth = 500,
+								mapBoxHeight = 300,
+								mapBoxMarginLeft = 40;
+			
+							
+
+						//Create container to hold map graphic
+							var demoMapContainer = demoVizContainer.append("svg")
+								.attr("class", "container")
+								.attr("width", mapBoxWidth)
+								.attr("height", mapBoxHeight)
+								.attr("x", mapBoxMarginLeft);
+						
+					
+
+
+						
+							// //Create bars container for CD bars
+							// var barsBoxWidth = 300
+							// 	barsBoxHeight = 200;
+
+							// //Create container to hold map graphic
+							// var barsBoxContainer = demoVizContainer.append("svg")
+							// 	.attr("width", mapBoxWidth)
+							// 	.attr("height", mapBoxHeight)
+							// 	.attr("x", mapBoxWidth+mapBoxMarginLeft)
+							// 	.attr("y", demoVizBoxHeight-barsBoxHeight);
+
+							//
+							//Make small CD map
+							var projection = d3.geoAlbers()
+								.rotate( [77.1945,0] );
+
+							var path = d3.geoPath()
+							    .projection(projection);
+							
+							var jsonName = "jsons/CD" + cdSel + "_CT.json";
+
+							d3.json(jsonName, function(error, ctMap) {
+						  		if (error) return console.error(error);
+
+							  	var tracts = topojson.feature(ctMap, ctMap.objects.CD).features
+							  	var allTracts = topojson.feature(ctMap, ctMap.objects.CD);
+							  		// cdTracts = allTracts.features.filter(function(d) {return d.properties.CD114FP === cdSel;})[0];
+
+							  	projection
+							  		.scale(1)
+							  		.translate([0,0]);
+
+							  	var b = path.bounds(allTracts),
+								    s = .95 / Math.max((b[1][0] - b[0][0]) / mapBoxWidth, (b[1][1] - b[0][1]) / mapBoxHeight),
+								    t = [(mapBoxWidth - s * (b[1][0] + b[0][0])) / 2, (mapBoxHeight - s * (b[1][1] + b[0][1])) / 2];
+
+								projection
+							    	.scale(s)
+							    	.translate(t);
+
+							    //someone style the shit out of me please!!! :)
+							   	demoMapContainer.append("g")
+							   		.selectAll("path")
+							   		.data(tracts)
+							   		.enter().append("path")
+							   		.attr("d", path)
+							   		.style("stroke", "black")
+							    	.style("fill", "none");
+
+							    //end d3.json call ->
+						    	});
+
+
+
+							//end makeCDDemosElement function ->
+							}
+						//end handleMouseClick function ->
+						}
+
+
+
+
+
+
+
+				//end makeSelectorMap function ->
+			}
+					     
+					//
+					//make map for CTs
+					//set visibility to "hidden" (until click)
+				  //   mapSmContainer.append("g")
+						// .selectAll("path")
+				  //   .data(topojson.feature(ctMap, ctMap.objects.PA_AllCTsbyCD).features) 
+				  //     	.enter().append("path")
+				  //     	.attr("class", "ct-boundaries selector-map")
+				  //     	.attr("d", path)
+				  //     	.attr("CD", function(d) {return +d.properties.CD114FP})
+				  //     	.attr("CT", function(d) {return d.properties.GEO_ID})
+				  //     	.attr("ctWinner", function(d, ctData) {
+				  //     		var ct = this.getAttribute("CT");
+				  //     		// console.log(ct);
+				  //     		var dVotes = +dCTVotesHolder[ct];
+				  //     		// var dVotes = +cdData[cd].values[0].DEM_USC;
+				  //     		var rVotes = +rCTVotesHolder[ct];
+				  //     		var oVotes = +oCTVotesHolder[ct];
+				  //     		// console.log(rVotes);
+				  //     		if ((dVotes > rVotes) && (dVotes > oVotes)) {
+				  //     			return "DEM";
+				  //     		}
+				  //     		if ((rVotes > dVotes) && (rVotes > oVotes)) {
+				  //     			return "REP";
+				  //     		}
+				  //     		if ((oVotes > dVotes) && (oVotes > rVotes)) {
+				  //     			return "OTH";
+				  //     		}
+				  //     	})
+				  //     	// .on("mouseover", handleMapMouseOver)
+				  //     	// .on("mouseout", handleMapMouseOut)
+				  //     	// .on("click", handleMapClick)
+				  //     	.style("fill", initialColor)
+				  //     	.style("visibility", "hidden")
+				  //     	// .transition()
+				  //     	// 	// .delay(function(d) {
+				  //     	// 	// 	var cdNum = +d.properties.CD114FP;
+				  //     	// 	// 	return (300+(cdNum*70));
+				  //     	// 	// })
+				  //     	// 	.duration(420)   	
+				  //    	.style("fill", function(d) {
+						// 	var ctNum = d.properties.GEO_ID;
+			   //    			if (this.getAttribute("ctWinner") == "DEM") {
+			   //    				return dMapColor;
+			   //    			}
+			   //    			if (this.getAttribute("ctWinner") == "REP") {
+			   //    				return rColor;
+			   //    			}
+			   //    			if (this.getAttribute("ctWinner") == "REP") {
+			   //    				return oColor;
+						// 	}
+			   //    		})
+			   //    		.style("stroke-width", "0");				      		
+				
+				
+
+
+			//
+			//
+			//Create vote grid for Pennsylvania at large in top container
+			/////////////////////////////////////////////
+				var voteGridWidth = 200,
+					voteGridHeight = 200,
+					gridSq = 5,
+					gridRows = voteGridHeight/gridSq,
+					gridCols = voteGridWidth/gridSq,
+					numGridSquares = gridRows*gridCols;
+
+				//Create container to hold vote grid graphic
+				var voteGridContainer = viz1Container.append("svg")
+					.attr("width", voteGridWidth)
+					.attr("height", voteGridHeight)
+					.attr("x", 550)
+					.attr("y", 80)
+					.append("g");
+						
+				var grid = voteGridContainer.each(makeVoteGrid);
+
+			//end of vote grid
+
+
+			
+
+
+
+
+
+
+			
+
+			function makeCDChangeElement() {
+
+
+			}
+
+			function handleMapMouseOver(d) {
+
+				//select cd boundary of mouseover and class as "active-mouseover"
+				// d3.selectAll(".cd-boundaries").filter(function(){return this.getAttribute("CD") == CD.key})
+				d3.select(this)
+					.classed("active-mouseover", true)
+					.raise();
+
+				//display data?
+
+			}
+
+			function handleMapMouseOut() {
+
+				//unclass selection (i.e. mouseover element) as "active-mouseover"
+				d3.select(this)
+					.classed("active-mouseover", false);
+					
+
+			}
+
+			
+		
+
+			
+
+			// function updateSelectorMap() {
+
+			// 	d3.queue
+			// 		.delay("data/CD_VoteData.tsv")
+			// 		.delay()
+
+			// 	d3.tsv("data/CD_Data_all.tsv", function(data) {
+
+			// 		//nest data by CD	
+			// 		var cdData = d3.nest()
+			// 			.key(function(d) {return d.CD;}) 
+			// 			.entries(data);
+
+			// 		console.log(cdData);
+
+			// 		d3.json("jsons/PA_CensusTracts_2010.json", function(error, pa) {
+			// 			if (error) return console.error(error);
+
+			// 			d3.select(mapSmContainer).selectAll("g")
+			// 				.remove();
+
+			// 			var projection = d3.geoAlbers()
+			// 		    .scale(5000)
+			// 		    .rotate( [77.1945,0] )
+			//     		.center( [0, 41.2033] )
+			// 		    .translate([mapBoxWidth / 2, mapBoxHeight / 2]);
+
+			// 		    var path = d3.geoPath()
+			// 		    .projection(projection);
+
+
+			// 			mapSmContainer.append("g")
+			// 				.selectAll("path")
+			// 		    .data(topojson.feature(pa, pa.objects.PA_CensusTracts_2015).features) 
+			// 		      	.enter().append("path")
+			// 		      	.attr("class", "cd-boundaries")
+			// 		      	.attr("d", path)
+			// 		      	.attr("CD", function(d) {return +d.properties.CD114FP})
+			// 		      	.attr("CT", function(d) {return +d.propertoes.GEO_ID})
+			// 		      	.attr("ctWinner", function(d, cdData) {
+			// 		      		var cd = this.getAttribute("CD");
+			// 		      		var dVotes = +dVotesHolder[cd];
+			// 		      		// var dVotes = +cdData[cd].values[0].DEM_USC;
+			// 		      		var rVotes = +rVotesHolder[cd];
+			// 		      		var oVotes = +oVotesHolder[cd];
+			// 		      		if ((dVotes > rVotes) && (dVotes > oVotes)) {
+			// 		      			return "DEM";
+			// 		      		}
+			// 		      		if ((rVotes > dVotes) && (rVotes > oVotes)) {
+			// 		      			return "REP";
+			// 		      		}
+			// 		      		if ((oVotes > dVotes) && (oVotes > rVotes)) {
+			// 		      			return "OTH";
+			// 		      		}
+			// 		      	})
+			// 		      	.on("mouseover", handleMapMouseOver)
+			// 		      	.on("mouseout", handleMapMouseOut)
+			// 		      	.on("click", handleMapClick)
+			// 		      	.style("fill", initialColor)
+			// 		      	.transition()
+			// 		      		.delay(function(d) {
+			// 		      			var cdNum = +d.properties.CD114FP;
+			// 		      			return (300+(cdNum*70));
+			// 		      		})
+			// 		      		.duration(420)   	
+			// 			     	.style("fill", function(d) {
+			// 						var cdNum = +d.properties.CD114FP;
+			// 		      			if (this.getAttribute("ctWinner") == "DEM") {
+			// 		      				return dMapColor;
+			// 		      			}
+			// 		      			if (this.getAttribute("ctWinner") == "REP") {
+			// 		      				return rColor;
+			// 		      			}
+			// 		      			if (this.getAttribute("ctWinner") == "REP") {
+			// 		      				return oColor;
+			// 						}
+			// 		      		});
+
+
+			// 		}	  
+			// 	}
+			// }
+
+
+			function makeVoteGrid() {
+
+				//var svg = voteGridContainer.append("svg");
+				var svg = d3.select(this);
+ 
+				var	perDGrid = (dSum/paSum),
+					perRGrid = (rSum/paSum),
+					perOGrid = (oSum/paSum),
+					cutDGrid = perDGrid*gridRows*gridCols,
+					cutOtherGrid = ((dSum+oSum)/paSum)*gridRows*gridCols;
+
+
+				var delayTime = 2.8,
+					pauseTime = 0;
+
+				//makes squares as "rect" elements
+				var gridSquares = svg.selectAll(".grid-square")
+					.data(d3.range(numGridSquares))
+			  	  .enter()
+					.append('rect')
+					.attr("class", "grid-square")
+					.attr("width", gridSq)
+					.attr("height", gridSq)
+					.attr("cellnum", function (i) {return ((numGridSquares)-i);})
+					.attr("x", function(i) {return (gridSq*(i%gridCols));})
+					.attr("y", function(i) {return (gridSq*Math.floor((i/gridCols)));})
+					.style("fill",initialColor)
+					.style("stroke", "ffffff")
+					.style("stroke-width", .4)      
+	    			.style("stroke-linecap", "butt")		
+					.attr("squareColor", function() {
+						if (this.getAttribute('cellnum') <= cutDGrid) {
+						    return dColor;
+						}
+						if (this.getAttribute('cellnum') > cutDGrid && (this.getAttribute('cellnum') <= cutOtherGrid)) {
+							return oColor;
+						}
+						else if (this.getAttribute('cellnum') > cutOtherGrid) {return rColor;}
+					})
+					.transition()
+				     	.delay(function() {
+							if (this.getAttribute('squareColor') == dColor) {
+			   					return (pauseTime+this.getAttribute("cellnum")*delayTime);
+			     			}
+			     			if (this.getAttribute('squareColor') == oColor) {
+			     				if (cutOtherGrid < (numGridSquares)/2) {
+			   						return (pauseTime+(((numGridSquares)-(this.getAttribute("cellnum"))+1)*delayTime)+(100*delayTime));
+			     				}
+			     				else {
+			   						return (pauseTime+((this.getAttribute("cellnum"))+1)*delayTime)+(100*delayTime);
+			     				}
+			     			}
+			     			if (this.getAttribute('squareColor') == rColor) {
+			     				return (pauseTime+((numGridSquares)-this.getAttribute("cellnum")+1)*delayTime);
+			     				}
+							})     	
+				     	.style("fill", function() {
+								return this.getAttribute('squareColor')
+							});
+			//end makeVoteGrid function ->
+			}
+
+			function updateVoteGrid() {
+
+			}
+
+
+			function makeCDStatsMap() {
+
+
+
+
+
+
+			}
+
+
+			function makeCDStatsBars() {
+
+			}
+
+
+			function makeCDChangeMap() {
+
+
+
+			}
+
+
+			function makeCDChangeBars() {
+				
+			}
+		}
+		
+</script>
+</body>
+</html>
