@@ -103,23 +103,23 @@
           // .range(['#f1eef6','#006d2c']);
 
         var nonwhitecolor = d3.scaleThreshold()
-          .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
+          .domain([-0.268, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.432, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
         var employcolor = d3.scaleThreshold()
-          .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
+          .domain([-0.215, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.374, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
         var educolor = d3.scaleThreshold()
-          .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
+          .domain([-1, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.38, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
           
         var medcolor = d3.scaleThreshold()
-          .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
+          .domain([-0.61, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.128429125, 6.57, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
         var meancolor = d3.scaleThreshold()
-          .domain([-0.101973328, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.075392467, 0.128429125, 10])
+          .domain([-0.56, -0.056577484, -0.032211804, -0.014479615, 0, 0.019022844, 0.041534347, 0.128429125, 2.25, 10])
           .range(['#00b7a6','#00ccba','#00e2cd','#00f9e2','#bffff4','#ffeef9','#ffd2f0','#ffb5e8','#ff96e1','#ff72db']);
 
 
@@ -136,9 +136,142 @@
 
 			var projection = d3.geoAlbers()
 		    .scale(7000)
-		    .rotate( [77.1945,0] )
-    		.center( [0, 41.2033] )
+		    .rotate( [75.169026,0] )
+    		.center( [0, 39.926549] )
 		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD01 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.169026,0] )
+    		.center( [0, 39.926549] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD02 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.153377,0] )
+    		.center( [0, 40.063741] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD03 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [80.508012,0] )
+    		.center( [0, 41.231535] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+
+		    var projection_CD04 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [77.232250,0] )
+    		.center( [0, 39.830670] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD05 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [79.675111,0] )
+    		.center( [0, 41.626327] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD06 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.604993,0] )
+    		.center( [0, 39.959475] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+
+		    var projection_CD07 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.350405,0] )
+    		.center( [0, 39.939196] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD08 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [74.931096,0] )
+    		.center( [0, 40.216275] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD09 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [77.660992,0] )
+    		.center( [0, 39.937413] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD10 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [76.863400,0] )
+    		.center( [0, 40.812069] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD11 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [76.795729,0] )
+    		.center( [0, 40.864250] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+
+		    var projection_CD12 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [80.024116,0] )
+    		.center( [0, 40.551173] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD13 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.117641,0] )
+    		.center( [0, 40.038054] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+
+		    var projection_CD14 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [79.967645,0] )
+    		.center( [0, 40.427336] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD15 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.535248,0] )
+    		.center( [0, 40.573779] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD16 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [76.303320,0] )
+    		.center( [0, 40.036891] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD17 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [75.209279,0] )
+    		.center( [0, 40.691256] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    var projection_CD18 = d3.geoAlbers()
+		    .scale(7000)
+		    .rotate( [80.043774,0] )
+    		.center( [0, 40.384027] )
+		    .translate([width_sm / 2, height_sm / 2]);
+
+
+		    
 
 	    	var path = d3.geoPath()
 		    .projection(projection);
