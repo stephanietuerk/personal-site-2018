@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
 	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
-  	<title>PROJECT TITLE</title> 
+  	<title>The Thin Red / Blue Line</title> 
   	<style>
 	  	.active-mouseover {
 	  		stroke: white;
@@ -177,7 +177,7 @@
 </head>
 <img src="data/title.png" position: static;>
 <h2 style=text-align:center>Are congressional districts drawn to accurately elect congressman who can best represent Pennsylvania’s rapidly changing demographics?</h2>
-<h4>Rebecca Hui 	- 	Angel Jacome 	-	 Stephanie Tuerk	 </h4>
+<h4>Rebecca Hui 	- 	Angel Jacome 	-	 Stephanie Tuerk</h4>
 <body>	
 <div id = "text1">
 	<h3>How Pennsylvania Voted: Congressional Districts vs. Popular Votes</h3>
@@ -552,14 +552,14 @@
 					var popBoxLabel = viz1Container.append("text")
 						.attr("class", "display-label")
 						.attr("x", 580)
-						.attr("y", 30)
+						.attr("y", 20)
 						.style("text-anchor", "right")
 						.text("statewide votes: 5,757,009");
 
 					var congDistLabel = viz1Container.append("text")
 						.attr("class", "display-label")
 						.attr("x", 580)
-						.attr("y", 42)
+						.attr("y", 32)
 						.style("text-anchor", "right")
 						.text("congressional districts: 18");
 
@@ -678,7 +678,7 @@
 					
 						var infoNameX = 130,
 							infoNumX = 380,
-							startY = 20,
+							startY = 10,
 							infoLineSpacing = 12;
 
 						
@@ -2809,7 +2809,8 @@
 
 
 		function clickToReset() {
-			d3.selectAll("svg").remove();
+			d3.select("#flip")selectAll("svg").remove();
+			// d3.selectAll("svg").remove();
 
 			var resetContainer = d3.select("#resetAll").append("svg")
 				.attr("width", 900)
