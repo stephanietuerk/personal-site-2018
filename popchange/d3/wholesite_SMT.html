@@ -26,22 +26,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
 </head>
 <body>
-<div id = "text0">
+<div id = "text0" style=text-align:center>
 	This is our title. It's div id is "text0". Someone can write and style this text.
 </div>
-<div id = "viz1"></div>
-<div id = "text1">
+<div id = "viz1" style=text-align:center></div>
+<div id = "text1" style=text-align:center>
 	Here is the next text block. Fill out accordingly. I live in the HTML section of the .html file, in div tag "text1".
 </div>
-<div id = "perCDDemos"></div>
-<div id = "text2">
+<div id = "perCDDemos" style=text-align:center></div>
+<div id = "text2" style=text-align:center>
 	More text that needs to be written! I'm div id "text2".
 </div>
-<div id = "perCDChange"></div>
-<div id = "text3">
+<div id = "perCDChange" style=text-align:center></div>
+<div id = "text3" style=text-align:center>
 	I CAN HAZ TEXXXXXXXTTTT. And I can haz it in "text3".
 </div>
-<div id = "flipTheDistrict"></div>
+<div id = "flipTheDistrict" style=text-align:center></div>
 
 
 
@@ -57,37 +57,52 @@
 		d3.queue()
 			.defer(d3.tsv, "data/CD_VoteData.tsv")
 			.defer(d3.tsv, "data/CT_VoteData.tsv")
+			.defer(d3.tsv, "data/CD_DemoData.tsv")
+			.defer(d3.tsv, "data/CD_ChangeData.tsv")
+			.defer(d3.tsv, "data/CT_DemoChangeData.tsv")
 			.await(makeCensusTractViz);
 
 	//Read in Vote Data and create map from that 
-		function makeCensusTractViz (error, cdVotes, ctVotes) {
+		function makeCensusTractViz (error, cdVotes, ctVotes, cdDemos, cdChange, ctDemoChange) {
 
-			//nest data by CD	
+			//nest CD Vote Data
 			var cdVoteData = d3.nest()
 				.key(function(d) {return d.CD;}) 
 				.entries(cdVotes);
 
 			console.log(cdVoteData);
 
+			//nest CT Vote Data
 			var ctVoteData = d3.nest()
 				.key(function(d) {return d.GEO_ID;}) 
 				.entries(ctVotes);
 
 			console.log(ctVoteData);
 
+			//nest CD Demo Data
+			var cdDemoD = d3.nest()
+				.key(function(d) {return d.VAR;}) 
+				.entries(cdDemos);
 
-			//
-			//
-			//Create global data holder.
-			//Initialize to zero, fill from within makeBar()
-			//////////////////////////////////////////////
-				// var voteDataHolder = [];
-				
-				// for (i in cdData.length) {
-				// 	voteDataHolder.push(0);
-				// };
+			console.log(cdDemoD);
 
-			//Make dictionary of CD data 
+			//nest CD Change Data
+			var cdChangeD = d3.nest()
+				.key(function(d) {return d.VAR;}) 
+				.entries(cdChange);
+
+			console.log(cdChangeD);
+
+			//nest CT DemoChangeData
+			var ctDemoChangeD = d3.nest()
+				.key(function(d) {return d.GEO_ID;})
+				.entries(ctDemoChange);
+
+			console.log(ctDemoChangeD);
+
+
+			//Make data dictionaries 
+			//CD Vote Data
 			var dCDVotesHolder = {};
 			cdVoteData.forEach(function(cdVoteData) {
 				dCDVotesHolder[cdVoteData.key] = +cdVoteData.values[0].DEM_USC;
@@ -108,10 +123,7 @@
 			var oSum = d3.sum(cdVoteData, function(d) {return d.values[0].OTHERS_USC;});
 			var paSum = (dSum + rSum + oSum);
 
-		
-
-			//Make dictionary of CT data
-
+			//CT Vote Data 2016
 			//NOTE: POSITIVE MARGIN = REP, NEGATIVE MARGIN = DEM
 			var voteMarginByTract = {};
 			ctVoteData.forEach(function(ctVoteData) {
@@ -130,6 +142,7 @@
 				}
 			});
 
+			//CT Vote Change
 			var voteChangeByTract = {};
 			ctVoteData.forEach(function(ctVoteData) {
 				var dVotes = +ctVoteData.values[0].DEM_USC,
@@ -157,33 +170,120 @@
 					var margin2016 = (rVotes - dVotes)/totalVotes,
 						margin2012 = (rVotes2012 - dVotes2012)/totalVotes2012;
 
-					change = margin2016 - margin2012;
+					var change = margin2016 - margin2012;
 
 					voteChangeByTract[ctVoteData.key] = +change;
 				}
 			});
 
+			var nonWhitePerByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].PERCNONWHITE_2015;
+				if (value == "error" || value == "null") {
+					nonWhitePerByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				nonWhitePerByTract[ctDemoChangeD.key] = value;
+				}
+			});
 
-			var dCTVotesHolder = {};
-			ctVoteData.forEach(function(ctVoteData) {
-				dCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].DEM_USC;
-				});
+			var nonWhiteChangeByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].PERCNONWHITE_CHANGE;
+				if (value == "error" || value == "null") {
+					nonWhiteChangeByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				nonWhiteChangeByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			var unempPerByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].UNEMPLOYMENT_2015;
+				if (value == "error" || value == "null") {
+					unempPerByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				unempPerByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			var unempChangeByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].UNEMPLOYMENT_CHANGE;
+				if (value == "error" || value == "null") {
+					unempChangeByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				unempChangeByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			var collegePerByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].COLLEGE_2015;
+				if (value == "error" || value == "null") {
+					collegePerByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				collegePerByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			var collegeChangeByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].COLLEGE_CHANGE;
+				if (value == "error" || value == "null") {
+					collegeChangeByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				collegeChangeByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			var incomePerByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].MEDIANINC_2015;
+				if (value == "error" || value == "null") {
+					incomePerByTract[ctDemoChange.key] = "ERROR";
+				}
+				else {
+				incomePerByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			var incomeChangeByTract = {};
+			ctDemoChangeD.forEach(function(ctDemoChange) {
+				var value = +ctDemoChange.values[0].MEDIANINC_CHANGE;
+				if (value == "error" || value == "null") {
+					incomeChangeByTract[ctDemoChangeD.key] = "ERROR";
+				}
+				else {
+				incomeChangeByTract[ctDemoChangeD.key] = value;
+				}
+			});
+
+			// var dCTVotesHolder = {};
+			// ctVoteData.forEach(function(ctVoteData) {
+			// 	dCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].DEM_USC;
+			// 	});
 				
-			var rCTVotesHolder = {};
-			ctVoteData.forEach(function(ctVoteData) {
-				rCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].REP_USC;
-			});
+			// var rCTVotesHolder = {};
+			// ctVoteData.forEach(function(ctVoteData) {
+			// 	rCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].REP_USC;
+			// });
 
-			var oCTVotesHolder = {};
-			ctVoteData.forEach(function(ctVoteData) {
-				oCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].OTHERS_USC;
-			});
+			// var oCTVotesHolder = {};
+			// ctVoteData.forEach(function(ctVoteData) {
+			// 	oCTVotesHolder[ctVoteData.key] = +ctVoteData.values[0].OTHERS_USC;
+			// });
 
 			// var dSum = d3.sum(ctVoteData, function(d) {return d.values[0].DEM_USC;});
 			// var rSum = d3.sum(ctVoteData, function(d) {return d.values[0].REP_USC;});
 			// var oSum = d3.sum(ctVoteData, function(d) {return d.values[0].OTHERS_USC;});
 			// var paSum = (dSum + rSum + oSum);
-			console.log(voteMarginByTract);
+			
 
 			
 			//
@@ -194,11 +294,15 @@
 		        .domain([-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0])
 		        .range(['#3c5bff','#5c79ff','#7c98ff','#9cb7ff','#bcd6ff','#ffd5d4','#f8aab4','#f17f94','#ea5574','#dd0035']);
 
+		    var voteChangeColor = d3.scaleThreshold()
+		        .domain([-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0])
+		        .range(['#3c5bff','#5c79ff','#7c98ff','#9cb7ff','#bcd6ff','#ffd5d4','#f8aab4','#f17f94','#ea5574','#dd0035']);
+
 			//
 			//
 			//Create top container (to hold selector map and PA vote grid)
 			/////////////////////////////////////////////
-				var viz1BoxWidth = 800,
+				var viz1BoxWidth = 900,
 					viz1BoxHeight = 300;
 
 				var viz1Container = d3.select("#viz1").append("svg")
@@ -212,7 +316,7 @@
 			/////////////////////////////////////////////
 				var mapBoxWidth = 500,
 					mapBoxHeight = 300,
-					mapBoxMarginLeft = 40;
+					mapBoxMarginLeft = 50;
 
 				//Create container to hold map graphic
 				var mapSmContainer = viz1Container.append("svg")
@@ -250,7 +354,7 @@
 				      	.attr("class", "cd-boundaries selector-map")
 				      	.attr("d", path)
 				      	.attr("CD", function(d) {return +d.properties.CD114FP})
-				      	.attr("cdWinner", function(d, cdData) {
+				      	.attr("cdWinner", function(d) {
 				      		var cd = this.getAttribute("CD");
 				      		console.log("cd");
 				      		var dVotes = +dCDVotesHolder[cd];
@@ -297,7 +401,9 @@
 
 						console.log(clickTimes);
 
-						var demoVizBoxWidth = 800,
+						
+
+						var demoVizBoxWidth = 900,
 							demoVizBoxHeight = 300;
 
 						if (clickTimes == 0) { 
@@ -318,7 +424,7 @@
 
 						}
 
-						var changeVizBoxWidth = 800,
+						var changeVizBoxWidth = 900,
 							changeVizBoxHeight = 300;
 
 						if (clickTimes == 0) { 
@@ -354,7 +460,7 @@
 
 							var mapBoxWidth = 500,
 								mapBoxHeight = 300,
-								mapBoxMarginLeft = 40;
+								mapBoxMarginLeft = 0;
 					
 
 							//Create containers to hold map graphics
@@ -402,6 +508,7 @@
 							   	demoMapContainer.append("g")
 							   		.selectAll("path")
 							   		.data(tracts)
+							   		.attr("class", "demo-ct-boundaries")
 							   		.enter().append("path")
 							   		.attr("d", path)
 							   		.style("stroke", "black")
@@ -423,36 +530,30 @@
 							    	.attr("fill", function(d) { 
 							      		var name = d.properties.GEO_ID,
 									      	change = voteChangeByTract[name];
-									      	console.log(change);
+									      	
 									    if (change == "ERROR") {
 									    	return initialColor;
 									    }
-									    else { return voteColor(voteChangeByTract[name]);}
+									    else { return voteChangeColor(voteChangeByTract[name]);}
 							      		});
-
-
-							    //end d3.json call ->
+							//end d3.json call ->
 						    });
 
-							// makeDemoBars();
-							
-
-							function makeDemoBars() {
-
 								//Create bars container for CD bars
-								var barsBoxWidth = 300
-									barsBoxHeight = 200;
+								var barsBoxWidth = 300,
+									barsBoxHeight = 180,
+									barsPadding = 53;
 
 								//Create container to hold map graphic
 								var barsBoxContainer = demoVizContainer.append("svg")
 									.attr("width", barsBoxWidth)
 									.attr("height", barsBoxHeight)
-									.attr("x", mapBoxWidth+mapBoxMarginLeft)
+									.attr("x", mapBoxWidth+mapBoxMarginLeft+barsPadding)
 									.attr("y", demoVizBoxHeight-barsBoxHeight);
 
 
 								//Set dimensions of bar elements
-								var h_bar = 200,
+								var h_bar = 180,
 									w_bar = 25;
 									barSq = 5;
 
@@ -460,41 +561,43 @@
 									barCols = w_bar/barSq,
 									numBarSquares = barRows*barCols;
 
+								var dVotes = +dCDVotesHolder[cdSel],
+									rVotes = +rCDVotesHolder[cdSel],
+									oVotes = +oCDVotesHolder[cdSel],	
+									cdTotalVotes = (dVotes+rVotes+oVotes),
+									perD = (dVotes/cdTotalVotes),
+									perR = (rVotes/cdTotalVotes),
+									perO = (oVotes/cdTotalVotes),
+									cutD = perD*barRows*barCols,
+									cutOther = ((dVotes+oVotes)/cdTotalVotes)*barRows*barCols;
 
-								d3.queue ()
-									.defer(d3.json, "jsons/PA_CongDist_2015.json")
-									.defer(d3.tsv, "data/CD_Data.txt")
-									.await(drawCDs);
 
+								//Make votes bar
 
-								var svg = d3.select(this)
-									.attr("class", "bar")
-									.attr("CD", CD.key)
-									.style("fill", "none");	
-								
-								//make transparent rectangle to pick up drag
-								svg.append("rect")
-								    .attr("class", "drag-bar")
-								    .attr("CD", CD.key)
+								var voteBar = barsBoxContainer.append("svg")
+									.attr("width", w_bar)
+									.attr("height", h_bar)
+									.attr("x", 0)
+									.attr("y", 0);
+
+								voteBar.append("rect")
+								    .attr("class", "cd-drag-bar")
 								    .style("pointer-events", "all")
 								    .attr("width", w_bar)
 								    .attr("height", h_bar)
 								    .style("fill", "none")
-								    .on("mouseover", handleMouseOver)
-								    .on("mouseout", handleMouseOut)
-								    .call(d3.drag()
-								    	.on("start", initiateDrag)
-										.on("drag", dragChange)
-								    	.on("end", dragEnd));
+								    // .on("click", handleBarMouseClick);
 
-							    	
-								//makes squares as "rect" elements
-								var squares = svg.selectAll(".bar-square")
+								var delayTime = 8,
+									delayTimeOther = delayTime*2
+									pauseTime = 500;
+								
+								var squares = voteBar.selectAll("cd-bar-square")
 									.data(d3.range(numBarSquares))
 							  	  .enter()
 									.append('rect')
-									.attr("class", "bar-square")
-									.attr("CD", CD.key)
+									.attr("class", "cd-bar-square")
+									// .attr("CD", CD.key)
 									.attr("width", barSq)
 									.attr("height", barSq)
 									.attr("cellnum", function (i) {return ((numBarSquares)-i);})
@@ -504,12 +607,13 @@
 									.style("stroke", "ffffff")
 									.style("stroke-width", .4)      
 					    			.style("stroke-linecap", "butt")
-					    			.style("pointer-events", "none")		
-									.attr("squareColor", function() {
+							    	.style("pointer-events", "none")
+							    	.attr("squareColor", function(){
 										if (this.getAttribute('cellnum') <= cutD) {
+											console.log("heloooo!");
 										    return dColor;
 										}
-										if (this.getAttribute('cellnum') > cutD && (	this.getAttribute('cellnum') <= cutOther)) {
+										if (this.getAttribute('cellnum') > cutD && (this.getAttribute('cellnum') <= cutOther)) {
 											return oColor;
 										}
 										else {return rColor;}
@@ -529,9 +633,131 @@
 											})     	
 								     	.style("fill", function() {
 												return this.getAttribute('squareColor')
-											});
+										});
+
+									
+									var	numBars = cdDemoD.length,
+										barMargin = {top: 0, right: 16, bottom: 0, left: 16},
+										boxMargin = {top: 30, right: 30, bottom: 0, left: 0};
 
 
+									var svg = barsBoxContainer.selectAll("svg")
+										.data(cdDemoD)
+									  .enter()
+										.append("svg") //svg container for one bar element
+										.attr("width", w_bar+barMargin.left+barMargin.right)
+										.attr("height", h_bar+barMargin.top+barMargin.bottom)
+										.attr("x", function (d, i) {
+											return (boxMargin.left-barMargin.left+(i*(w_bar+barMargin.right+barMargin.left)));
+										})
+									  .append("g") //g for bar itself, placed in svg container
+								    	.attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
+
+									var svgbar = svg.append("g")
+										.attr("width", w_bar)
+										.attr("height", h_bar)
+										.each(makeBars);
+
+
+									function makeBars(VAR) {
+										var svg = d3.select(this)
+											.attr("class", "bar")
+											// .attr("var", VAR.key)
+											.style("fill", "none");	
+								
+										//make transparent rectangle to pick up click
+										svg.append("rect")
+										    .attr("class", "drag-bar")
+										    // .attr("CD", CD.key)
+										    .style("pointer-events", "all")
+										    .attr("width", w_bar)
+										    .attr("height", h_bar)
+										    .style("fill", "none");
+										    .on("click", handleBarClick);
+
+								    	
+										//makes squares as "rect" elements
+										var squares = svg.selectAll(".bar-square")
+											.data(d3.range(numBarSquares))
+									  	  .enter()
+											.append('rect')
+											.attr("class", "bar-square")
+											.attr("VAR", VAR.key)
+											.attr("width", barSq)
+											.attr("height", barSq)
+											.attr("cellnum", function (i) {return ((numBarSquares)-i);})
+											.attr("x", function(i) {return (barSq*(i%barCols));})
+											.attr("y", function(i) {return (barSq*Math.floor((i/barCols)));})
+											.style("fill",initialColor)
+											.style("stroke", "ffffff")
+											.style("stroke-width", .4)      
+							    			.style("stroke-linecap", "butt")
+							    			.style("pointer-events", "none")
+							    			.attr("squareColor", getSquareColor);
+							    			 
+
+							    // 			 {
+											// 	if (this.getAttribute('cellnum') <= cutD) {
+											// 	    return dColor;
+											// 	}
+											// 	if (this.getAttribute('cellnum') > cutD && (this.getAttribute('cellnum') <= cutOther)) {
+											// 		return oColor;
+											// 	}
+											// 	else {return rColor;}
+											// };
+
+
+										function getSquareColor () {
+
+											cat = this.getAttribute("VAR");
+
+											cat_value = +cdDemoD[cat][cdSel];
+											// var max = d3.max(cdDemo, function(d) { return +d.field_goal_attempts;} );
+
+										}
+
+										function handleBarClick () {
+
+											d3.selectAll(".demo-ct-boundaries")
+										    	.attr("fill", function(d) { 
+										      		var name = d.properties.GEO_ID,
+												      	margin = voteMarginByTract[name];
+												    if (margin == "ERROR") {
+												    	return initialColor;
+												    }
+												    else { return voteColor(voteMarginByTract[name]);}
+										      		});
+
+
+
+										}
+												// .attr("squareColor", function() {
+												// 	if (this.getAttribute('cellnum') <= cutD) {
+												// 	    return dColor;
+												// 	}
+												// 	if (this.getAttribute('cellnum') > cutD && (	this.getAttribute('cellnum') <= cutOther)) {
+												// 		return oColor;
+												// 	}
+												// 	else {return rColor;}
+												// })
+												// .transition()
+											 //     	.delay(function() {
+												// 		if (this.getAttribute('squareColor') == dColor) {
+										  //  					return (pauseTime+this.getAttribute("cellnum")*delayTime);
+										  //    			}
+										  //    			if (this.getAttribute('squareColor') == oColor) {
+										  //  					return (pauseTime+((this.getAttribute("cellnum")*delayTimeOther)+(cutOther*delayTime)));
+										  //    			}
+										  //    			if (this.getAttribute('squareColor') == rColor) {
+										     	
+										  //    				return (pauseTime+((cutD*delayTime)+((numBarSquares)-this.getAttribute("cellnum")+1)*delayTime));
+										  //    				}
+												// 		})     	
+											 //     	.style("fill", function() {
+												// 			return this.getAttribute('squareColor')
+												// 		});
+								     
+								     
 
 							// }
 
@@ -623,7 +849,7 @@
 				var voteGridContainer = viz1Container.append("svg")
 					.attr("width", voteGridWidth)
 					.attr("height", voteGridHeight)
-					.attr("x", 550)
+					.attr("x", 580)
 					.attr("y", 80)
 					.append("g");
 						
