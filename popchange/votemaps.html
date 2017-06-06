@@ -26,7 +26,6 @@
   			margin-left: auto;
     		margin-right: auto;
   		}
-
   		h4 {font-family: "Roboto", sans-serif;
   			font-size: 20px;
   			color: #872250;
@@ -956,15 +955,6 @@
 			    );
 
 
-
-			// // add the Y gridlines
-			// innerBars.append("g")			
-			//     .attr("class", "grid")
-			//     .call(make_y_gridlines()
-			//         .tickSize(-barWidth)
-			//         .tickFormat("")
-			//     );
-
 			//append color bars
 			barsColorBar.selectAll(".color-bar")
 				.data(tractdataSorted)
@@ -1043,354 +1033,10 @@
             		return d3.ascending(a.GEO_ID, b.GEO_ID);
             	});
 
-			
-	        
-
-	        // //add a value label to the right of each bar
-	        // innerBars.append("text")
-	        //     .attr("class", "label")
-	        //     //y position of the label is halfway down the bar
-	        //     .attr("y", function (d) {
-	        //         return y(d.name) + y.rangeBand() / 2 + 4;
-	        //     })
-	        //     //x position is 3 pixels to the right of the bar
-	        //     .attr("x", function (d) {
-	        //         return x(d.value) + 3;
-	        //     })
-	        //     .text(function (d) {
-	        //         return d.value;
-	        //     });
-
-
 
 		    //
 	       	//
-	       	//Make Demographics Map
-	       	////////////////////////////////////////////////////
-
-
-	       	//Make container
-			var demosMapBoxWidth = 900,
-			    demosMapBoxHeight = 650;
-
-			var demosMapContainer = d3.select("#demosmap")
-				.append("svg")
-			    .attr("width", demosMapBoxWidth)
-			    .attr("height", demosMapBoxHeight);
-
-
-			//Set initial variables for map
-			var selDemo = incomeChange;
-
-	    	var demoMax = d3.max(selDemo);
-	    		demoMin = d3.min(selDemo);
-
-	    	var selDemoPos = [],
-	    		selDemoNeg = [];
-
-	    	selDemo.forEach(function(value) {
-	    		if (value >= 0) {
-	    			selDemoPos.push(value);
-	    		}
-	    		if (value < 0) {
-	    			selDemoNeg.push(value);
-	    		}
-	    	})
-
-	    	console.log(demoMax);
-	    	console.log(demoMin);
-			
-
-			//Set projection infomation
-			var demosProjection = d3.geoAlbers()
-			    .rotate( [77.1945,0] )
-	    		.center( [0, 41.2033] );
-
-	    	var demosPath = d3.geoPath()
-			    .projection(demosProjection);
-
-			demosProjection
-		  		.scale(1)
-		  		.translate([0,0]);
-
-		  	var b = demosPath.bounds(allTracts),
-			    s = .95 / Math.max((b[1][0] - b[0][0]) / demosMapBoxWidth, (b[1][1] - b[0][1]) / demosMapBoxHeight),
-			    t = [(demosMapBoxWidth - s * (b[1][0] + b[0][0])) / 2, (demosMapBoxHeight - s * (b[1][1] + b[0][1])) / 2];
-
-			demosProjection
-		    	.scale(s)
-		    	.translate(t);
-
-	    	
-	    	//Set colors
-	    	var maxColor = "#008837",
-	    		minColor = "#7b3294",
-	    		zeroColor = "#f7f7f7";
-
-	    	var numColors = 50;
-
-	    	var demoColors = d3.scaleThreshold()
-	    		.domain(getColorDomain(numColors))
-	    		.range(getColorRange(numColors));
-
-		  	
-	    	//Make map geometry elements
-		    demosMapContainer.append("g")
-			    .selectAll("path")
-		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
-		      	.enter().append("path")
-		      	.attr("class", "tracts demo-tracts tracts-non-brushed")
-		      	.attr("tractno", function(d) {return d.properties.GEO_ID;})
-		      	.attr("d", demosPath)
-		      	.style("fill", function(d) { 
-		      		var tract = d.properties.GEO_ID;
-		      		if (selDemo == popChange) {
-	      				if (popChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(popChangeByTract[tract]);}
-	      			}
-		      		if (selDemo == popDen) {
-	      				if (popDenByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(popDenByTract[tract]);}
-	      			}
-	      			if (selDemo == popDenChange) {
-	      				if (popDenChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(popDenChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == nonWhite) {
-	      				if (nonWhiteByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(nonWhiteByTract[tract]);}
-	      			}
-	      			if (selDemo == nonWhiteChange) {
-	      				if (nonWhiteChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(nonWhiteChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == unemploy) {
-	      				if (unemployByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(unemployByTract[tract]);}
-	      			}
-	      			if (selDemo == unemployChange) {
-	      				if (unemployChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(unemployChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == college) {
-	      				if (collegeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(collegeByTract[tract]);}
-	      			}
-	      			if (selDemo == collegeChange) {
-	      				if (collegeChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(collegeChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == income) {
-	      				if (incomeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(incomeByTract[tract]);}
-	      			}
-	      			if (selDemo == incomeChange) {
-	      				if (incomeChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(incomeChangeByTract[tract]);}
-	      			}
-		      	})
-		      	.style ("stroke", function(d) { 
-		      		var tract = d.properties.GEO_ID;
-		      		if (selDemo == popChange) {
-	      				if (popChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(popChangeByTract[tract]);}
-	      			}
-		      		if (selDemo == popDen) {
-	      				if (popDenByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(popDenByTract[tract]);}
-	      			}
-	      			if (selDemo == popDenChange) {
-	      				if (popDenChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(popDenChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == nonWhite) {
-	      				if (nonWhiteByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(nonWhiteByTract[tract]);}
-	      			}
-	      			if (selDemo == nonWhiteChange) {
-	      				if (nonWhiteChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(nonWhiteChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == unemploy) {
-	      				if (unemployByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(unemployByTract[tract]);}
-	      			}
-	      			if (selDemo == unemployChange) {
-	      				if (unemployChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(unemployChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == college) {
-	      				if (collegeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(collegeByTract[tract]);}
-	      			}
-	      			if (selDemo == collegeChange) {
-	      				if (collegeChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(collegeChangeByTract[tract]);}
-	      			}
-	      			if (selDemo == income) {
-	      				if (incomeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(incomeByTract[tract]);}
-	      			}
-	      			if (selDemo == incomeChange) {
-	      				if (incomeChangeByTract[tract] == "ERROR") {return initialColor;}
-	      				else {return demoColors(incomeChangeByTract[tract]);}
-	      			}
-		      	})
-		      	.style("stroke-width", "0.8px");
-
-
-		    
-
-
-		    //
-		    //
-		    //MAKE Scatterplot
-		    ////////////////////////////////////////////////////
-		 //    var plotMargin = {top: 20, right: 20, bottom: 30, left: 40},
-			//     plotWidth = 800 - plotMargin.left - plotMargin.right,
-			//     plotHeight = 500 - plotMargin.top - plotMargin.bottom;
-
-		 //    var plotX = d3.scaleLinear()
-			//     .range([0, plotWidth]);
-
-			// var plotY = d3.scaleLinear()
-			//     .range([plotHeight, 0]);
-
-			// var plotXAxis = d3.axisBottom()
-			//     .scale(plotX);
-
-			// var plotYAxis = d3.axisLeft()
-			//     .scale(plotY);
-
-			// var plot = d3.select("#voteplot").append("svg")
-			// 	.attr("width", plotWidth + plotMargin.left + plotMargin.right)
-			//     .attr("height", plotHeight + plotMargin.top + plotMargin.bottom);
-			
-			// plot.append("g")
-			//     .attr("transform", "translate(" + plotMargin.left + "," + plotMargin.top + ")");
-
-
-			// plotX.domain(d3.extent(nonWhite)).nice();
-			// plotY.domain(d3.extent(usp2016Margins)).nice();
-			// // x.domain([-1,1]);
-			// // y.domain([-1,3]);
-			
-			// var totals2016Max = d3.max(usp2016Totals),
-			// 	totals2016Min = d3.min(usp2016Totals);
-
-			// var rScale = d3.scaleLinear()
-			// 	.domain([totals2016Min, totals2016Max])
-			// 	.range([2,20]);
-
-
-			// plot.append("g")
-			//     .attr("class", "x axis")
-			//     .attr("transform", "translate(0," + (plotHeight) + ")")
-			//     .call(plotXAxis)
-			//   .append("text")
-			//     .attr("class", "label")
-			//     .attr("x", plotWidth)
-			//     .attr("y", -6)
-			//     .style("text-anchor", "end")
-			//     .text("2016 margin (%)");
-
-			// plot.append("g")
-			//     .attr("class", "y axis")
-			//     .attr("transform", "translate(" + (plotWidth*0) + ",0)")
-			//     .call(plotYAxis)
-			//   .append("text")
-			//     .attr("class", "label")
-			//     .attr("transform", "rotate(-90)")
-			//     .attr("y", 6)
-			//     .attr("dy", ".71em")
-			//     .style("text-anchor", "end")
-			//     .text("2012 margin (%)");
-
-			
-			// var dots = plot.append("g")
-			// 	.selectAll(".dot")
-			//     .data(tractdata)
-			//     .enter()
-			//     .append("circle")
-			//     .attr("class", "dots")
-			//     .attr("class", "dots-non-brushed")
-			//     .attr("r", 2.2)
-			//     // 	function(d) {
-			//     // 	var dem16 = +d.USP_DEM_2016,
-			//   		// 	rep16 = +d.USP_REP_2016,
-			//   		// 	oth16 = +d.USP_OTH_2016;
-
-			//   		// var tot16 = dem16 + rep16 + oth16;
-
-			//   		// return rScale(tot16);
-			//     // })
-			//     .attr("geoid", function(d) {return d.GEO_ID})
-			//     .attr("cx", function(d) {
-			//     	var nonWhite = +d.PERCNONWHITE_2015;
-			//     	return plotX(nonWhite);
-			//     // 	var dem16 = +d.USP_DEM_2016,
-			//   		// 	rep16 = +d.USP_REP_2016,
-			//   		// 	oth16 = +d.USP_OTH_2016;
-
-			//   		// var tot16 = dem16 + rep16 + oth16;
-
-			//   		// var margin16 = (rep16 - dem16)/tot16;
-
-			//   		// return x(margin16);
-			//   	})
-			//     .attr("cy", function(d) { 
-			//     	// var popDen = +d.POPDEN_2015;
-			//     	// return y(popDen);
-			//       	var dem16 = +d.USP_DEM_2016,
-			//   			rep16 = +d.USP_REP_2016,
-			//   			oth16 = +d.USP_OTH_2016,
-			//   			dem12 = +d.USP_DEM_2012,
-			//   			rep12 = +d.USP_REP_2012,
-			//   			oth12 = +d.USP_OTH_2012;
-
-			//   		var tot16 = dem16 + rep16 + oth16,
-			//   			tot12 = dem12 + rep12 + oth12;
-
-			//   		var margin16 = (rep16 - dem16)/tot16,
-			//   			margin12 = (rep12 - dem12)/tot12,
-			//   			change = margin16 - margin12;
-
-			//   		return plotY(change);
-			//   	})
-			//     .style("fill", function(d) {
-			//     	var dem16 = +d.USP_DEM_2016,
-			//   			rep16 = +d.USP_REP_2016,
-			//   			oth16 = +d.USP_OTH_2016,
-			//   			dem12 = +d.USP_DEM_2012,
-			//   			rep12 = +d.USP_REP_2012,
-			//   			oth12 = +d.USP_OTH_2012;
-
-			//   		var tot16 = dem16 + rep16 + oth16,
-			//   			tot12 = dem12 + rep12 + oth12;
-
-			//   		var margin16 = (rep16 - dem16)/tot16,
-			//   			margin12 = (rep12 - dem12)/tot12,
-			//   			change = margin16 - margin12
-			//   			otherthing = margin12/margin16;
-
-			//   		return voteColor(margin16);
-			//   	})
-			//   	.style("opacity", "0.8");
-				
-
-			// var brush = d3.brush()
-			// 	.on("brush", highlightBrushedTracts);
-
-			// plot.append("g")
-			// 	.call(brush);
-
-			
-			
-
-
-		    //
-	       	//
-	       	//FUNCTIONS WITHIN drawMap function
+	       	//FUNCTIONS WITHIN makeViz function
 	       	////////////////////////////////////////////////////
 		    function handleVoteDateButtonClick(d) {
 
@@ -1419,6 +1065,7 @@
 				updateVoteMap();
 				updateDemoBars();
 		    }
+
 
 		    function handleVoteRaceButtonClick(d) {
 		    	
@@ -1968,6 +1615,7 @@
 			        // .ticks(5)
 			}
 
+
 			// gridlines in y axis function
 			function make_y_gridlines() {		
 			    return d3.axisLeft(barsY);
@@ -2144,43 +1792,12 @@
 			                // lines = lineNumber+1;
 			            }
 			            else {tspan.attr("y", y);}
-			        
-			        // tspan.
-			        // 	attr("y", y)
-			            
-               //      while (word = words.pop()) {
-			            // line.push(word);
-			            // console.log(word);
-			            // console.log(line);
-			            // tspan.text(line.join(" "));
-			            // if (tspan.node().getComputedTextLength() > width) {
-			            //     console.log("hey hey");
-			            //     line.pop();
-			            //     tspan.text(line.join(" "));
-			            //     line = [word];
-			            //     console.log(line);
-			            //     tspan = text.append("tspan")
-			            //                 .attr("x", x)
-			            //                 .attr("y", y)
-			            //                 .attr("dy", ++lineNumber * lineHeight + dy + "em")
-			            //                 .text(word);
-			            // }
 			        }
 				});
 	    	}
-
-
-
-
 		}	
 
 
-		
-
-		
-
-		  	
-	
-	</script>	
+</script>	
 </body>
 </html>
