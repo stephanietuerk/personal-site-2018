@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
+	<title>Pennsylvania Election Results</title>
+	<style>
+		h1 {/*font-family: "Crimson Text", serif;*/
+	  		font-family: "Roboto Mono";
+  			font-size: 90px;
+  			text-align: justify-all;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+		h2 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 30px;
+  			font-weight:400;
+  			text-align: justify-all;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+  		h3 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 35px;
+  			text-align: center;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+
+  		h4 {font-family: "Roboto", sans-serif;
+  			font-size: 20px;
+  			color: #872250;
+  			font-style: Semi-Bold Italic;
+  			text-align: center;  			
+  		}
+  		body {
+	  		font-family: "Roboto", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		width: 1200px;
+	  		text-align: justify-all;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+	  	}
+		.axis text {
+			font: 10px sans-serif;
+		}
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: #000;
+			shape-rendering: crispEdges;
+		}
+		.y.axis path {
+			stroke-dasharray: 4, 4;
+		}
+		.grid line {
+			stroke-dasharray: 4, 4;
+			stroke: #cccccc;
+			stroke-opacity: 0.7;
+			shape-rendering: crispEdges;
+		}
+		.colorBar-label {
+			font: 10px sans-serif;
+			text-anchor: middle;
+		}
+
+		.grid path {
+			stroke-width: 0;
+		}
+		.dots {
+		  stroke: #cccccc;
+		  stroke-opacity: 0.5;
+		}
+		.dots-non-brushed{
+
+		}
+		.demoBarsSelBtn-rect-noPress{
+			fill: #bbbbbb;
+			stroke: white;
+			stroke-width: 1px;
+		}
+		.demoBarsSelBtn-text-noPress{
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: white;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.demoBarsSelBtn-rect-press {
+			fill: white;
+			stroke: #bbbbbb;
+			stroke-width: 1px;
+		}
+		.demoBarsSelBtn-text-press {
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.voteMapSelBtn-rect-noPress{
+			fill: #bbbbbb;
+			stroke: white;
+			stroke-width: 1px;
+		}
+		.voteMapSelBtn-text-noPress{
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: white;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.voteMapSelBtn-rect-press {
+			fill: white;
+			stroke: #bbbbbb;
+			stroke-width: 1px;
+		}
+		.voteMapSelBtn-text-press {
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.selBtn-rect-hover{
+			fill: #cccccc;
+/*			stroke: white;
+			stroke-width: 1px;*/
+		}
+		.demoBars-title {
+			font: 18px "Roboto Mono";
+			font-weight: 300;
+			fill: #aaaaaa;
+			stroke: none;
+			text-anchor: middle;
+		}
+		.voteMap-title {
+			font: 18px "Roboto Mono";
+			font-weight: 300;
+			fill: #aaaaaa;
+			stroke: none;
+			text-anchor: middle;
+		}
+		.tracts-non-brushed {
+			stroke: none;
+			/*stroke: #bebebe;*/
+      		stroke-linejoin: round;
+		}
+		.tracts-brushed {
+			stroke: #bbbbbb;
+	  		stroke-width: 2px;
+	  		opacity: .5;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+		}
+		.hover {
+			stroke: "#ffffff";
+		}
+
+	</style>
+	  <script src="https://d3js.org/d3.v4.min.js"></script>
+      <script src="https://d3js.org/d3-array.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+      <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+      <script src="https://d3js.org/topojson.v2.min.js"></script>
+      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
+
+</head>
+<body>
+	<h2 style=text-align:center>Pennsylvania Election Results</h2>
+	<div id="votemap" style=text-align:center></div>
+	<div id="voteselector" style=text-align:center></div>
+	<div id="demoselector" style=text-align:center></div>
+	<div id="barchart" style=text-align:center></div>
+	<div id="voteplot" style=text-align:center></div>
+	<div id="demosmap" style=text-align:center></div>
+
+	<!-- Page elements and content go here. -->
+	<script>
+		var rColor = "#f4003d",
+			dColor = "#2437ff",
+			dMapColor = "#394bff",
+			oColor = "#f6b500",
+			initialColor = "#cccccc" //light grey
+			dkGrey = "#bbbbbb";
+
+
+		// Queue up datasets using d3 Queue
+
+		d3.queue()
+		    .defer(d3.json, "jsons/PA_CensusTracts_2010.json") 
+		    .defer(d3.tsv, "data/CT_AllData.tsv")
+		    .await(makeViz); 
+
+
+		function makeViz(error, pa, tractdata) {
+			if (error) throw error;
+
+			//
+			//
+			//PROCESS AND FORMAT VOTE DATA
+			///////////////////////////////////////////////////
+			var usp2016MarginByTract = {},
+		  		usp2012MarginByTract = {},
+		  		uspChangeMarginByTract = {},
+		  		uss2016MarginByTract = {},
+		  		uss2012MarginByTract = {},
+		  		ussChangeMarginByTract = {},
+		  		usc2016MarginByTract = {},
+		  		usc2012MarginByTract = {},
+		  		uscChangeMarginByTract = {};
+
+		  	//US PRESIDENT data
+		  	tractdata.forEach(function(d) {
+		  		var dem16 = +d.USP_DEM_2016,
+		  			rep16 = +d.USP_REP_2016,
+		  			oth16 = +d.USP_OTH_2016,
+		  			dem12 = +d.USP_DEM_2012,
+		  			rep12 = +d.USP_REP_2012,
+		  			oth12 = +d.USP_OTH_2012;
+
+		  		var tot16 = dem16 + rep16 + oth16,
+		  			tot12 = dem12 + rep12 + oth12;
+
+		  		var margin16 = (rep16 - dem16)/tot16,
+		  			margin12 = (rep12 - dem12)/tot12,
+		  			change = margin16 - margin12;
+
+		  		usp2016MarginByTract[d.GEO_ID] = margin16,
+		  		usp2012MarginByTract[d.GEO_ID] = margin12,
+		  		uspChangeMarginByTract[d.GEO_ID] = change;
+		  	});
+
+		  	//US SENATE data
+		  	tractdata.forEach(function(d) {
+		  		var dem16 = +d.USS_DEM_2016,
+		  			rep16 = +d.USS_REP_2016,
+		  			oth16 = +d.USS_OTH_2016,
+		  			dem12 = +d.USS_DEM_2012,
+		  			rep12 = +d.USS_REP_2012,
+		  			oth12 = +d.USS_OTH_2012;
+
+		  		var tot16 = dem16 + rep16 + oth16,
+		  			tot12 = dem12 + rep12 + oth12;
+
+		  		var margin16 = (rep16 - dem16)/tot16,
+		  			margin12 = (rep12 - dem12)/tot12,
+		  			change = margin16 - margin12;
+
+		  		uss2016MarginByTract[d.GEO_ID] = margin16,
+		  		uss2012MarginByTract[d.GEO_ID] = margin12,
+		  		ussChangeMarginByTract[d.GEO_ID] = change;
+		  	});
+
+		  	//US CONGRESS DATA
+		  	tractdata.forEach(function(d) {
+		  		var dem16 = +d.USC_DEM_2016,
+		  			rep16 = +d.USC_REP_2016,
+		  			oth16 = +d.USC_OTH_2016,
+		  			dem12 = +d.USC_DEM_2012,
+		  			rep12 = +d.USC_REP_2012,
+		  			oth12 = +d.USC_OTH_2012;
+
+		  		var tot16 = dem16 + rep16 + oth16,
+		  			tot12 = dem12 + rep12 + oth12;
+
+		  		var margin16 = (rep16 - dem16)/tot16,
+		  			margin12 = (rep12 - dem12)/tot12,
+		  			change = margin16 - margin12;
+
+		  		if (tot16 != 0) {
+		  			usc2016MarginByTract[d.GEO_ID] = margin16;	
+		  		}
+
+		  		if (tot12 != 0) {
+		  			usc2012MarginByTract[d.GEO_ID] = margin12;
+		  		}
+
+		  		if (tot16 != 0 && tot12 != 0) {
+		  			uscChangeMarginByTract[d.GEO_ID] = change;
+		  		}
+
+		  		else {
+			  		usc2016MarginByTract[d.GEO_ID] = "ERROR";
+			  		usc2012MarginByTract[d.GEO_ID] = "ERROR";
+			  		uscChangeMarginByTract[d.GEO_ID] = "ERROR";
+			  	}
+		  	});
+
+		  	var usp2016TotalsByTract = {};
+
+		  	tractdata.forEach(function(d) {
+		  		var dem16 = +d.USP_DEM_2016,
+		  			rep16 = +d.USP_REP_2016,
+		  			oth16 = +d.USP_OTH_2016;
+
+		  		var tot16 = dem16 + rep16 + oth16;
+
+		  		usp2016TotalsByTract[d.GEO_ID] = tot16;
+		  	});
+
+
+		  	//
+			//
+			//PROCESS AND FORMAT DEMOGRAPHIC DATA
+			///////////////////////////////////////////////////
+			var popChangeByTract = {},
+				popDenByTract = {},
+				popDenChangeByTract = {},
+		  		nonWhiteByTract = {},
+		  		nonWhiteChangeByTract = {},
+		  		unemployByTract = {},
+		  		unemployChangeByTract = {},
+		  		collegeByTract = {},
+		  		collegeChangeByTract = {},
+		  		incomeByTract = {},
+		  		incomeChangeByTract = {};
+		  	
+
+		  	tractdata.forEach(function(d) {
+		  		var popChange = +d.TOTALPOP_CHANGE,
+		  			popDen = +d.POPDEN_2015,
+		  			popDenChange = +d.POPDEN_CHANGE,
+		  			nonWhite = +d.PERCNONWHITE_2015,
+		  			nonWhiteChange = +d.PERCNONWHITE_CHANGE,
+		  			unempl = +d.UNEMPLOYMENT_2015,
+		  			unemplChange = +d.UNEMPLOYMENT_CHANGE,
+		  			college = +d.COLLEGE_2015,
+		  			collegeChange = +d.COLLEGE_CHANGE,
+		  			income = +d.MEDIANINC_2015,
+		  			incomeChange = +d.MEDIANINC_CHANGE;
+
+		  		if (popChange == "error" || popChange == "null") {
+		  			popChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {popChangeByTract[d.GEO_ID] = popChange;}
+
+		  		if (popDen== "error" || popDen == "null") {
+		  			popDenByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {popDenByTract[d.GEO_ID] = popDen;}
+
+		  		if (popDenChange == "error" || popDenChange == "null") {
+		  			popDenChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {popDenChangeByTract[d.GEO_ID] = popDenChange;}
+
+		  		if (nonWhite == "error" || nonWhite == "null") {
+		  			popChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {nonWhiteByTract[d.GEO_ID] = nonWhite;}
+
+		  		if (nonWhiteChange == "error" || nonWhiteChange == "null") {
+		  			nonWhiteChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {nonWhiteChangeByTract[d.GEO_ID] = nonWhiteChange;}
+		  		
+		  		if (unempl == "error" || unempl == "null") {
+		  			unemployByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {unemployByTract[d.GEO_ID] = unempl;}
+		  		
+		  		if (unemplChange == "error" || unemplChange == "null") {
+		  			unemployChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {unemployChangeByTract[d.GEO_ID] = unemplChange;}
+
+		  		if (college == "error" || college == "null") {
+		  			collegeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {collegeByTract[d.GEO_ID] = college;}
+
+		  		if (collegeChange == "error" || collegeChange == "null") {
+		  			collegeChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {collegeChangeByTract[d.GEO_ID] = collegeChange;}
+
+		  		if (income == "error" || income == "null") {
+		  			incomeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {incomeByTract[d.GEO_ID] = income;}
+	
+				if (incomeChange == "error" || incomeChange == "null") {
+		  			incomeChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {incomeChangeByTract[d.GEO_ID] = incomeChange;}
+		  	});
+		  	
+		  	var usp2016Margins = d3.values(usp2016MarginByTract),
+		  		usp2012Margins = d3.values(usp2012MarginByTract),
+		  		uspChangeMargins = d3.values(uspChangeMarginByTract),
+		  		usp2016Totals = d3.values(usp2016TotalsByTract),
+		  		popChange = d3.values(popChangeByTract),
+		  		popDen = d3.values(popDenByTract),
+		  		popDenChange = d3.values(popDenChangeByTract),
+		  		nonWhite = d3.values(nonWhiteByTract),
+		  		nonWhiteChange = d3.values(nonWhiteChangeByTract),
+		  		unemploy = d3.values(unemployByTract),
+		  		unemployChange = d3.values(unemployChangeByTract),
+		  		college = d3.values(collegeByTract),
+		  		collegeChange = d3.values(collegeChangeByTract),
+		  		income = d3.values(incomeByTract),
+		  		incomeChange = d3.values(incomeChangeByTract);
+
+
+		  	//Set initial variables for visualizations
+		  	var voteMapDate = "2016",
+				voteMapRace = "PRESIDENT";
+
+			var demoVar = "POPULATION DENSITY",
+				demoChange = "NO CHANGE";
+
+			//
+			//
+			//Make VOTE MAP
+			///////////////////////////////////////////////////
+
+			//Make container
+			var voteMapBoxWidth = 900,
+			    voteMapBoxHeight = 650;
+
+			var voteMapContainer = d3.select("#votemap")
+				.append("svg")
+			    .attr("width", voteMapBoxWidth)
+			    .attr("height", voteMapBoxHeight);
+
+
+			//Set initial variables for map
+			
+
+
+			//Set projection information
+		  	var voteProjection = d3.geoAlbers()
+			    .rotate( [77.1945,0] )
+	    		.center( [0, 41.2033] );
+			    
+	    	var votePath = d3.geoPath()
+			    .projection(voteProjection);
+		  	
+		  	var allTracts = topojson.feature(pa, pa.objects.PA_CensusTracts_2010);
+
+		  	voteProjection
+		  		.scale(1)
+		  		.translate([0,0]);
+
+		  	var b = votePath.bounds(allTracts),
+			    s = .95 / Math.max((b[1][0] - b[0][0]) / voteMapBoxWidth, (b[1][1] - b[0][1]) / voteMapBoxHeight),
+			    t = [(voteMapBoxWidth - s * (b[1][0] + b[0][0])) / 2, (voteMapBoxHeight - s * (b[1][1] + b[0][1])) / 2];
+
+			voteProjection
+		    	.scale(s)
+		    	.translate(t);
+
+
+		    //Set colors
+		    var voteColorRed = d3.scaleLinear()
+	      		.domain([0,1])
+	      		.range(['#f8e5e6','#dd0035']);
+
+	      	var voteColorBlue = d3.scaleLinear()
+	      		.domain([-1,0])
+	      		.range(['#3c5bff', '#d2e4ff']);
+
+	      	var voteColor = d3.scaleThreshold()
+	      		.domain([-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0])
+	      		.range(['#3c5bff','#5c79ff','#7c98ff','#9cb7ff','#bcd6ff','#ffd5d4','#f8aab4','#f17f94','#ea5574','#dd0035']);
+
+
+	      	//Make map geometry elements
+		  	voteMapContainer.append("g")
+			    .selectAll("path")
+		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
+		      	.enter().append("path")
+		      	.attr("class", "tracts vote-tracts tracts-non-brushed")
+		      	.attr("tractno", function(d) {return d.properties.GEO_ID;})
+		      	.attr("d", votePath)
+		      	.style("fill", function(d) { 
+		      		var tract = d.properties.GEO_ID;
+		      		if (usp2016MarginByTract[tract] == "ERROR") {return initialColor;}
+		      		else {
+		      			if (usp2016MarginByTract[tract] >= 0) {
+		      				return voteColorRed(usp2016MarginByTract[tract]);
+		      			} 
+		      			if (usp2016MarginByTract[tract] < 0) {
+		      				return voteColorBlue(usp2016MarginByTract[tract]);
+		      			}}
+		      	})
+		      	.style ("stroke", function(d) { 
+		      		var tract = d.properties.GEO_ID;
+		      		if (usp2016MarginByTract[tract] == "ERROR") {return initialColor;}
+		      		else {
+		      			if (usp2016MarginByTract[tract] >= 0) {
+		      				return voteColorRed(usp2016MarginByTract[tract]);
+		      			} 
+		      			if (usp2016MarginByTract[tract] < 0) {
+		      				return voteColorBlue(usp2016MarginByTract[tract]);
+		      			}}
+		      	})
+		      	.style("stroke-width", "0.8px");
+
+
+
+			//
+			//
+			//Make Selector Buttons and Dynamic Titles
+			////////////////////////////////////////////////////
+
+			//Make container
+			var voteSelBoxWidth = 900,
+				voteSelBoxHeight = 100;
+
+			var voteSelContainer = d3.select("#voteselector")
+				.append("svg")
+				.attr("width", voteSelBoxWidth)
+				.attr("height", voteSelBoxHeight);
+
+			var demoSelBoxWidth = 900,
+				demoSelBoxHeight = 100;
+
+			var demoSelContainer= d3.select("#demoselector")
+				.append("svg")
+				.attr("width", demoSelBoxWidth)
+				.attr("height", demoSelBoxHeight);
+
+			
+			//Set dimension variables
+			var voteDateLabels = ["2016", "2012", "CHANGE"],
+				voteRaceLabels = ["PRESIDENT", "US SENATE", "US CONGRESS"];
+
+			var demoVarLabels = ["POPULATION DENSITY", "PERCENT NON-WHITE", "UNEMPLOYMENT RATE", "EDUCATION", "INCOME"],
+				demoChangeLabels = ["CHANGE 2010-2015"];
+
+			var voteDateBoxWidth = 250,
+				voteDateBoxHeight =18,
+				voteRaceBoxWidth = 250,
+				voteRaceBoxHeight = 18,
+				voteSelSpacing = 15;
+
+			var voteDateButtonWidth = voteDateBoxWidth/(voteDateLabels.length),
+				voteDateButtonHeight = voteDateBoxHeight,
+				voteRaceButtonWidth = voteRaceBoxWidth/(voteRaceLabels.length),
+				voteRaceButtonHeight = voteRaceBoxHeight;
+
+			var demoButtonWidth = voteDateButtonWidth,
+				demoButtonHeight = 30;
+
+			var demoVarBoxWidth = demoButtonWidth*demoVarLabels.length,
+				demoVarBoxHeight = demoButtonHeight,
+				demoChangeBoxWidth = demoButtonWidth*demoChangeLabels.length,
+				demoChangeBoxHeight = demoButtonHeight
+				demoSelSpacing = 15;
+
+
+			var voteDateContainer = voteSelContainer.append("svg")
+				.attr("class", "voteMapBtn-container")
+				.attr("width", voteDateBoxWidth)
+				.attr("height", voteDateBoxHeight)
+				.attr("x", ((voteSelBoxWidth/2)-(voteDateBoxWidth)-voteSelSpacing))
+				.attr("y", 40);
+
+			var voteRaceContainer = voteSelContainer.append("svg")
+				.attr("class", "voteMapBtn-container")
+				.attr("width", voteRaceBoxWidth)
+				.attr("height", voteRaceBoxHeight)
+				.attr("x", ((voteSelBoxWidth/2)+voteSelSpacing))
+				.attr("y", 40);
+
+			var demoVarContainer = demoSelContainer.append("svg")
+				.attr("class", "demoBarsBtn-container")
+				.attr("width", demoVarBoxWidth)
+				.attr("height", demoVarBoxHeight)
+				.attr("x", ((voteSelBoxWidth/2)-voteDateBoxWidth-voteSelSpacing))
+				.attr("y", 0);
+
+			var demoChangeContainer = demoSelContainer.append("svg")
+				.attr("class", "demoBarsBtn-container")
+				.attr("width", demoChangeBoxWidth)
+				.attr("height", demoChangeBoxHeight)
+				.attr("x", ((voteSelBoxWidth/2)-voteDateBoxWidth+demoSelSpacing+(demoButtonWidth*demoVarLabels.length)))
+				.attr("y", 0);
+
+			var voteMapTitle = voteSelContainer.append("text")
+				.attr("class", "voteMap-title")
+				.attr("x", voteSelBoxWidth/2)
+				.attr("y", 15);
+
+			var demoBarsTitle = demoSelContainer.append("text")
+				.attr("class", "demoBars-title")
+				.attr("x", demoSelBoxWidth/2)
+				.attr("y", 80)
+
+			var voteDateButtons = voteDateContainer.selectAll("g")
+				.data(voteDateLabels)
+				.enter()
+				.append("g")
+				.attr("class", "date-buttons");
+
+			var voteRaceButtons = voteRaceContainer.selectAll("g")
+				.data(voteRaceLabels)
+				.enter()
+				.append("g")
+				.attr("class", "race-buttons");
+
+			var demoVarButtons = demoVarContainer.selectAll("g")
+				.data(demoVarLabels)
+				.enter()
+				.append("g")
+				.attr("class", "demoVar-buttons");
+
+			var demoChangeButtons = demoChangeContainer.selectAll("g")
+				.data(demoChangeLabels)
+				.enter()
+				.append("g")
+				.attr("class", "demoChange-buttons");
+
+			//make colored rectangle of date buttons
+			voteDateButtons.append("rect")
+				.attr("class", function(d) {
+					if (voteMapDate == d) {return "voteMapSelBtn-rect-date voteMapSelBtn-rect-press";}
+					else {return "voteMapSelBtn-rect-date voteMapSelBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", voteDateButtonWidth)
+				.attr("height", voteDateButtonHeight)
+				.attr("x", function(d,i) {return voteDateButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteDateButtonClick);
+
+			//make colored rectangle of race buttons
+			voteRaceButtons.append("rect")
+				.attr("class", function(d) {
+					if (voteMapRace == d) {return "voteMapSelBtn-rect-race voteMapSelBtn-rect-press";}
+					else {return "voteMapSelBtn-rect-race voteMapSelBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", voteRaceButtonWidth)
+				.attr("height", voteRaceButtonHeight)
+				.attr("x", function(d,i) {return voteRaceButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteRaceButtonClick);
+
+			//make colored rectangle of demo variable buttons
+			demoVarButtons.append("rect")
+				.attr("class", function(d) {
+					if (demoVar == d) {return "demoBarsSelBtn-rect-vars demoBarsSelBtn-rect-press";}
+					else {return "demoBarsSelBtn-rect-vars demoBarsSelBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", demoButtonWidth)
+				.attr("height", demoButtonHeight)
+				.attr("x", function(d,i) {return demoButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoVarButtonClick);
+
+			//make colored rectangle of demo change button
+			demoChangeButtons.append("rect")
+				.attr("class", function(d) {
+					if (demoChange == "CHANGE") {return "demoBarsSelBtn-rect-change demoBarsSelBtn-rect-press";}
+					else {return "demoBarsSelBtn-rect-change demoBarsSelBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", demoButtonWidth)
+				.attr("height", demoButtonHeight)
+				.attr("x", function(d,i) {return demoButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoChangeButtonClick);
+
+
+			//make text of date buttons
+			voteDateButtons.append("text")
+				.attr("class", function(d) {
+					if (voteMapDate == d) {return "voteMapSelBtn-text-date voteMapSelBtn-text-press";}
+					else {return "voteMapSelBtn-text-date voteMapSelBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((voteDateButtonWidth*i) + (voteDateButtonWidth/2));
+				})
+				.attr("y", voteDateButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteDateButtonClick)
+	            .text(function(d) {return d;});
+
+	        //make text of race buttons
+	        voteRaceButtons.append("text")
+				.attr("class", function(d) {
+					if (voteMapRace == d) {return "voteMapSelBtn-text-race voteMapSelBtn-text-press";}
+					else {return "voteMapSelBtn-text-race voteMapSelBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((voteRaceButtonWidth*i) + (voteRaceButtonWidth/2));
+				})
+				.attr("y", voteRaceButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteRaceButtonClick)
+	            .text(function(d) {return d;});
+
+	        //make text of demo variable buttons
+	        demoVarButtons.append("text")
+				.attr("class", function(d) {
+					if (demoVar == d) {return "demoBarsSelBtn-text-vars demoBarsSelBtn-text-press";}
+					else {return "demoBarsSelBtn-text-vars demoBarsSelBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((demoButtonWidth*i) + (demoButtonWidth/2));
+				})
+				.attr("y", demoButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoVarButtonClick)
+	            .text(function(d) {return d;})
+	            .call(wrap, demoButtonWidth-6);
+    
+
+	        //make text of demo change button
+	        demoChangeButtons.append("text")
+				.attr("class", function(d) {
+					if (demoChange == "CHANGE") {return "demoBarsSelBtn-text-change demoBarsSelBtn-text-press";}
+					else {return "demoBarsSelBtn-text-change demoBarsSelBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((demoButtonWidth*i) + (demoButtonWidth/2));
+				})
+				.attr("y", demoButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoChangeButtonClick)
+	            .text(function(d) {return d;})
+	            .call(wrap, demoButtonWidth-6);
+
+	        //box outlines
+			voteDateContainer.append("rect")
+	        	.attr("width", voteDateBoxWidth)
+	        	.attr("height", voteDateBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        voteRaceContainer.append("rect")
+	        	.attr("width", voteDateBoxWidth)
+	        	.attr("height", voteDateBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        demoVarContainer.append("rect")
+	        	.attr("width", demoVarBoxWidth)
+	        	.attr("height", demoVarBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        demoChangeContainer.append("rect")
+	        	.attr("width", demoChangeBoxWidth)
+	        	.attr("height", demoChangeBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        //style dynamic title of map
+	        voteMapTitle
+	        	.text(function() {
+	        		if (voteMapDate == "CHANGE") {
+	        			var dateText = "Change in Margin, 2012 - 2016";
+	        		}
+	        		else {
+	        			var dateText = voteMapDate;
+	        		}
+	        		if (voteMapRace == "PRESIDENT") {
+	        			var mapText = "US Presidential";
+	        		}
+	        		if (voteMapRace == "US SENATE") {
+						var mapText = "US Senate";
+	        		}
+	        		if (voteMapRace == "US CONGRESS") {
+	        			var mapText = "US Congressional";
+	        		}
+	        		return mapText + " Election: " + dateText;
+	        		});
+
+	        //style dynamic title of demoBars
+	        demoBarsTitle
+	        	.text(function() {
+	    			if (demoVar == "PERCENT NON-WHITE") {
+	    				var demoVarText = "Non-White, Non-Hispanic Population (% of total)";
+	    			}
+	    			if (demoVar == "UNEMPLOYMENT RATE") {
+	    				var demoVarText = "Unemployment Rate";
+	    			}
+	    			if (demoVar == "EDUCATION LEVEL") {
+	    				var demoVarText = "Population with Bachelor's Degree (% of total)";
+	    			}
+	    			if (demoVar == "INCOME") {
+	    				var demoVarText = "Median Income";
+	    			}
+	    			if (demoChange == "NO CHANGE") {
+	    				var demoChangeText = "",
+	    					demoDateText = "2015";
+
+	    				if (demoVar == "POPULATION DENSITY") {
+	    					var demoVarText = "Population Density";
+	    				}
+	    			}
+	    			if (demoChange == "CHANGE") {
+	    				var demoChangeText = "Change in ",
+	    					demoDateText = "2010-2015";
+
+	    				if (demoVar == "POPULATION DENSITY") {
+	    					var demoVarText = "Population";
+	    				}
+	    			}
+	    			return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
+	    		})
+			
+
+			//
+		    //
+		    //MAKE Bar Chart
+		    ////////////////////////////////////////////////////
+		    var barChartWidth = 960
+		    	barMargin = {top: 20, right: 20, bottom: 20, left: 20},
+		    	barPadding = {top: 40, right: 40, bottom: 40, left: 40},
+		    	barOuterWidth = 930,
+		    	barOuterHeight = popChange.length + barMargin.top + barPadding.top + barMargin.bottom + barPadding.bottom,
+		    	barChartHeight = barOuterHeight,
+			    barInnerWidth = barOuterWidth - barMargin.left - barMargin.right,
+			    barInnerHeight = barOuterHeight - barMargin.top - barMargin.bottom,
+			    barWidth = barInnerWidth - barPadding.left - barPadding.right,
+			    barHeight = barInnerHeight - barPadding.top - barPadding.bottom;
+
+
+
+			var formatPercent = d3.format(".0%");
+
+			var tractdataSorted = tractdata.sort(function (a, b) {
+				if (demoChange == "NO CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return d3.ascending(+a.POPDEN_2015, +b.POPDEN_2015);
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return d3.ascending(+a.PERCNONWHITE_2015, +b.PERCNONWHITE_2015);
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return d3.ascending(+a.UNEMPLOYMENT_2015, +b.UNEMPLOYMENT_2015);
+					}
+					if (demoVar == "EDUCATION") {
+						return d3.ascending(+a.COLLEGE_2015, +b.COLLEGE_2015);
+					}
+					if (demoVar == "INCOME") {
+						return d3.ascending(+a.MEDIANINC_2015, +b.MEDIANINC_2015);
+					}
+				}
+				if (demoChange == "CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return d3.ascending(+a.POPDEN_CHANGE, +b.POPDEN_CHANGE);
+					}
+					if (demoVar == "PERCENT NON_WHITE") {
+						return d3.ascending(+a.PERCNONWHITE_CHANGE, +b.PERCNONWHITE_CHANGE);
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return d3.ascending(+a.UNEMPLOYMENT_CHANGE, +b.UNEMPLOYMENT_CHANGE);
+					}
+					if (demoVar == "EDUCATION") {
+						return d3.ascending(+a.COLLEGE_CHANGE, +b.COLLEGE_CHANGE);
+					}
+					if (demoVar == "INCOME") {
+						return d3.ascending(+a.MEDIANINC_CHANGE, +b.MEDIANINC_CHANGE);
+					}
+				}
+            });
+            var barChartContainer = d3.select("#barchart").append("svg")
+            	.attr("width", barChartWidth)
+	        	.attr("height", barChartHeight)
+	        	.attr("x", 0)
+	        	.attr("y", 0);
+
+			var barsColorBar = barChartContainer.append("svg")
+	        	.attr("width", 30)
+	        	.attr("height", barHeight)
+	        	.attr("x", 5)
+	        	.attr("y", barMargin.top + barPadding.top);
+
+	       	var colorBarLabel = barChartContainer.append("text")
+	       		.attr("class", "colorBar-label")
+	       		.attr("x", 20)
+	       		.attr("y", barPadding.top)
+	       		.text("tract vote")
+	       		.append("tspan")
+	       		.text("margin")
+	       		.attr("x", 20)
+	       		.attr("dy", ".9em");
+	       	
+
+			var barsContainer = barChartContainer.append("svg")
+	            .attr("width", barOuterWidth)
+	            .attr("height", barOuterHeight)
+	            .append("g")
+	            .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
+
+	        var innerBars = barsContainer.append("g")
+	        	.attr("transform", "translate(" + barPadding.left + "," + barPadding.top + ")");
+
+			var barsX = d3.scaleLinear()
+			    .range([0, barWidth]);
+
+			var barsY = d3.scaleBand()
+				.rangeRound([0, barHeight]);
+
+			var barsXAxisTop = d3.axisTop()
+			    .scale(barsX);
+
+			var barsXAxisBottom = d3.axisBottom()
+				.scale(barsX);
+				// .tickFormat(formatPercent);
+
+			var barsYAxis = d3.axisLeft()
+			    .scale(barsY)
+			    .tickSize(0)
+			    .tickFormat("");
+
+			var demoVarMin = d3.min(getDemoVar()),
+				demoVarMax = d3.max(getDemoVar());
+
+			console.log(demoVarMin);
+			console.log(demoVarMax);
+
+			barsX.domain([demoVarMin, demoVarMax]).nice();
+
+			barsY.domain(tractdataSorted.map(function(d) {
+					return d.GEO_ID;
+				}));
+
+			// add the X gridlines
+			innerBars.append("g")			
+			    .attr("class", "grid")
+			    .attr("transform", "translate(0," + barHeight + ")")
+			    .call(make_x_gridlines()
+			        .tickSize(-barHeight)
+			        .tickFormat("")
+			    );
+
+
+
+			// // add the Y gridlines
+			// innerBars.append("g")			
+			//     .attr("class", "grid")
+			//     .call(make_y_gridlines()
+			//         .tickSize(-barWidth)
+			//         .tickFormat("")
+			//     );
+
+			//append color bars
+			barsColorBar.selectAll(".color-bar")
+				.data(tractdataSorted)
+				.enter()
+			  .append("rect")
+			  .attr("class", "color-bar")
+			  	.attr("y", function (d) {
+	                return barsY(d.GEO_ID);
+	            })
+	            .attr("height", function(d) {
+	            	if (isNaN(getDemoData(d))) {
+	            		return 0;
+	            	}
+	            	else {return 1;}
+	            })
+	            .attr("x", 0)
+	            .attr("width", 30)
+	            .style("fill", function(d) {
+	            	var tract = d.GEO_ID;
+	            	return (getVoteColor(tract));
+	            	})
+			  	.style("opacity", "1");
+
+	        //append bars
+	        innerBars.selectAll(".bar")
+	            .data(tractdataSorted)
+	            .enter()
+	          .append("rect")
+	            .attr("class", "bar")
+	            .attr("y", function (d) {
+	                return barsY(d.GEO_ID);
+	            })
+	            .attr("height", function(d) {
+	            	if (isNaN(getDemoData(d))) {
+	            		return 0;
+	            	}
+	            	else {return 1;}
+	            })
+	            .attr("x", function(d) {
+	            	if (isNaN(getDemoData(d))) {
+	            		return 0;
+	            	}
+	            	else {return barsX(Math.min(0, getDemoData(d)));}
+	            })
+	            .attr("width", function(d) {
+	            	if (isNaN(getDemoData(d))) {
+	            		return 0;
+	            	}
+	                else {return Math.abs(barsX(getDemoData(d))-barsX(0));}
+	            })
+	            .style("fill", function(d) {
+	            	var tract = d.GEO_ID;
+	            	return (getVoteColor(tract));
+	            	})
+			  	.style("opacity", "1");
+
+			innerBars.append("g")
+			    .attr("class", "x axis")
+			    .attr("id", "demoXAxisTop")
+			    .attr("transform", "translate(0," + -10 + ")")
+			    .call(barsXAxisTop);
+
+			innerBars.append("g")
+			    .attr("class", "x axis")
+			    .attr("id", "demoXAxisBottom")
+			    .attr("transform", "translate(0," + barHeight + ")")
+			    .call(barsXAxisBottom);    
+
+			innerBars.append("g")
+			    .attr("class", "y axis")
+			    .attr("id", "demoYAxis")
+			    .attr("transform", "translate(" + barsX(0) + ",0)")
+			    .call(barsYAxis);
+
+			tractdata = tractdata.sort(function(a, b) {
+            		return d3.ascending(a.GEO_ID, b.GEO_ID);
+            	});
+
+			
+	        
+
+	        // //add a value label to the right of each bar
+	        // innerBars.append("text")
+	        //     .attr("class", "label")
+	        //     //y position of the label is halfway down the bar
+	        //     .attr("y", function (d) {
+	        //         return y(d.name) + y.rangeBand() / 2 + 4;
+	        //     })
+	        //     //x position is 3 pixels to the right of the bar
+	        //     .attr("x", function (d) {
+	        //         return x(d.value) + 3;
+	        //     })
+	        //     .text(function (d) {
+	        //         return d.value;
+	        //     });
+
+
+
+		    //
+	       	//
+	       	//Make Demographics Map
+	       	////////////////////////////////////////////////////
+
+
+	       	//Make container
+			var demosMapBoxWidth = 900,
+			    demosMapBoxHeight = 650;
+
+			var demosMapContainer = d3.select("#demosmap")
+				.append("svg")
+			    .attr("width", demosMapBoxWidth)
+			    .attr("height", demosMapBoxHeight);
+
+
+			//Set initial variables for map
+			var selDemo = incomeChange;
+
+	    	var demoMax = d3.max(selDemo);
+	    		demoMin = d3.min(selDemo);
+
+	    	var selDemoPos = [],
+	    		selDemoNeg = [];
+
+	    	selDemo.forEach(function(value) {
+	    		if (value >= 0) {
+	    			selDemoPos.push(value);
+	    		}
+	    		if (value < 0) {
+	    			selDemoNeg.push(value);
+	    		}
+	    	})
+
+	    	console.log(demoMax);
+	    	console.log(demoMin);
+			
+
+			//Set projection infomation
+			var demosProjection = d3.geoAlbers()
+			    .rotate( [77.1945,0] )
+	    		.center( [0, 41.2033] );
+
+	    	var demosPath = d3.geoPath()
+			    .projection(demosProjection);
+
+			demosProjection
+		  		.scale(1)
+		  		.translate([0,0]);
+
+		  	var b = demosPath.bounds(allTracts),
+			    s = .95 / Math.max((b[1][0] - b[0][0]) / demosMapBoxWidth, (b[1][1] - b[0][1]) / demosMapBoxHeight),
+			    t = [(demosMapBoxWidth - s * (b[1][0] + b[0][0])) / 2, (demosMapBoxHeight - s * (b[1][1] + b[0][1])) / 2];
+
+			demosProjection
+		    	.scale(s)
+		    	.translate(t);
+
+	    	
+	    	//Set colors
+	    	var maxColor = "#008837",
+	    		minColor = "#7b3294",
+	    		zeroColor = "#f7f7f7";
+
+	    	var numColors = 50;
+
+	    	var demoColors = d3.scaleThreshold()
+	    		.domain(getColorDomain(numColors))
+	    		.range(getColorRange(numColors));
+
+		  	
+	    	//Make map geometry elements
+		    demosMapContainer.append("g")
+			    .selectAll("path")
+		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
+		      	.enter().append("path")
+		      	.attr("class", "tracts demo-tracts tracts-non-brushed")
+		      	.attr("tractno", function(d) {return d.properties.GEO_ID;})
+		      	.attr("d", demosPath)
+		      	.style("fill", function(d) { 
+		      		var tract = d.properties.GEO_ID;
+		      		if (selDemo == popChange) {
+	      				if (popChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(popChangeByTract[tract]);}
+	      			}
+		      		if (selDemo == popDen) {
+	      				if (popDenByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(popDenByTract[tract]);}
+	      			}
+	      			if (selDemo == popDenChange) {
+	      				if (popDenChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(popDenChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == nonWhite) {
+	      				if (nonWhiteByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(nonWhiteByTract[tract]);}
+	      			}
+	      			if (selDemo == nonWhiteChange) {
+	      				if (nonWhiteChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(nonWhiteChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == unemploy) {
+	      				if (unemployByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(unemployByTract[tract]);}
+	      			}
+	      			if (selDemo == unemployChange) {
+	      				if (unemployChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(unemployChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == college) {
+	      				if (collegeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(collegeByTract[tract]);}
+	      			}
+	      			if (selDemo == collegeChange) {
+	      				if (collegeChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(collegeChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == income) {
+	      				if (incomeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(incomeByTract[tract]);}
+	      			}
+	      			if (selDemo == incomeChange) {
+	      				if (incomeChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(incomeChangeByTract[tract]);}
+	      			}
+		      	})
+		      	.style ("stroke", function(d) { 
+		      		var tract = d.properties.GEO_ID;
+		      		if (selDemo == popChange) {
+	      				if (popChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(popChangeByTract[tract]);}
+	      			}
+		      		if (selDemo == popDen) {
+	      				if (popDenByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(popDenByTract[tract]);}
+	      			}
+	      			if (selDemo == popDenChange) {
+	      				if (popDenChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(popDenChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == nonWhite) {
+	      				if (nonWhiteByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(nonWhiteByTract[tract]);}
+	      			}
+	      			if (selDemo == nonWhiteChange) {
+	      				if (nonWhiteChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(nonWhiteChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == unemploy) {
+	      				if (unemployByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(unemployByTract[tract]);}
+	      			}
+	      			if (selDemo == unemployChange) {
+	      				if (unemployChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(unemployChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == college) {
+	      				if (collegeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(collegeByTract[tract]);}
+	      			}
+	      			if (selDemo == collegeChange) {
+	      				if (collegeChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(collegeChangeByTract[tract]);}
+	      			}
+	      			if (selDemo == income) {
+	      				if (incomeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(incomeByTract[tract]);}
+	      			}
+	      			if (selDemo == incomeChange) {
+	      				if (incomeChangeByTract[tract] == "ERROR") {return initialColor;}
+	      				else {return demoColors(incomeChangeByTract[tract]);}
+	      			}
+		      	})
+		      	.style("stroke-width", "0.8px");
+
+
+		    
+
+
+		    //
+		    //
+		    //MAKE Scatterplot
+		    ////////////////////////////////////////////////////
+		 //    var plotMargin = {top: 20, right: 20, bottom: 30, left: 40},
+			//     plotWidth = 800 - plotMargin.left - plotMargin.right,
+			//     plotHeight = 500 - plotMargin.top - plotMargin.bottom;
+
+		 //    var plotX = d3.scaleLinear()
+			//     .range([0, plotWidth]);
+
+			// var plotY = d3.scaleLinear()
+			//     .range([plotHeight, 0]);
+
+			// var plotXAxis = d3.axisBottom()
+			//     .scale(plotX);
+
+			// var plotYAxis = d3.axisLeft()
+			//     .scale(plotY);
+
+			// var plot = d3.select("#voteplot").append("svg")
+			// 	.attr("width", plotWidth + plotMargin.left + plotMargin.right)
+			//     .attr("height", plotHeight + plotMargin.top + plotMargin.bottom);
+			
+			// plot.append("g")
+			//     .attr("transform", "translate(" + plotMargin.left + "," + plotMargin.top + ")");
+
+
+			// plotX.domain(d3.extent(nonWhite)).nice();
+			// plotY.domain(d3.extent(usp2016Margins)).nice();
+			// // x.domain([-1,1]);
+			// // y.domain([-1,3]);
+			
+			// var totals2016Max = d3.max(usp2016Totals),
+			// 	totals2016Min = d3.min(usp2016Totals);
+
+			// var rScale = d3.scaleLinear()
+			// 	.domain([totals2016Min, totals2016Max])
+			// 	.range([2,20]);
+
+
+			// plot.append("g")
+			//     .attr("class", "x axis")
+			//     .attr("transform", "translate(0," + (plotHeight) + ")")
+			//     .call(plotXAxis)
+			//   .append("text")
+			//     .attr("class", "label")
+			//     .attr("x", plotWidth)
+			//     .attr("y", -6)
+			//     .style("text-anchor", "end")
+			//     .text("2016 margin (%)");
+
+			// plot.append("g")
+			//     .attr("class", "y axis")
+			//     .attr("transform", "translate(" + (plotWidth*0) + ",0)")
+			//     .call(plotYAxis)
+			//   .append("text")
+			//     .attr("class", "label")
+			//     .attr("transform", "rotate(-90)")
+			//     .attr("y", 6)
+			//     .attr("dy", ".71em")
+			//     .style("text-anchor", "end")
+			//     .text("2012 margin (%)");
+
+			
+			// var dots = plot.append("g")
+			// 	.selectAll(".dot")
+			//     .data(tractdata)
+			//     .enter()
+			//     .append("circle")
+			//     .attr("class", "dots")
+			//     .attr("class", "dots-non-brushed")
+			//     .attr("r", 2.2)
+			//     // 	function(d) {
+			//     // 	var dem16 = +d.USP_DEM_2016,
+			//   		// 	rep16 = +d.USP_REP_2016,
+			//   		// 	oth16 = +d.USP_OTH_2016;
+
+			//   		// var tot16 = dem16 + rep16 + oth16;
+
+			//   		// return rScale(tot16);
+			//     // })
+			//     .attr("geoid", function(d) {return d.GEO_ID})
+			//     .attr("cx", function(d) {
+			//     	var nonWhite = +d.PERCNONWHITE_2015;
+			//     	return plotX(nonWhite);
+			//     // 	var dem16 = +d.USP_DEM_2016,
+			//   		// 	rep16 = +d.USP_REP_2016,
+			//   		// 	oth16 = +d.USP_OTH_2016;
+
+			//   		// var tot16 = dem16 + rep16 + oth16;
+
+			//   		// var margin16 = (rep16 - dem16)/tot16;
+
+			//   		// return x(margin16);
+			//   	})
+			//     .attr("cy", function(d) { 
+			//     	// var popDen = +d.POPDEN_2015;
+			//     	// return y(popDen);
+			//       	var dem16 = +d.USP_DEM_2016,
+			//   			rep16 = +d.USP_REP_2016,
+			//   			oth16 = +d.USP_OTH_2016,
+			//   			dem12 = +d.USP_DEM_2012,
+			//   			rep12 = +d.USP_REP_2012,
+			//   			oth12 = +d.USP_OTH_2012;
+
+			//   		var tot16 = dem16 + rep16 + oth16,
+			//   			tot12 = dem12 + rep12 + oth12;
+
+			//   		var margin16 = (rep16 - dem16)/tot16,
+			//   			margin12 = (rep12 - dem12)/tot12,
+			//   			change = margin16 - margin12;
+
+			//   		return plotY(change);
+			//   	})
+			//     .style("fill", function(d) {
+			//     	var dem16 = +d.USP_DEM_2016,
+			//   			rep16 = +d.USP_REP_2016,
+			//   			oth16 = +d.USP_OTH_2016,
+			//   			dem12 = +d.USP_DEM_2012,
+			//   			rep12 = +d.USP_REP_2012,
+			//   			oth12 = +d.USP_OTH_2012;
+
+			//   		var tot16 = dem16 + rep16 + oth16,
+			//   			tot12 = dem12 + rep12 + oth12;
+
+			//   		var margin16 = (rep16 - dem16)/tot16,
+			//   			margin12 = (rep12 - dem12)/tot12,
+			//   			change = margin16 - margin12
+			//   			otherthing = margin12/margin16;
+
+			//   		return voteColor(margin16);
+			//   	})
+			//   	.style("opacity", "0.8");
+				
+
+			// var brush = d3.brush()
+			// 	.on("brush", highlightBrushedTracts);
+
+			// plot.append("g")
+			// 	.call(brush);
+
+			
+			
+
+
+		    //
+	       	//
+	       	//FUNCTIONS WITHIN drawMap function
+	       	////////////////////////////////////////////////////
+		    function handleVoteDateButtonClick(d) {
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", true)
+		    		.classed("voteMapSelBtn-rect-noPress", false);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") != d;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", false)
+		    		.classed("voteMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".voteMapSelBtn-text-date").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("voteMapSelBtn-text-press", true)
+		    		.classed("voteMapSelBtn-text-noPress", false);
+
+		    	d3.selectAll(".voteMapSelBtn-text-date").filter(function() {return this.getAttribute("buttonVal") != d;})
+		    		.classed("voteMapSelBtn-text-press", false)
+		    		.classed("voteMapSelBtn-text-noPress", true);
+
+				voteMapDate = d; 
+				console.log(voteMapDate);
+				console.log(voteMapRace);
+				updateVoteMapTitle(); 
+				updateVoteMap();
+				updateDemoBars();
+		    }
+
+		    function handleVoteRaceButtonClick(d) {
+		    	
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", true)
+		    		.classed("voteMapSelBtn-rect-noPress", false);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") != d;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", false)
+		    		.classed("voteMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".voteMapSelBtn-text-race").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("voteMapSelBtn-text-press", true)
+		    		.classed("voteMapSelBtn-text-noPress", false);
+
+		    	d3.selectAll(".voteMapSelBtn-text-race").filter(function() {return this.getAttribute("buttonVal") != d;})
+		    		.classed("voteMapSelBtn-text-press", false)
+		    		.classed("voteMapSelBtn-text-noPress", true);
+
+				voteMapRace = d; 
+				console.log(voteMapDate);
+				console.log(voteMapRace);
+				updateVoteMapTitle(); 
+				updateVoteMap();
+				updateDemoBars();
+		    }
+
+
+		    function handleDemoVarButtonClick(d) {
+		    	
+		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("demoBarsSelBtn-rect-press", true)
+		    		.classed("demoBarsSelBtn-rect-noPress", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") != d;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("demoBarsSelBtn-rect-press", false)
+		    		.classed("demoBarsSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".demoBarsSelBtn-text-vars").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("demoBarsSelBtn-text-press", true)
+		    		.classed("demoBarsSelBtn-text-noPress", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-text-vars").filter(function() {return this.getAttribute("buttonVal") != d;})
+		    		.classed("demoBarsSelBtn-text-press", false)
+		    		.classed("demoBarsSelBtn-text-noPress", true);
+
+				demoVar = d; 
+				console.log(demoVar);
+				console.log(demoChange);
+				updateDemoBarsTitle(); 
+				updateDemoBars();
+		    }
+
+
+		    function handleDemoChangeButtonClick(d) {
+		    	
+		    	if (demoChange == "NO CHANGE") { 
+					var demoChangeNew = "CHANGE";
+				}
+				if (demoChange == "CHANGE") {
+					var demoChangeNew = "NO CHANGE";
+				}
+				
+		    	if (demoChangeNew == "CHANGE") {
+			    	d3.selectAll(".demoBarsSelBtn-rect-change")
+			    		.classed("selBtn-rect-hover", false)
+			    		.classed("demoBarsSelBtn-rect-press", true)
+			    		.classed("demoBarsSelBtn-rect-noPress", false);
+
+			    	d3.selectAll(".demoBarsSelBtn-text-change")
+			    		.classed("demoBarsSelBtn-text-press", true)
+			    		.classed("demoBarsSelBtn-text-noPress", false);
+		    	}
+		    	if (demoChangeNew == "NO CHANGE") {
+		    		d3.selectAll(".demoBarsSelBtn-rect-change")
+		    			.classed("selBtn-rect-hover", false)
+			    		.classed("demoBarsSelBtn-rect-press", false)
+			    		.classed("demoBarsSelBtn-rect-noPress", true);
+
+			    	d3.selectAll(".demoBarsSelBtn-text-change")
+			    		.classed("demoBarsSelBtn-text-press", false)
+			    		.classed("demoBarsSelBtn-text-noPress", true);
+		    	}
+
+		    	demoChange = demoChangeNew;
+				
+				console.log(demoVar);
+				console.log(demoChange);
+				updateDemoBarsTitle(); 
+				updateDemoBars();
+		    }
+
+		    function handleSelButtonMouseover(d) {
+		    	
+
+		    	console.log(this.getAttribute("buttonVal"));
+
+		    	console.log(d);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoBarsSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.select(this).style("cursor", "pointer");
+		    }
+
+		    function handleSelButtonMouseout(d) {
+		    	d3.select(this).style("cursor", "default");
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoBarsSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    }
+
+		    function updateVoteMapTitle() {
+		    	
+		    	voteMapTitle
+		        	.text(function() {
+		        		if (voteMapDate == "CHANGE") {
+		        			var dateText = "Change in Margin, 2012 - 2016";
+		        		}
+		        		else {
+		        			var dateText = voteMapDate;
+		        		}
+
+		        		if (voteMapRace == "PRESIDENT") {
+		        			var mapText = "US Presidential";
+		        		}
+		        		if (voteMapRace == "US SENATE") {
+							var mapText = "US Senate";
+		        		}
+		        		if (voteMapRace == "US CONGRESS") {
+		        			var mapText = "US Congressional";
+		        		}
+		        		return mapText + " Election: " + dateText;
+		        		});
+		    }
+
+
+		    function updateDemoBarsTitle() {
+
+		    	demoBarsTitle
+		    		.text(function() {
+		    			if (demoVar == "PERCENT NON-WHITE") {
+		    				var demoVarText = "Non-White, Non-Hispanic Population (% of total)";
+		    			}
+		    			if (demoVar == "UNEMPLOYMENT RATE") {
+		    				var demoVarText = "Unemployment Rate";
+		    			}
+		    			if (demoVar == "EDUCATION") {
+		    				var demoVarText = "% of Population with Bachelor's Degree";
+		    			}
+		    			if (demoVar == "INCOME") {
+		    				var demoVarText = "Median Income";
+		    			}
+		    			if (demoChange == "NO CHANGE") {
+		    				var demoChangeText = "",
+		    					demoDateText = "2015";
+
+		    				if (demoVar == "POPULATION DENSITY") {
+		    					var demoVarText = "Population Density";
+		    				}
+		    			}
+		    			if (demoChange == "CHANGE") {
+		    				var demoChangeText = "Change in ",
+		    					demoDateText = "2010-2015";
+
+		    				if (demoVar == "POPULATION DENSITY") {
+		    					var demoVarText = "Population";
+		    				}
+		    			}
+		    			return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
+		    		})
+		    }
+
+
+		    function updateVoteMap(d) {
+				
+				d3.selectAll(".vote-tracts")
+			      	.transition()
+				     	.duration(400)	
+				     	.style("fill", function(d) {
+				     		var tract = d.properties.GEO_ID;
+				     		return getVoteColor(tract); 
+				     	})
+				      	.style("stroke", function(d) {
+				     		var tract = d.properties.GEO_ID;
+				     		return getVoteColor(tract); 
+				     	}); 		
+		    }
+
+
+			function updateDemoBars(d) {
+
+				tractdataSorted = tractdata.sort(function (a, b) {
+					if (demoChange == "NO CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return d3.ascending(+a.POPDEN_2015, +b.POPDEN_2015);
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return d3.ascending(+a.PERCNONWHITE_2015, +b.PERCNONWHITE_2015);
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return d3.ascending(+a.UNEMPLOYMENT_2015, +b.UNEMPLOYMENT_2015);
+						}
+						if (demoVar == "EDUCATION") {
+							return d3.ascending(+a.COLLEGE_2015, +b.COLLEGE_2015);
+						}
+						if (demoVar == "INCOME") {
+							return d3.ascending(+a.MEDIANINC_2015, +b.MEDIANINC_2015);
+						}
+					}
+					if (demoChange == "CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return d3.ascending(+a.POPDEN_CHANGE, +b.POPDEN_CHANGE);
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return d3.ascending(+a.PERCNONWHITE_CHANGE, +b.PERCNONWHITE_CHANGE);
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return d3.ascending(+a.UNEMPLOYMENT_CHANGE, +b.UNEMPLOYMENT_CHANGE);
+						}
+						if (demoVar == "EDUCATION") {
+							return d3.ascending(+a.COLLEGE_CHANGE, +b.COLLEGE_CHANGE);
+						}
+						if (demoVar == "INCOME") {
+							return d3.ascending(+a.MEDIANINC_CHANGE, +b.MEDIANINC_CHANGE);
+						}
+					}
+            	});
+
+            	var barsX = d3.scaleLinear()
+			    	.range([0, barWidth]);
+
+				var barsY = d3.scaleBand()
+					.rangeRound([0, barHeight]);
+
+				var barsXAxisTop = d3.axisTop()
+				    .scale(barsX);
+
+				var barsXAxisBottom = d3.axisBottom()
+					.scale(barsX);
+					// .tickFormat(formatPercent);
+
+				var barsYAxis = d3.axisLeft()
+				    .scale(barsY)
+				    .tickSize(0)
+				    .tickFormat("");
+					
+				// barsX.domain(d3.extent(tractdata, demoData)).nice();
+
+				var demoVarMin = d3.min(getDemoVar()),
+					demoVarMax = d3.max(getDemoVar());
+
+				console.log(demoVarMin);
+				console.log(demoVarMax);
+
+				barsX.domain([demoVarMin, demoVarMax]).nice();
+
+				barsY.domain(tractdataSorted.map(function(d) {
+						return d.GEO_ID;
+					}));
+
+				barsColorBar.selectAll(".color-bar")
+					.transition()
+						.duration(1200)
+					  	.attr("y", function (d) {
+			                return barsY(d.GEO_ID);
+			            })
+			            .attr("height", function(d) {
+			            	if (isNaN(getDemoData(d))) {
+			            		return 0;
+			            	}
+			            	else {return 1;}
+			            })
+			            .style("fill", function(d) {
+			            	var tract = d.GEO_ID;
+			            	return (getVoteColor(tract));
+			            	});
+
+
+		        //append bars
+		        d3.selectAll(".bar")
+		           .transition()
+				     	.duration(1200)
+		            	.attr("y", function (d) {
+			                return barsY(d.GEO_ID);
+			            })
+			            .attr("height", function(d) {
+			            	if (isNaN(getDemoData(d))) {
+			            		return 0;
+			            	}
+			            	else {return 1;}
+			            })
+			            .attr("x", function(d) {
+			            	if (isNaN(getDemoData(d))) {
+			            		return 0;
+			            	}
+			            	else {return barsX(Math.min(0, getDemoData(d)));}
+			            })
+			            .attr("width", function(d) {
+			            	if (isNaN(getDemoData(d))) {
+			            		return 0;
+			            	}
+			                else {return Math.abs(barsX(getDemoData(d))-barsX(0));}
+			            })
+			            .style("fill", function(d) {
+			            	var tract = d.GEO_ID;
+			            	return getVoteColor(tract);
+			            });
+
+			    d3.select("#demoXAxisTop")
+			    	.transition()
+			    		.duration(1200)
+				    	.attr("transform", "translate(0," + -10 + ")")
+				    	.call(barsXAxisTop);
+
+				d3.select("#demoXAxisBottom")
+					.transition()
+			    		.duration(1200)
+				    	.attr("transform", "translate(0," + barHeight + ")")
+				    	.call(barsXAxisBottom);   
+
+				d3.select("#demoYAxis")
+				    .transition()
+				     	.duration(1200)
+				    	.attr("transform", "translate(" + barsX(0) + ",0)")
+				    	.call(barsYAxis);
+
+				tractdata = tractdata.sort(function(a, b) {
+            		return d3.ascending(a.GEO_ID, b.GEO_ID);
+            	});
+
+			}
+
+
+			function getDemoData(d) {
+
+				if (demoChange == "NO CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						// if (isNaN(+d.POPDEN_2015)) {
+						// 	return 
+						// }
+						// else {return +d.POPDEN_2015;}
+						return +d.POPDEN_2015;
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return +d.PERCNONWHITE_2015;
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return +d.UNEMPLOYMENT_2015;
+					}
+					if (demoVar == "EDUCATION") {
+						return +d.COLLEGE_2015;
+					}
+					if (demoVar == "INCOME") {
+						return +d.MEDIANINC_2015;
+					}
+				}
+				if (demoChange == "CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return +d.POPDEN_CHANGE;
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return +d.PERCNONWHITE_CHANGE;
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return +d.UNEMPLOYMENT_CHANGE;
+					}
+					if (demoVar == "EDUCATION") {
+						return +d.COLLEGE_CHANGE;
+					}
+					if (demoVar == "INCOME") {
+						return +d.MEDIANINC_CHANGE;
+					}
+				}
+			}
+
+
+			function getDemoVar() {
+
+				if (demoChange == "NO CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return popDen;
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return nonWhite;
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return unemploy;
+					}
+					if (demoVar == "EDUCATION") {
+						return college;
+					}
+					if (demoVar == "INCOME") {
+						return income;
+					}
+				}
+				if (demoChange == "CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return popDenChange;
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return nonWhiteChange;
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return unemployChange;
+					}
+					if (demoVar == "EDUCATION") {
+						return collegeChange;
+					}
+					if (demoVar == "INCOME") {
+						return incomeChange;
+					}
+				}
+			}
+
+
+		    function getVoteColor(tract) {
+
+      			if (voteMapDate == "2016" && voteMapRace == "PRESIDENT") {
+      				if (usp2016MarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (usp2016MarginByTract[tract] >= 0) {
+		      				return voteColorRed(usp2016MarginByTract[tract]);
+		      			} 
+		      			if (usp2016MarginByTract[tract] < 0) {
+		      				return voteColorBlue(usp2016MarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "2016" && voteMapRace == "US SENATE") {
+      				if (uss2016MarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (uss2016MarginByTract[tract] >= 0) {
+		      				return voteColorRed(uss2016MarginByTract[tract]);
+		      			} 
+		      			if (uss2016MarginByTract[tract] < 0) {
+		      				return voteColorBlue(uss2016MarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "2016" && voteMapRace == "US CONGRESS") {
+      				if (usc2016MarginByTract[tract] == "ERROR") {return initialColor;}
+	      			else {
+	      				if (usc2016MarginByTract[tract] >= 0) {
+		      				return voteColorRed(usc2016MarginByTract[tract]);
+		      			} 
+		      			if (usc2016MarginByTract[tract] < 0) {
+		      				return voteColorBlue(usc2016MarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "2012" && voteMapRace == "PRESIDENT") {
+      				if (usp2012MarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (usp2012MarginByTract[tract] >= 0) {
+		      				return voteColorRed(usp2012MarginByTract[tract]);
+		      			} 
+		      			if (usp2012MarginByTract[tract] < 0) {
+		      				return voteColorBlue(usp2012MarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "2012" && voteMapRace == "US SENATE") {
+      				if (uss2012MarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (uss2012MarginByTract[tract] >= 0) {
+		      				return voteColorRed(uss2012MarginByTract[tract]);
+		      			} 
+		      			if (uss2012MarginByTract[tract] < 0) {
+		      				return voteColorBlue(uss2012MarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "2012" && voteMapRace == "US CONGRESS") {
+      				if (usc2012MarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (usc2012MarginByTract[tract] >= 0) {
+		      				return voteColorRed(usc2012MarginByTract[tract]);
+		      			} 
+		      			if (usc2012MarginByTract[tract] < 0) {
+		      				return voteColorBlue(usc2012MarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "CHANGE" && voteMapRace == "PRESIDENT") {
+      				if (uspChangeMarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (uspChangeMarginByTract[tract] >= 0) {
+		      				return voteColorRed(uspChangeMarginByTract[tract]);
+		      			} 
+		      			if (uspChangeMarginByTract[tract] < 0) {
+		      				return voteColorBlue(uspChangeMarginByTract[tract]);
+		      			}
+		      		}
+      			}
+      			if (voteMapDate == "CHANGE" && voteMapRace == "US SENATE") {
+      				if (ussChangeMarginByTract[tract] == "ERROR") {return initialColor;}
+      				else {
+	      				if (ussChangeMarginByTract[tract] >= 0) {
+		      				return voteColorRed(ussChangeMarginByTract[tract]);
+		      			} 
+		      			if (ussChangeMarginByTract[tract] < 0) {
+		      				return voteColorBlue(ussChangeMarginByTract[tract]);
+		      			}
+		      		}
+      			}	
+      			if (voteMapDate == "CHANGE" && voteMapRace == "US CONGRESS") {
+      				if (uscChangeMarginByTract[tract] == "ERROR") {return initialColor;}
+	      			else {
+	      				if (uscChangeMarginByTract[tract] >= 0) {
+		      				return voteColorRed(uscChangeMarginByTract[tract]);
+		      			} 
+		      			if (uscChangeMarginByTract[tract] < 0) {
+		      				return voteColorBlue(uscChangeMarginByTract[tract]);
+		      			}
+		      		}
+	      		} 
+		    }
+			
+
+			// gridlines in x axis function
+			function make_x_gridlines() {		
+			    return d3.axisBottom(barsX);
+			        // .ticks(5)
+			}
+
+			// gridlines in y axis function
+			function make_y_gridlines() {		
+			    return d3.axisLeft(barsY);
+			        // .ticks(5)
+			}
+
+
+			function highlightBrushedTracts(d) {
+
+                if (d3.event.selection != null) {
+
+                    // revert circles to initial style
+                    d3.selectAll(".tracts")
+                    	.classed("tracts-brushed", false)
+                    	.classed("tracts-non-brushed", true);
+
+                    dots
+                    	.classed("dots-brushed", false)
+                    	.classed("dots-non-brushed", true);
+
+                    var brush_coords = d3.brushSelection(this);
+
+                    var x0 = brush_coords[0][0],
+		                x1 = brush_coords[1][0],
+		                y0 = brush_coords[0][1],
+		                y1 = brush_coords[1][1];
+
+
+                    // style brushed circles
+                    dots.filter(function (){
+
+                   		var cx = d3.select(this).attr("cx"),
+                       		cy = d3.select(this).attr("cy");
+
+                   		return isBrushed(brush_coords, cx, cy);
+               		})
+               		.attr("class", "dots-brushed");
+
+               		d3.selectAll(".dots-brushed")
+               			.each(function() {
+               				var dotGeoID = d3.select(this).attr("geoid");
+
+               				d3.selectAll(".tracts").filter(function() {return this.getAttribute("tractno") == dotGeoID;})
+               					.raise()
+               					.classed("tracts-brushed", true)
+               					.classed("tracts-non-brushed", false)
+               					.style("stroke", "black")
+               					.style("stroke-width", "2px");
+						});
+               	}
+            }
+            
+
+            function isBrushed(brush_coords, cx, cy) {
+
+	            var x0 = brush_coords[0][0],
+	                x1 = brush_coords[1][0],
+	                y0 = brush_coords[0][1],
+	                y1 = brush_coords[1][1];
+
+	            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+        	}
+
+
+	    	function getColorDomain(numColors) {
+
+		    	var numColorsRange = Array.from(new Array(numColors),(val,index)=>index+1);
+
+    			if (Math.abs(demoMax) >= Math.abs(demoMin)) {
+    				var bins = d3.scaleQuantile()
+    					.domain(selDemoPos)
+    					.range(numColorsRange);
+    				var threshVals = bins.quantiles();
+    				if (demoMin >= 0) {
+    					threshVals.push(demoMax);
+    					return threshVals;
+    				}
+    				if (demoMin < 0) {
+    					var negThreshVals = threshVals.map(function(n){
+    						return (n*-1);
+    					});
+    					negThreshVals.reverse();
+    					negThreshVals.push(0);
+    					var orderedThreshVals = negThreshVals.concat(threshVals);
+    					orderedThreshVals.push(demoMax);
+    					return orderedThreshVals;
+    				}
+    			}
+    			if (Math.abs(demoMax) < Math.abs(demoMin)) {
+    				var bins = d3.scaleQuantile()
+    					.domain(selDemoNeg)
+    					.range(numColorsRange);
+    				var threshVals = bins.quantiles();
+
+    				var negThreshVals = threshVals.map(function(n){
+    						return (n*-1);
+    					});
+    				negThreshVals.reverse();
+    				
+    				threshVals.push(0);
+    				var orderedThreshVals = threshVals.concat(negThreshVals);
+    				orderedThreshVals.push(-demoMin);
+    				return orderedThreshVals;
+	    		}
+	    	}
+
+
+	    	function getColorRange(numColors) {
+
+	    		var numColorsRange = Array.from(new Array(numColors),(val,index)=>((index+1)/numColors));
+
+	    		if (demoMin >= 0) {
+	    			colorVals = [];
+    				numColorsRange.forEach(function(value, i){
+    					var colorVal = d3.interpolateBuPu(value)
+    					colorVals.push(colorVal);
+    				})
+    				return colorVals;
+    			}
+    			if (demoMin < 0) {
+    				posColorVals = [];
+    				negColorVals = [];
+    				
+    				numColorsRange.forEach(function(value, i){
+    					var posColorVal = d3.interpolatePuRd(value),
+    						negColorVal = d3.interpolateBlues(value);
+    					posColorVals.push(posColorVal);
+    					negColorVals.push(negColorVal);
+    				})
+    				var invNegColorVals = negColorVals;
+    				invNegColorVals.reverse();
+
+	    			var	orderedColorVals = invNegColorVals.concat(posColorVals);
+    				return orderedColorVals;
+    			}	
+	    	}
+
+
+	    	function wrap(text, width) {
+
+	    		text.each(function() {	
+	    		var text = d3.select(this),
+            		words = text.text().split(" ").reverse(),
+            		word,
+            		width = demoButtonWidth-6,
+            		line = [],
+            		lines = 1,
+            		lineNumber = 0,
+            		lineHeight = 1.1,
+            		x = this.getAttribute("x"),
+            		y = this.getAttribute("y"),
+            		dy = 0,
+            		tspan = text.text(null)
+            			.append("tspan")
+                        .attr("x", x)
+                        // .attr("y", y)
+                        .attr("dy", dy + "em");
+
+                    while (word = words.pop()) {
+			            line.push(word);
+			            tspan.text(line.join(" "));
+			            if (tspan.node().getComputedTextLength() > width) {
+			                line.pop();
+			                var lineJoin = line.join(" ");			                
+			                tspan.text(line.join(" "))
+			                	.attr("y", y-(6));
+			                line = [word];
+			                tspan = text.append("tspan")
+			                            .attr("x", x)
+			                            .attr("y", y)
+			                            .attr("dy", 6)
+			                            // .attr("dy", ++lineNumber * lineHeight + dy + "em")
+			                            .text(word);
+			                // lines = lineNumber+1;
+			            }
+			            else {tspan.attr("y", y);}
+			        
+			        // tspan.
+			        // 	attr("y", y)
+			            
+               //      while (word = words.pop()) {
+			            // line.push(word);
+			            // console.log(word);
+			            // console.log(line);
+			            // tspan.text(line.join(" "));
+			            // if (tspan.node().getComputedTextLength() > width) {
+			            //     console.log("hey hey");
+			            //     line.pop();
+			            //     tspan.text(line.join(" "));
+			            //     line = [word];
+			            //     console.log(line);
+			            //     tspan = text.append("tspan")
+			            //                 .attr("x", x)
+			            //                 .attr("y", y)
+			            //                 .attr("dy", ++lineNumber * lineHeight + dy + "em")
+			            //                 .text(word);
+			            // }
+			        }
+				});
+	    	}
+
+
+
+
+		}	
+
+
+		
+
+		
+
+		  	
+	
+	</script>	
+</body>
+</html>
