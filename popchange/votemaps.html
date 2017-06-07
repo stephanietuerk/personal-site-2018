@@ -1368,7 +1368,7 @@
 					.transition()
 						.duration(1200)
 					  	.attr("y", function (d) {
-			                return barsY(d.GEO_ID);
+			                return barsY(d.GEO_ID) + brushMargin.top;
 			            })
 			            .attr("height", function(d) {
 			            	if (isNaN(getDemoData(d))) {
