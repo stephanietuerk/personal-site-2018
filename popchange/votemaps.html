@@ -26,6 +26,7 @@
   			margin-left: auto;
     		margin-right: auto;
   		}
+
   		h4 {font-family: "Roboto", sans-serif;
   			font-size: 20px;
   			color: #872250;
@@ -63,7 +64,9 @@
 			font: 10px sans-serif;
 			text-anchor: middle;
 		}
-
+		.color-bar-brushed {
+			opacity: 0.6;
+		}
 		.grid path {
 			stroke-width: 0;
 		}
@@ -131,6 +134,9 @@
 /*			stroke: white;
 			stroke-width: 1px;*/
 		}
+		.selBtn-text-hover{
+			fill: white;
+		}
 		.demoBars-title {
 			font: 18px "Roboto Mono";
 			font-weight: 300;
@@ -151,11 +157,11 @@
       		stroke-linejoin: round;
 		}
 		.tracts-brushed {
-			stroke: #bbbbbb;
-	  		stroke-width: 2px;
-	  		opacity: .5;
-	  		/*stroke-dasharray: 2, 2;*/
-	  		stroke-linecap: butt;
+			/*stroke: blue;
+	  		stroke-width: 2px;*/
+	  		/*opacity: .5;*/
+/*	  		stroke-dasharray: 2, 2;*/
+	  		stroke-linejoin: round;
 		}
 		.hover {
 			stroke: "#ffffff";
@@ -179,7 +185,7 @@
 	<div id="demoselector" style=text-align:center></div>
 	<div id="barchart" style=text-align:center></div>
 	<div id="voteplot" style=text-align:center></div>
-
+	<div id="demosmap" style=text-align:center></div>
 
 	<!-- Page elements and content go here. -->
 	<script>
@@ -477,7 +483,7 @@
 			    .selectAll("path")
 		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
 		      	.enter().append("path")
-		      	.attr("class", "tracts vote-tracts tracts-non-brushed")
+		      	.attr("class", "tracts vote-tracts")
 		      	.attr("tractno", function(d) {return d.properties.GEO_ID;})
 		      	.attr("d", votePath)
 		      	.style("fill", function(d) { 
@@ -832,16 +838,18 @@
 		    //
 		    //MAKE Bar Chart
 		    ////////////////////////////////////////////////////
-		    var barChartWidth = 960
-		    	barMargin = {top: 20, right: 20, bottom: 20, left: 20},
-		    	barPadding = {top: 40, right: 40, bottom: 40, left: 40},
-		    	barOuterWidth = 930,
+		    var barChartWidth = 900
+		    	barMargin = {top: 20, right: 20, bottom: 20, left: 10},
+		    	barPadding = {top: 40, right: 40, bottom: 40, left: 10},
+		    	barOuterWidth = 870,
 		    	barOuterHeight = popChange.length + barMargin.top + barPadding.top + barMargin.bottom + barPadding.bottom,
 		    	barChartHeight = barOuterHeight,
 			    barInnerWidth = barOuterWidth - barMargin.left - barMargin.right,
 			    barInnerHeight = barOuterHeight - barMargin.top - barMargin.bottom,
 			    barWidth = barInnerWidth - barPadding.left - barPadding.right,
-			    barHeight = barInnerHeight - barPadding.top - barPadding.bottom;
+			    barHeight = barInnerHeight - barPadding.top - barPadding.bottom,
+			    colorBarWidth = 30,
+			    brushMargin = {top: 20, right: 20, bottom: 20, left: 40};
 
 
 
@@ -889,20 +897,21 @@
 	        	.attr("x", 0)
 	        	.attr("y", 0);
 
+			//this will pick up brushing drag - make wider than visible graphics to facilitate this
 			var barsColorBar = barChartContainer.append("svg")
-	        	.attr("width", 30)
-	        	.attr("height", barHeight)
-	        	.attr("x", 5)
-	        	.attr("y", barMargin.top + barPadding.top);
+	        	.attr("width", brushMargin.right + colorBarWidth + brushMargin.left)
+	        	.attr("height", barHeight + brushMargin.top + brushMargin.bottom)
+	        	.attr("x", barChartWidth - brushMargin.right - colorBarWidth - brushMargin.left)
+	        	.attr("y", barMargin.top + barPadding.top - brushMargin.top);
 
 	       	var colorBarLabel = barChartContainer.append("text")
 	       		.attr("class", "colorBar-label")
-	       		.attr("x", 20)
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
 	       		.attr("y", barPadding.top)
 	       		.text("tract vote")
 	       		.append("tspan")
 	       		.text("margin")
-	       		.attr("x", 20)
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
 	       		.attr("dy", ".9em");
 	       	
 
@@ -956,13 +965,13 @@
 
 
 			//append color bars
-			barsColorBar.selectAll(".color-bar")
+			var colorBars = barsColorBar.selectAll(".color-bar")
 				.data(tractdataSorted)
 				.enter()
 			  .append("rect")
 			  .attr("class", "color-bar")
 			  	.attr("y", function (d) {
-	                return barsY(d.GEO_ID);
+	                return barsY(d.GEO_ID) + brushMargin.top;
 	            })
 	            .attr("height", function(d) {
 	            	if (isNaN(getDemoData(d))) {
@@ -970,13 +979,12 @@
 	            	}
 	            	else {return 1;}
 	            })
-	            .attr("x", 0)
+	            .attr("x", brushMargin.left)
 	            .attr("width", 30)
 	            .style("fill", function(d) {
 	            	var tract = d.GEO_ID;
 	            	return (getVoteColor(tract));
-	            	})
-			  	.style("opacity", "1");
+	            });
 
 	        //append bars
 	        innerBars.selectAll(".bar")
@@ -1008,8 +1016,7 @@
 	            .style("fill", function(d) {
 	            	var tract = d.GEO_ID;
 	            	return (getVoteColor(tract));
-	            	})
-			  	.style("opacity", "1");
+	            });
 
 			innerBars.append("g")
 			    .attr("class", "x axis")
@@ -1033,10 +1040,16 @@
             		return d3.ascending(a.GEO_ID, b.GEO_ID);
             	});
 
+			var brush = d3.brush()
+				.on("brush", highlightBrushedTracts);
+
+			barsColorBar.append("g")
+				.call(brush);
+
 
 		    //
 	       	//
-	       	//FUNCTIONS WITHIN makeViz function
+	       	//FUNCTIONS WITHIN drawMap function
 	       	////////////////////////////////////////////////////
 		    function handleVoteDateButtonClick(d) {
 
@@ -1065,7 +1078,6 @@
 				updateVoteMap();
 				updateDemoBars();
 		    }
-
 
 		    function handleVoteRaceButtonClick(d) {
 		    	
@@ -1163,11 +1175,8 @@
 		    }
 
 		    function handleSelButtonMouseover(d) {
-		    	
 
-		    	console.log(this.getAttribute("buttonVal"));
-
-		    	console.log(d);
+		    	d3.select(this).style("cursor", "pointer");
 
 		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
 		    		.classed("selBtn-rect-hover", true);
@@ -1181,8 +1190,10 @@
 		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-rect-hover", true);
 
-		    	d3.select(this).style("cursor", "pointer");
+		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-text-hover", true);
 		    }
+
 
 		    function handleSelButtonMouseout(d) {
 		    	d3.select(this).style("cursor", "default");
@@ -1198,6 +1209,9 @@
 
 		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-text-hover", false);
 
 		    }
 
@@ -1350,7 +1364,7 @@
 						return d.GEO_ID;
 					}));
 
-				barsColorBar.selectAll(".color-bar")
+				d3.selectAll(".color-bar")
 					.transition()
 						.duration(1200)
 					  	.attr("y", function (d) {
@@ -1427,10 +1441,6 @@
 
 				if (demoChange == "NO CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						// if (isNaN(+d.POPDEN_2015)) {
-						// 	return 
-						// }
-						// else {return +d.POPDEN_2015;}
 						return +d.POPDEN_2015;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
@@ -1611,10 +1621,9 @@
 
 			// gridlines in x axis function
 			function make_x_gridlines() {		
-			    return d3.axisBottom(barsX);
+			    return d3.axisBottom(barsX)
 			        // .ticks(5)
 			}
-
 
 			// gridlines in y axis function
 			function make_y_gridlines() {		
@@ -1627,14 +1636,12 @@
 
                 if (d3.event.selection != null) {
 
-                    // revert circles to initial style
-                    d3.selectAll(".tracts")
-                    	.classed("tracts-brushed", false)
-                    	.classed("tracts-non-brushed", true);
+                    // revert elements to initial style
+                    d3.selectAll(".vote-tracts")
+                    	.classed("tracts-brushed", false);
 
-                    dots
-                    	.classed("dots-brushed", false)
-                    	.classed("dots-non-brushed", true);
+                    colorBars
+                    	.classed("color-bar-brushed", false);
 
                     var brush_coords = d3.brushSelection(this);
 
@@ -1644,39 +1651,38 @@
 		                y1 = brush_coords[1][1];
 
 
-                    // style brushed circles
-                    dots.filter(function (){
+                    // set class of elements in brush selection to "isBrushed"
+                    colorBars.filter(function (){
 
-                   		var cx = d3.select(this).attr("cx"),
-                       		cy = d3.select(this).attr("cy");
+                   		var x = d3.select(this).attr("x"),
+                       		y = d3.select(this).attr("y");
 
-                   		return isBrushed(brush_coords, cx, cy);
+                   		return isBrushed(brush_coords, y);
                		})
-               		.attr("class", "dots-brushed");
+               		.classed("color-bar-brushed", true);
 
-               		d3.selectAll(".dots-brushed")
-               			.each(function() {
-               				var dotGeoID = d3.select(this).attr("geoid");
+               		d3.selectAll(".color-bar-brushed")
+               			.each(function(d) {
+               				var colorBarGeoID = d.GEO_ID;
 
-               				d3.selectAll(".tracts").filter(function() {return this.getAttribute("tractno") == dotGeoID;})
+               				d3.selectAll(".vote-tracts").filter(function() {return this.getAttribute("tractno") == colorBarGeoID;})
                					.raise()
                					.classed("tracts-brushed", true)
-               					.classed("tracts-non-brushed", false)
                					.style("stroke", "black")
-               					.style("stroke-width", "2px");
+               					.style("stroke-width", "1.5px");
 						});
                	}
             }
             
 
-            function isBrushed(brush_coords, cx, cy) {
+            function isBrushed(brush_coords, y) {
 
 	            var x0 = brush_coords[0][0],
 	                x1 = brush_coords[1][0],
 	                y0 = brush_coords[0][1],
 	                y1 = brush_coords[1][1];
 
-	            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+	            return x0 <= (brushMargin.left + colorBarWidth) && x1 > brushMargin.left && y0 <= y && y <= y1;
         	}
 
 
@@ -1792,12 +1798,23 @@
 			                // lines = lineNumber+1;
 			            }
 			            else {tspan.attr("y", y);}
+			      
 			        }
 				});
 	    	}
+
+
+
+
 		}	
 
 
-</script>	
+		
+
+		
+
+		  	
+	
+	</script>	
 </body>
 </html>
