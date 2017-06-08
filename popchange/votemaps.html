@@ -1824,9 +1824,9 @@
 
 				barsX.domain([demoVarMin, demoVarMax]).nice();
 
-				barsY.domain(tractdataSorted.map(function(d) {
-						return d.GEO_ID;
-					}));
+				// barsY.domain(tractdataSorted.map(function(d) {
+				// 		return d.GEO_ID;
+				// 	}));
 
 				// d3.selectAll(".grid")
 			 //    	.transition()
@@ -1907,9 +1907,9 @@
 				    	.attr("transform", "translate(" + barsX(0) + ",0)")
 				    	.call(barsYAxis);
 
-				tractdata = tractdata.sort(function(a, b) {
-            		return d3.descending(a.GEO_ID, b.GEO_ID);
-            	});
+				// tractdata = tractdata.sort(function(a, b) {
+    //         		return d3.descending(a.GEO_ID, b.GEO_ID);
+    //         	});
 
 			}
 
