@@ -61,7 +61,9 @@
 			shape-rendering: crispEdges;
 		}
 		.colorBar-label {
-			font: 10px sans-serif;
+			font: 11px "Roboto Mono";
+			/*font: 12px sans-serif;*/
+			fill: #bbbbbb;
 			text-anchor: middle;
 		}
 		.color-bar-brushed {
@@ -77,9 +79,34 @@
 		.dots-non-brushed{
 
 		}
-		.map-click-overlay{
+		.click-overlay{
 			fill: none;
 			pointer-events: all;
+		}
+		.map-text{
+			font: 14px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.map-sel-text{
+			font: 11px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.city{
+			fill: none;
+			stroke: black;
+			vector-effect: non-scaling-stroke;
+		}
+		.city-label{
+			font: 9px Roboto Mono;
+			font-weight: 400;
+			fill: black;
+			stroke: none;
 		}
 		.demoBarsSelBtn-rect-noPress{
 			fill: #bbbbbb;
@@ -205,12 +232,14 @@
 		d3.queue()
 		    .defer(d3.json, "jsons/PA_CensusTracts_2010.json") 
 		    .defer(d3.tsv, "data/CT_AllData.tsv")
+		    .defer(d3.json, "data/PA_Cities.json")
 		    .await(makeViz); 
 
 
-		function makeViz(error, pa, tractdata) {
+		function makeViz(error, pa, tractdata, cities) {
 			if (error) throw error;
 
+			console.log(tractdata);
 			//
 			//
 			//PROCESS AND FORMAT VOTE DATA
@@ -432,7 +461,7 @@
 
 			//Make container
 			var voteMapBoxWidth = 900,
-			    voteMapBoxHeight = 550;
+			    voteMapBoxHeight = 540;
 
 			var voteMapContainer = d3.select("#votemap")
 				.append("svg")
@@ -444,21 +473,22 @@
 
 			//container for mouse events
 			var mapZoomBox = voteMapContainer.append("rect")
-				.attr("class", "map-click-overlay")
+				.attr("class", "click-overlay")
 				.attr("width", voteMapBoxWidth)
 				.attr("height", voteMapBoxHeight)
 				.on("mouseover", function() {
 					mapZoomBox
 						.style("stroke", initialColor)
-			    		.style("stroke-width", "6px")
-			    		.style("stroke-dasharray", "4, 4");
+			    		.style("stroke-width", "3px")
+			    		.style("stroke-linecap", "butt")
+			    		.style("stroke-dasharray", "2, 3");
 				})
 				.on("mouseout", function() {
 					mapZoomBox
 						.style("stroke", "none");
 				})
 
-			   	
+			 	
 
 			//Set projection information
 		  	var voteProjection = d3.geoAlbers()
@@ -466,7 +496,12 @@
 	    		.center( [0, 41.2033] );
 			    
 	    	var votePath = d3.geoPath()
-			    .projection(voteProjection);
+			    .projection(voteProjection)
+			    .pointRadius(function(d) {
+		    		if (+d.properties.Population > 1000000) { console.log("big city"); return (5);}
+		    		if (+d.properties.Population >100000) {return (3);}
+		    		else {return (2);}
+		    	});
 		  	
 		  	var allTracts = topojson.feature(pa, pa.objects.PA_CensusTracts_2010);
 
@@ -493,15 +528,36 @@
 		    function zoomed() {
 		    	voteG.attr("transform", d3.event.transform);
 
+		    	var zoomScale = d3.zoomTransform(this).k;
+
+		    	voteG.selectAll(".city-label")
+		    		.style("font-size", function() {return 9/zoomScale + "px";})
+		    		.attr("dy", function(d) {
+			    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh") {return -.35/zoomScale+"em";}
+			    		else {return .7/zoomScale+"em";}})
+			    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -7/zoomScale : 7/zoomScale; })
+	    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; });
+
+		    	voteG.selectAll(".city")
+		    		.attr("d", votePath.pointRadius(function(d) {
+		    		if (+d.properties.Population > 1000000) { console.log("big city"); return (5/zoomScale);}
+		    		if (+d.properties.Population >100000) {return (3/zoomScale);}
+		    		else {return (2/zoomScale);}
+		    	}));
+
+
 		    	if (d3.zoomTransform(this).k != 1) {
 			    	mapZoomBox
 			    		.style("stroke", initialColor)
-			    		.style("stroke-width", "6px")
-			    		.style("stroke-dasharray", "4, 4");
+			    		.style("stroke-width", "3px")
+			    		.style("stroke-linecap", "butt")
+			    		.style("stroke-dasharray", "2, 3");
 			    	}
 			    if (d3.zoomTransform(this).k == 1) {
 			    	mapZoomBox
 			    		.style("stroke", "none");
+
+			    //show city names at a certain zoom level 
 			    }
 		    }
 
@@ -512,12 +568,21 @@
 
 	      	var voteColorBlue = d3.scaleLinear()
 	      		.domain([-1,0])
-	      		.range(['#3c5bff', '#d2e4ff']);
+	      		.range(['#3c5bff', '#e6f0ff']);
+
+	      	var changeColorRed = d3.scaleLinear()
+	      		.domain([0,.5])
+	      		.range(['#f8e5e6','#dd0035']);
+
+	      	var changeColorBlue = d3.scaleLinear()
+	      		.domain([-0.5,0])
+	      		.range(['#3c5bff', '#e6f0ff']);
 
 	      	var voteColor = d3.scaleThreshold()
 	      		.domain([-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0])
 	      		.range(['#3c5bff','#5c79ff','#7c98ff','#9cb7ff','#bcd6ff','#ffd5d4','#f8aab4','#f17f94','#ea5574','#dd0035']);
 
+	      	var seePlaces = "ON";
 
 	      	//Make map geometry elements
 		  	voteG.append("g")
@@ -551,8 +616,96 @@
 		      	})
 		      	.style("stroke-width", "0.8px");
 
-		    // d3.select(self.frameElement).style("height", voteMapBoxHeight + "px");
+		    //create options cities labels
+		    // voteG.append("path")
+		    // 	.datum(topojson.feature(cities, cities.objects.PA_Cities).features)
+		    // 	.attr("d", votePath)
+		    // 	.attr("class", "city");
 
+		    voteG.selectAll(".city")
+		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
+		    	.enter().append("path")
+		    	.attr("d", votePath)
+		    	.attr("class", "city")
+		    	.attr("visibility", function() {
+		    		if (seePlaces == "ON") {return "visible";}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		});
+		    	
+
+		    // votePath
+		    // 	.pointRadius(3);
+		    	// .pointRadius(function(d) {
+		    	// 	console.log("I'm here");
+		    	// 	if (+d.properties.Population > 1000000) {return 7;}
+		    	// 	if (+d.properties.Population >100000) {return 5;}
+		    	// 	else {return 4;}
+		    	// });
+
+		    voteG.selectAll(".city-label")
+		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
+		    	.enter().append("text")
+		    	.attr("class", "city-label")
+		    	.attr("transform", function(d) {return "translate(" + voteProjection(d.geometry.coordinates) + ")"; })
+		    	.attr("visibility", function() {
+		    		if (seePlaces == "ON") {return "visible";}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		})
+		    	.attr("dy", function(d) {
+		    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh") {return "-.35em";}
+		    		else {return ".7em";}})
+		    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -5 : 5; })
+    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; })
+    			.text(function(d) {return d.properties.City;});
+
+		    var exploreText = voteMapContainer.append("text")
+				.attr("class", "map-text")
+				.attr("x", voteMapBoxWidth - 25)
+				.attr("y", 50)
+				.text("zoom and move map to explore"); 
+
+			var placeNamesText = voteMapContainer.append("text")
+				.attr("class", "map-sel-text")
+				.attr("x", voteMapBoxWidth - 25)
+				.attr("y", 25)
+				.text(function() {
+					if (seePlaces == "ON") {return "placenames: on";}
+					if (seePlaces == "OFF") {return "placenames: off";}
+				});
+
+			var placeNamesBox = voteMapContainer.append("rect")
+				.attr("class", "click-overlay")
+				.attr("width", 120)
+				.attr("height", 20)
+				.attr("x", voteMapBoxWidth - 135)
+				.attr("y", 10)
+				.on("click", togglePlaceNames)
+				.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
+				.on("mouseout", function(d) {d3.select(this).style("cursor", "default");});
+
+			function togglePlaceNames () {
+
+				console.log("switch!");
+				if (seePlaces == "ON") {
+					var newSeePlaces = "OFF";
+					placeNamesText
+						.text("placenames: off");
+					voteG.selectAll(".city")
+						.attr("visibility", "hidden");
+					voteG.selectAll(".city-label")
+						.attr("visibility", "hidden");
+				}
+				if (seePlaces == "OFF") {
+					var newSeePlaces = "ON";
+					placeNamesText
+						.text("placenames: on");
+					voteG.selectAll(".city")
+						.attr("visibility", "visible");
+					voteG.selectAll(".city-label")
+						.attr("visibility", "visible");
+				}
+				seePlaces = newSeePlaces;
+			}
 
 
 			//
@@ -562,7 +715,7 @@
 
 			//Make container
 			var voteSelBoxWidth = 900,
-				voteSelBoxHeight = 100;
+				voteSelBoxHeight = 150;
 
 			var voteSelContainer = d3.select("#voteselector")
 				.append("svg")
@@ -570,12 +723,50 @@
 				.attr("height", voteSelBoxHeight);
 
 			var demoSelBoxWidth = 900,
-				demoSelBoxHeight = 100;
+				demoSelBoxHeight = 80;
 
 			var demoSelContainer= d3.select("#demoselector")
 				.append("svg")
 				.attr("width", demoSelBoxWidth)
 				.attr("height", demoSelBoxHeight);
+
+			//Make legend
+			var voteLegendBoxWidth = voteSelBoxWidth,
+				voteLegendBoxHeight = 50,
+				voteLegendBarWidth = 300,
+				voteLegendBarHeight = 12;
+
+			var voteLegendBox = voteSelContainer.append("svg")
+				.attr("width", voteLegendBoxWidth)
+				.attr("height", voteLegendBoxHeight)
+				.attr("y", 100)
+
+			var defs = voteLegendBox.append("defs");
+
+			var voteColorGradient = defs.append("linearGradient")
+    			.attr("id", "voteColor-gradient")
+    			.attr("x1", "0%")
+			    .attr("y1", "0%")
+			    .attr("x2", "100%")
+			    .attr("y2", "0%");
+
+			voteColorGradient.selectAll("stop")
+				.data([
+					{offset: "0%", color: '#3c5bff'}, 
+			        {offset: "50%", color: '#e6f0ff'}, 
+			        {offset: "50%", color: '#f8e5e6'},        
+			        {offset: "100%", color: '#dd0035'} 
+					])
+				.enter().append("stop")
+				.attr("offset", function(d) { return d.offset; })   
+    			.attr("stop-color", function(d) { return d.color; });
+
+    		var voteLegendColorBar = voteLegendBox.append("rect")
+    			.attr("width", voteLegendBarWidth)
+    			.attr("height", voteLegendBarHeight)
+    			.attr("x", (demoSelBoxWidth/2)-(voteLegendBarWidth/2))
+    			.style("fill", "url(#voteColor-gradient)");
+
 
 			
 			//Set dimension variables
@@ -611,14 +802,14 @@
 				.attr("width", voteDateBoxWidth)
 				.attr("height", voteDateBoxHeight)
 				.attr("x", ((voteSelBoxWidth/2)-(voteDateBoxWidth)-voteSelSpacing))
-				.attr("y", 40);
+				.attr("y", 50);
 
 			var voteRaceContainer = voteSelContainer.append("svg")
 				.attr("class", "voteMapBtn-container")
 				.attr("width", voteRaceBoxWidth)
 				.attr("height", voteRaceBoxHeight)
 				.attr("x", ((voteSelBoxWidth/2)+voteSelSpacing))
-				.attr("y", 40);
+				.attr("y", 50);
 
 			var demoVarContainer = demoSelContainer.append("svg")
 				.attr("class", "demoBarsBtn-container")
@@ -637,12 +828,12 @@
 			var voteMapTitle = voteSelContainer.append("text")
 				.attr("class", "voteMap-title")
 				.attr("x", voteSelBoxWidth/2)
-				.attr("y", 15);
+				.attr("y", 25);
 
 			var demoBarsTitle = demoSelContainer.append("text")
 				.attr("class", "demoBars-title")
 				.attr("x", demoSelBoxWidth/2)
-				.attr("y", 80)
+				.attr("y", 70)
 
 			var voteDateButtons = voteDateContainer.selectAll("g")
 				.data(voteDateLabels)
@@ -951,12 +1142,20 @@
 	       	var colorBarLabel = barChartContainer.append("text")
 	       		.attr("class", "colorBar-label")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
-	       		.attr("y", barPadding.top)
+	       		.attr("y", 15)
+	       		.text("drag to")
+	       		.append("tspan")
 	       		.text("select")
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
+	       		.attr("dy", "1.1em")
 	       		.append("tspan")
 	       		.text("tracts")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
-	       		.attr("dy", "1em");
+	       		.attr("dy", "1.1em")
+	       		.append("tspan")
+	       		.text("in map")
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
+	       		.attr("dy", "1.1em");;
 	       	
 
 			var barsContainer = barChartContainer.append("svg")
@@ -1869,10 +2068,10 @@
       				if (uspChangeMarginByTract[tract] == "ERROR") {return initialColor;}
       				else {
 	      				if (uspChangeMarginByTract[tract] >= 0) {
-		      				return voteColorRed(uspChangeMarginByTract[tract]);
+		      				return changeColorRed(uspChangeMarginByTract[tract]);
 		      			} 
 		      			if (uspChangeMarginByTract[tract] < 0) {
-		      				return voteColorBlue(uspChangeMarginByTract[tract]);
+		      				return changeColorBlue(uspChangeMarginByTract[tract]);
 		      			}
 		      		}
       			}
@@ -1880,10 +2079,10 @@
       				if (ussChangeMarginByTract[tract] == "ERROR") {return initialColor;}
       				else {
 	      				if (ussChangeMarginByTract[tract] >= 0) {
-		      				return voteColorRed(ussChangeMarginByTract[tract]);
+		      				return changeColorRed(ussChangeMarginByTract[tract]);
 		      			} 
 		      			if (ussChangeMarginByTract[tract] < 0) {
-		      				return voteColorBlue(ussChangeMarginByTract[tract]);
+		      				return changeColorBlue(ussChangeMarginByTract[tract]);
 		      			}
 		      		}
       			}	
@@ -1891,10 +2090,10 @@
       				if (uscChangeMarginByTract[tract] == "ERROR") {return initialColor;}
 	      			else {
 	      				if (uscChangeMarginByTract[tract] >= 0) {
-		      				return voteColorRed(uscChangeMarginByTract[tract]);
+		      				return changeColorRed(uscChangeMarginByTract[tract]);
 		      			} 
 		      			if (uscChangeMarginByTract[tract] < 0) {
-		      				return voteColorBlue(uscChangeMarginByTract[tract]);
+		      				return changeColorBlue(uscChangeMarginByTract[tract]);
 		      			}
 		      		}
 	      		} 
