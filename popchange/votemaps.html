@@ -102,6 +102,11 @@
 			stroke: black;
 			vector-effect: non-scaling-stroke;
 		}
+		.town{
+			fill: none;
+			stroke: black;
+			vector-effect: non-scaling-stroke;
+		}
 		.city-label{
 			font: 9px Roboto Mono;
 			font-weight: 400;
@@ -498,7 +503,7 @@
 	    	var votePath = d3.geoPath()
 			    .projection(voteProjection)
 			    .pointRadius(function(d) {
-		    		if (+d.properties.Population > 1000000) { console.log("big city"); return (5);}
+		    		if (+d.properties.Population > 1000000) {return (5);}
 		    		if (+d.properties.Population >100000) {return (3);}
 		    		else {return (2);}
 		    	});
@@ -523,43 +528,8 @@
 
 		    voteMapContainer
 				.call(zoom);
-			    // .call(zoom.event);
 
-		    function zoomed() {
-		    	voteG.attr("transform", d3.event.transform);
-
-		    	var zoomScale = d3.zoomTransform(this).k;
-
-		    	voteG.selectAll(".city-label")
-		    		.style("font-size", function() {return 9/zoomScale + "px";})
-		    		.attr("dy", function(d) {
-			    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh") {return -.35/zoomScale+"em";}
-			    		else {return .7/zoomScale+"em";}})
-			    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -7/zoomScale : 7/zoomScale; })
-	    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; });
-
-		    	voteG.selectAll(".city")
-		    		.attr("d", votePath.pointRadius(function(d) {
-		    		if (+d.properties.Population > 1000000) { console.log("big city"); return (5/zoomScale);}
-		    		if (+d.properties.Population >100000) {return (3/zoomScale);}
-		    		else {return (2/zoomScale);}
-		    	}));
-
-
-		    	if (d3.zoomTransform(this).k != 1) {
-			    	mapZoomBox
-			    		.style("stroke", initialColor)
-			    		.style("stroke-width", "3px")
-			    		.style("stroke-linecap", "butt")
-			    		.style("stroke-dasharray", "2, 3");
-			    	}
-			    if (d3.zoomTransform(this).k == 1) {
-			    	mapZoomBox
-			    		.style("stroke", "none");
-
-			    //show city names at a certain zoom level 
-			    }
-		    }
+		    
 
 		    //Set colors
 		    var voteColorRed = d3.scaleLinear()
@@ -615,48 +585,40 @@
 		      			}}
 		      	})
 		      	.style("stroke-width", "0.8px");
-
-		    //create options cities labels
-		    // voteG.append("path")
-		    // 	.datum(topojson.feature(cities, cities.objects.PA_Cities).features)
-		    // 	.attr("d", votePath)
-		    // 	.attr("class", "city");
-
+ 
 		    voteG.selectAll(".city")
 		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
 		    	.enter().append("path")
 		    	.attr("d", votePath)
 		    	.attr("class", "city")
-		    	.attr("visibility", function() {
-		    		if (seePlaces == "ON") {return "visible";}
+		    	.attr("visibility", function(d) {
+		    		if (seePlaces == "ON") {
+		    			if (+d.properties.Population >= 28500) {return "visible";}
+		    			else {return "hidden";}
+		    		}
 		    		if (seePlaces == "OFF") {return "hidden";}
 		    		});
-		    	
-
-		    // votePath
-		    // 	.pointRadius(3);
-		    	// .pointRadius(function(d) {
-		    	// 	console.log("I'm here");
-		    	// 	if (+d.properties.Population > 1000000) {return 7;}
-		    	// 	if (+d.properties.Population >100000) {return 5;}
-		    	// 	else {return 4;}
-		    	// });
 
 		    voteG.selectAll(".city-label")
 		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
 		    	.enter().append("text")
 		    	.attr("class", "city-label")
 		    	.attr("transform", function(d) {return "translate(" + voteProjection(d.geometry.coordinates) + ")"; })
-		    	.attr("visibility", function() {
-		    		if (seePlaces == "ON") {return "visible";}
+		    	.attr("visibility", function(d) {
+		    		if (seePlaces == "ON") {
+		    			if (+d.properties.Population >= 28500) {return "visible"}
+		    			else {return "hidden";}
+		    		}
 		    		if (seePlaces == "OFF") {return "hidden";}
 		    		})
 		    	.attr("dy", function(d) {
 		    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh") {return "-.35em";}
+		    		// if (d.properties.City == "Wilkinsburg" || d.properties.City == "Monroesville" || d.properties.City == "Upper St. Clair") {return "1.3em";}
 		    		else {return ".7em";}})
 		    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -5 : 5; })
     			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; })
     			.text(function(d) {return d.properties.City;});
+
 
 		    var exploreText = voteMapContainer.append("text")
 				.attr("class", "map-text")
@@ -683,29 +645,7 @@
 				.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
 				.on("mouseout", function(d) {d3.select(this).style("cursor", "default");});
 
-			function togglePlaceNames () {
-
-				console.log("switch!");
-				if (seePlaces == "ON") {
-					var newSeePlaces = "OFF";
-					placeNamesText
-						.text("placenames: off");
-					voteG.selectAll(".city")
-						.attr("visibility", "hidden");
-					voteG.selectAll(".city-label")
-						.attr("visibility", "hidden");
-				}
-				if (seePlaces == "OFF") {
-					var newSeePlaces = "ON";
-					placeNamesText
-						.text("placenames: on");
-					voteG.selectAll(".city")
-						.attr("visibility", "visible");
-					voteG.selectAll(".city-label")
-						.attr("visibility", "visible");
-				}
-				seePlaces = newSeePlaces;
-			}
+			
 
 
 			//
@@ -1085,46 +1025,23 @@
 			    colorBarWidth = 30,
 			    brushMargin = {top: 20, right: 20, bottom: 20, left: 40};
 
-
-
 			var formatPercent = d3.format(".0%");
 
-			var tractdataSorted = tractdata.sort(function (a, b) {
-				if (demoChange == "NO CHANGE") {
-					if (demoVar == "POPULATION DENSITY") {
-						return d3.descending(+a.POPDEN_2015, +b.POPDEN_2015);
-					}
-					if (demoVar == "PERCENT NON-WHITE") {
-						return d3.descending(+a.PERCNONWHITE_2015, +b.PERCNONWHITE_2015);
-					}
-					if (demoVar == "UNEMPLOYMENT RATE") {
-						return d3.descending(+a.UNEMPLOYMENT_2015, +b.UNEMPLOYMENT_2015);
-					}
-					if (demoVar == "EDUCATION") {
-						return d3.descending(+a.COLLEGE_2015, +b.COLLEGE_2015);
-					}
-					if (demoVar == "INCOME") {
-						return d3.descending(+a.MEDIANINC_2015, +b.MEDIANINC_2015);
-					}
+			var demoData = getDemoVarName();
+
+        	var tractdataSorted = tractdata.sort(function(a, b) {
+        		if(!isFinite(a[demoData] && !isFinite(b[demoData]))) {
+					return 0;
 				}
-				if (demoChange == "CHANGE") {
-					if (demoVar == "POPULATION DENSITY") {
-						return d3.descending(+a.POPDEN_CHANGE, +b.POPDEN_CHANGE);
-					}
-					if (demoVar == "PERCENT NON_WHITE") {
-						return d3.descending(+a.PERCNONWHITE_CHANGE, +b.PERCNONWHITE_CHANGE);
-					}
-					if (demoVar == "UNEMPLOYMENT RATE") {
-						return d3.descending(+a.UNEMPLOYMENT_CHANGE, +b.UNEMPLOYMENT_CHANGE);
-					}
-					if (demoVar == "EDUCATION") {
-						return d3.descending(+a.COLLEGE_CHANGE, +b.COLLEGE_CHANGE);
-					}
-					if (demoVar == "INCOME") {
-						return d3.descending(+a.MEDIANINC_CHANGE, +b.MEDIANINC_CHANGE);
-					}
-				}
-            });
+				if( !isFinite(a[demoData]) ) {
+			        return 1;
+			    }
+			    if( !isFinite(b[demoData]) ) {
+			        return -1;
+			    }
+				return +b[demoData] > +a[demoData] ? 1 : +b[demoData] < +a[demoData] ? -1 : 0;
+        	});
+
             var barChartContainer = d3.select("#barchart").append("svg")
             	.attr("width", barChartWidth)
 	        	.attr("height", barChartHeight)
@@ -1196,6 +1113,10 @@
 			barsY.domain(tractdataSorted.map(function(d) {
 					return d.GEO_ID;
 				}));
+
+			// barsY.domain(sortedData.map(function(d) {
+			// 		return d[0];
+			// 	}));
 
 			// add the X gridlines
 			innerBars.append("g")			
@@ -1288,9 +1209,9 @@
 			    .attr("transform", "translate(" + barsX(0) + ",0)")
 			    .call(barsYAxis);
 
-			tractdata = tractdata.sort(function(a, b) {
-            		return d3.descending(a.GEO_ID, b.GEO_ID);
-            	});
+			// tractdata = tractdata.sort(function(a, b) {
+   //          		return d3.descending(a.GEO_ID, b.GEO_ID);
+   //          	});
 
 			var barBrush = d3.brushY()
 				.extent([[0, 0], [colorBarWidth, barHeight]])
@@ -1318,193 +1239,120 @@
 	        //     });
 
 
+		   	////////////////////////////////////////////////////
+	       	//
+	       	//FUNCTIONS WITHIN drawMap function
+	       	////////////////////////////////////////////////////
 
-		 //    //
-	  //      	//
-	  //      	//Make Demographics Map
-	  //      	////////////////////////////////////////////////////
+	       	//
+	       	//
+	       	//MAP FUNCTIONS
+	       	////////////////////////////////////////////////////
+		    
+		    function zoomed() {
+		    //Controls zoom behavior of map
+		    //Turns on labels of smaller city when zoom level reaches 3
+		    //Turns on bounding box for map when zoomed
+		    //Scales placename labels on zoom
 
+		    	voteG.attr("transform", d3.event.transform);
 
-	  //      	//Make container
-			// var demosMapBoxWidth = 900,
-			//     demosMapBoxHeight = 650;
+		    	var zoomScale = d3.zoomTransform(this).k;
 
-			// var demosMapContainer = d3.select("#demosmap")
-			// 	.append("svg")
-			//     .attr("width", demosMapBoxWidth)
-			//     .attr("height", demosMapBoxHeight);
+		    	//controls scale and visibility of cities
+		    	voteG.selectAll(".city")
+		    		.attr("d", votePath.pointRadius(function(d) {
+		    		if (+d.properties.Population > 1000000) {return (5/zoomScale);}
+		    		if (+d.properties.Population > 100000) {return (3/zoomScale);}
+		    		else {return (2/zoomScale);}
+		    		}))
+		    		.attr("visibility", function(d) {
+		    			if (seePlaces == "ON") {
+		    				if (zoomScale >= 3) {return "visible";}
+		    				if (zoomScale < 3) {
+		    					if (+d.properties.Population >= 28500) {return "visible";}
+		    					if (+d.properties.Population < 28500) {return "hidden";}
+		    				}
+		    			}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		});
 
+		    	//controls scale and visibility of city labels
+		    	voteG.selectAll(".city-label")
+		    		.style("font-size", function() {return 9/zoomScale + "px";})
+		    		.attr("visibility", function(d) {
+		    			if (seePlaces == "ON") {
+		    				if (zoomScale >= 3) {return "visible";}
+		    				if (zoomScale < 3) {
+		    					if (+d.properties.Population >= 28500) {return "visible";}
+		    					if (+d.properties.Population < 28500) {return "hidden";}
+		    				}
+		    			}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		})
+		    		.attr("dy", function(d) {
+			    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh") {return -.35/zoomScale+"em";}
+			    		if (d.properties.City == "Wilkinsburg" || d.properties.City == "Monroeville" || d.properties.City == "Upper St. Clair") {return 3/zoomScale+"em";}
+			    		else {return .7/zoomScale+"em";}})
+			    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -7/zoomScale : 7/zoomScale; })
+	    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; });
 
-			// //Set initial variables for map
-			// var selDemo = incomeChange;
+	    		//turns on dashed map bounding box on zoom
+		    	if (d3.zoomTransform(this).k != 1) {
+			    	mapZoomBox
+			    		.style("stroke", initialColor)
+			    		.style("stroke-width", "3px")
+			    		.style("stroke-linecap", "butt")
+			    		.style("stroke-dasharray", "2, 3");
+			    	}
 
-	  //   	var demoMax = d3.max(selDemo);
-	  //   		demoMin = d3.min(selDemo);
-
-	  //   	var selDemoPos = [],
-	  //   		selDemoNeg = [];
-
-	  //   	selDemo.forEach(function(value) {
-	  //   		if (value >= 0) {
-	  //   			selDemoPos.push(value);
-	  //   		}
-	  //   		if (value < 0) {
-	  //   			selDemoNeg.push(value);
-	  //   		}
-	  //   	})
-
-	  //   	console.log(demoMax);
-	  //   	console.log(demoMin);
-			
-
-			// //Set projection infomation
-			// var demosProjection = d3.geoAlbers()
-			//     .rotate( [77.1945,0] )
-	  //   		.center( [0, 41.2033] );
-
-	  //   	var demosPath = d3.geoPath()
-			//     .projection(demosProjection);
-
-			// demosProjection
-		 //  		.scale(1)
-		 //  		.translate([0,0]);
-
-		 //  	var b = demosPath.bounds(allTracts),
-			//     s = .95 / Math.max((b[1][0] - b[0][0]) / demosMapBoxWidth, (b[1][1] - b[0][1]) / demosMapBoxHeight),
-			//     t = [(demosMapBoxWidth - s * (b[1][0] + b[0][0])) / 2, (demosMapBoxHeight - s * (b[1][1] + b[0][1])) / 2];
-
-			// demosProjection
-		 //    	.scale(s)
-		 //    	.translate(t);
-
-	    	
-	  //   	//Set colors
-	  //   	var maxColor = "#008837",
-	  //   		minColor = "#7b3294",
-	  //   		zeroColor = "#f7f7f7";
-
-	  //   	var numColors = 50;
-
-	  //   	var demoColors = d3.scaleThreshold()
-	  //   		.domain(getColorDomain(numColors))
-	  //   		.range(getColorRange(numColors));
-
-		  	
-	  //   	//Make map geometry elements
-		 //    demosMapContainer.append("g")
-			//     .selectAll("path")
-		 //    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
-		 //      	.enter().append("path")
-		 //      	.attr("class", "tracts demo-tracts tracts-non-brushed")
-		 //      	.attr("tractno", function(d) {return d.properties.GEO_ID;})
-		 //      	.attr("d", demosPath)
-		 //      	.style("fill", function(d) { 
-		 //      		var tract = d.properties.GEO_ID;
-		 //      		if (selDemo == popChange) {
-	  //     				if (popChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(popChangeByTract[tract]);}
-	  //     			}
-		 //      		if (selDemo == popDen) {
-	  //     				if (popDenByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(popDenByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == popDenChange) {
-	  //     				if (popDenChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(popDenChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == nonWhite) {
-	  //     				if (nonWhiteByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(nonWhiteByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == nonWhiteChange) {
-	  //     				if (nonWhiteChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(nonWhiteChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == unemploy) {
-	  //     				if (unemployByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(unemployByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == unemployChange) {
-	  //     				if (unemployChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(unemployChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == college) {
-	  //     				if (collegeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(collegeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == collegeChange) {
-	  //     				if (collegeChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(collegeChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == income) {
-	  //     				if (incomeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(incomeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == incomeChange) {
-	  //     				if (incomeChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(incomeChangeByTract[tract]);}
-	  //     			}
-		 //      	})
-		 //      	.style ("stroke", function(d) { 
-		 //      		var tract = d.properties.GEO_ID;
-		 //      		if (selDemo == popChange) {
-	  //     				if (popChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(popChangeByTract[tract]);}
-	  //     			}
-		 //      		if (selDemo == popDen) {
-	  //     				if (popDenByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(popDenByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == popDenChange) {
-	  //     				if (popDenChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(popDenChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == nonWhite) {
-	  //     				if (nonWhiteByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(nonWhiteByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == nonWhiteChange) {
-	  //     				if (nonWhiteChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(nonWhiteChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == unemploy) {
-	  //     				if (unemployByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(unemployByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == unemployChange) {
-	  //     				if (unemployChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(unemployChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == college) {
-	  //     				if (collegeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(collegeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == collegeChange) {
-	  //     				if (collegeChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(collegeChangeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == income) {
-	  //     				if (incomeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(incomeByTract[tract]);}
-	  //     			}
-	  //     			if (selDemo == incomeChange) {
-	  //     				if (incomeChangeByTract[tract] == "ERROR") {return initialColor;}
-	  //     				else {return demoColors(incomeChangeByTract[tract]);}
-	  //     			}
-		 //      	})
-		 //      	.style("stroke-width", "0.8px");
-				
+			    //turns off dashed map bounding box when zoom back out to 1
+			    if (d3.zoomTransform(this).k == 1) {
+			    	mapZoomBox
+			    		.style("stroke", "none");
+			    }
+		    }
 
 
-			
-			
+		    function togglePlaceNames () {
+		    //controls visibility of placenames on map via user input
+
+				if (seePlaces == "ON") {
+					var newSeePlaces = "OFF";
+					placeNamesText
+						.text("placenames: off");
+					voteG.selectAll(".city")
+						.attr("visibility", "hidden");
+					voteG.selectAll(".city-label")
+						.attr("visibility", "hidden");
+				}
+				if (seePlaces == "OFF") {
+					var newSeePlaces = "ON";
+					placeNamesText
+						.text("placenames: on");
+					voteG.selectAll(".city")
+						.attr("visibility", "visible");
+					voteG.selectAll(".city-label")
+						.attr("visibility", "visible");
+				}
+				seePlaces = newSeePlaces;
+			}
 
 
 		    //
 	       	//
-	       	//FUNCTIONS WITHIN drawMap function
+	       	//SELECTOR FUNCTIONS
 	       	////////////////////////////////////////////////////
+
+		    //SELECTOR FUNCTIONS
+	       	//
+	       	//Functions to register new selection
+	       	////////////////////////////////////////////////////
+
 		    function handleVoteDateButtonClick(d) {
+		    //updates global variable to newly chosen var via mouse click
+		    //reclasses buttons when one is clicked
+		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
 
 		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-rect-hover", false)
@@ -1532,7 +1380,11 @@
 				updateDemoBars();
 		    }
 
+
 		    function handleVoteRaceButtonClick(d) {
+		    //updates global variable to newly chosen var via mouse click
+		    //reclasses buttons when one is clicked
+		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
 		    	
 		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-rect-hover", false)
@@ -1562,6 +1414,9 @@
 
 
 		    function handleDemoVarButtonClick(d) {
+		    //updates global variable to newly chosen var via mouse click
+		    //reclasses buttons when one is clicked
+		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
 		    	
 		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-rect-hover", false)
@@ -1590,6 +1445,8 @@
 
 
 		    function handleDemoChangeButtonClick(d) {
+		    //reclasses buttons when one is clicked
+		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
 		    	
 		    	if (demoChange == "NO CHANGE") { 
 					var demoChangeNew = "CHANGE";
@@ -1627,48 +1484,13 @@
 				updateDemoBars();
 		    }
 
-		    function handleSelButtonMouseover(d) {
-
-		    	d3.select(this).style("cursor", "pointer");
-
-		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
-		    		.classed("selBtn-rect-hover", true);
-
-		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
-		    		.classed("selBtn-rect-hover", true);
-
-		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoBarsSelBtn-rect-noPress")
-		    		.classed("selBtn-rect-hover", true);
-
-		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
-		    		.classed("selBtn-rect-hover", true);
-
-		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
-		    		.classed("selBtn-text-hover", true);
-		    }
-
-
-		    function handleSelButtonMouseout(d) {
-		    	d3.select(this).style("cursor", "default");
-
-		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
-		    		.classed("selBtn-rect-hover", false);
-
-		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;})
-		    		.classed("selBtn-rect-hover", false);
-
-		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoBarsSelBtn-rect-noPress")
-		    		.classed("selBtn-rect-hover", false);
-
-		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
-		    		.classed("selBtn-rect-hover", false);
-
-		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
-		    		.classed("selBtn-text-hover", false);
-
-		    }
+		    //SELECTOR FUNCTIONS
+	       	//
+	       	//Functions to update elements based on new selection
+	       	////////////////////////////////////////////////////
 
 		    function updateVoteMapTitle() {
+		    //updates map title according to selected date and race variables
 		    	
 		    	voteMapTitle
 		        	.text(function() {
@@ -1694,6 +1516,7 @@
 
 
 		    function updateDemoBarsTitle() {
+		    //updates bar chart title according to selected demographic variables
 
 		    	demoBarsTitle
 		    		.text(function() {
@@ -1731,6 +1554,7 @@
 
 
 		    function updateVoteMap(d) {
+		    //updates map colors according to selected date and race variables
 				
 				console.log(voteMapDate);
 				console.log(voteMapRace);
@@ -1758,42 +1582,21 @@
 
 
 			function updateDemoBars(d) {
+			//updates bar chart according to selected demographic variables
 
-				tractdataSorted = tractdata.sort(function (a, b) {
-					if (demoChange == "NO CHANGE") {
-						if (demoVar == "POPULATION DENSITY") {
-							return d3.descending(+a.POPDEN_2015, +b.POPDEN_2015);
-						}
-						if (demoVar == "PERCENT NON-WHITE") {
-							return d3.descending(+a.PERCNONWHITE_2015, +b.PERCNONWHITE_2015);
-						}
-						if (demoVar == "UNEMPLOYMENT RATE") {
-							return d3.descending(+a.UNEMPLOYMENT_2015, +b.UNEMPLOYMENT_2015);
-						}
-						if (demoVar == "EDUCATION") {
-							return d3.descending(+a.COLLEGE_2015, +b.COLLEGE_2015);
-						}
-						if (demoVar == "INCOME") {
-							return d3.descending(+a.MEDIANINC_2015, +b.MEDIANINC_2015);
-						}
+            	var demoData = getDemoVarName();
+
+            	var tractdataSorted = tractdata.sort(function(a, b) {
+            		if(!isFinite(a[demoData] && !isFinite(b[demoData]))) {
+						return 0;
 					}
-					if (demoChange == "CHANGE") {
-						if (demoVar == "POPULATION DENSITY") {
-							return d3.descending(+a.POPDEN_CHANGE, +b.POPDEN_CHANGE);
-						}
-						if (demoVar == "PERCENT NON-WHITE") {
-							return d3.descending(+a.PERCNONWHITE_CHANGE, +b.PERCNONWHITE_CHANGE);
-						}
-						if (demoVar == "UNEMPLOYMENT RATE") {
-							return d3.descending(+a.UNEMPLOYMENT_CHANGE, +b.UNEMPLOYMENT_CHANGE);
-						}
-						if (demoVar == "EDUCATION") {
-							return d3.descending(+a.COLLEGE_CHANGE, +b.COLLEGE_CHANGE);
-						}
-						if (demoVar == "INCOME") {
-							return d3.descending(+a.MEDIANINC_CHANGE, +b.MEDIANINC_CHANGE);
-						}
-					}
+					if( !isFinite(a[demoData]) ) {
+				        return 1;
+				    }
+				    if( !isFinite(b[demoData]) ) {
+				        return -1;
+				    }
+					return +b[demoData] > +a[demoData] ? 1 : +b[demoData] < +a[demoData] ? -1 : 0;
             	});
 
             	var barsX = d3.scaleLinear()
@@ -1813,11 +1616,12 @@
 				    .scale(barsY)
 				    .tickSize(0)
 				    .tickFormat("");
-					
-				// barsX.domain(d3.extent(tractdata, demoData)).nice();
 
 				var demoVarMin = d3.min(getDemoVar()),
 					demoVarMax = d3.max(getDemoVar());
+
+				// var demoVarMin = d3.min(+d[demoData]),
+				// 	demoVarMax = d3.max(+d[demoData]);
 
 				console.log(demoVarMin);
 				console.log(demoVarMax);
@@ -1828,20 +1632,21 @@
 						return d.GEO_ID;
 					}));
 
-				// d3.selectAll(".grid")
-			 //    	.transition()
-				// 		.duration(1200)
-				// 		.attr("transform", "translate(0," + barHeight + ")")
-			 //    		.call(make_x_gridlines()
-			 //    			// .tickSize(-barHeight)
-			 //       //  		.tickFormat("")
-			 //    		);
+				d3.selectAll(".grid")
+					.remove();
 
+				innerBars.append("g")			
+				    .attr("class", "grid")
+				    .attr("transform", "translate(0," + barHeight + ")")
+				    .call(make_x_gridlines()
+				        .tickSize(-barHeight)
+				        .tickFormat(""))
+				    .call(make_y_gridlines()
+				    	.tickSize(-barWidth)
+				    	.tickFormat(""));
 
-
-			    
-
-				d3.selectAll(".color-bar")
+		  		//update selector bars
+			    d3.selectAll(".color-bar")
 					.transition()
 						.duration(1200)
 					  	.attr("y", function (d) {
@@ -1859,7 +1664,7 @@
 			            	});
 
 
-		        //append bars
+		        //update chart bars
 		        d3.selectAll(".bar")
 		           .transition()
 				     	.duration(1200)
@@ -1889,43 +1694,126 @@
 			            	return getVoteColor(tract);
 			            });
 
-			    d3.select("#demoXAxisTop")
-			    	.transition()
-			    		.duration(1200)
-				    	.attr("transform", "translate(0," + -10 + ")")
-				    	.call(barsXAxisTop);
+			 //    d3.select("#demoXAxisTop")
+			 //    	.transition()
+			 //    		.duration(1200)
+				//     	.attr("transform", "translate(0," + -10 + ")")
+				//     	.call(barsXAxisTop);
 
-				d3.select("#demoXAxisBottom")
-					.transition()
-			    		.duration(1200)
-				    	.attr("transform", "translate(0," + barHeight + ")")
-				    	.call(barsXAxisBottom);   
+				// d3.select("#demoXAxisBottom")
+				// 	.transition()
+			 //    		.duration(1200)
+				//     	.attr("transform", "translate(0," + barHeight + ")")
+				//     	.call(barsXAxisBottom);   
+
+				// d3.select("#demoYAxis")
+				//     .transition()
+				//      	.duration(1200)
+				//     	.attr("transform", "translate(" + barsX(0) + ",0)")
+				//     	.call(barsYAxis);
+
+				d3.select("#demoXAxisTop")
+				    .remove();
 
 				d3.select("#demoYAxis")
-				    .transition()
-				     	.duration(1200)
-				    	.attr("transform", "translate(" + barsX(0) + ",0)")
-				    	.call(barsYAxis);
+				    .remove();
 
-				tractdata = tractdata.sort(function(a, b) {
-            		return d3.descending(a.GEO_ID, b.GEO_ID);
-            	});
+				d3.select("#demoXAxisBottom")
+				    .remove();
+
+				innerBars.append("g")
+				    .attr("class", "y axis")
+				    .attr("id", "demoYAxis")
+				    .attr("transform", "translate(" + barsX(0) + ",0)")
+				    .call(barsYAxis);
+
+				innerBars.append("g")
+				    .attr("class", "x axis")
+				    .attr("id", "demoXAxisTop")
+				    .attr("transform", "translate(0," + -10 + ")")
+				    .call(barsXAxisTop);
+
+				innerBars.append("g")
+				    .attr("class", "x axis")
+				    .attr("id", "demoXAxisBottom")
+				    .attr("transform", "translate(0," + barHeight + ")")
+				    .call(barsXAxisBottom); 
+
+				// d3.selectAll(".grid")
+			 //    	.transition()
+				// 		.duration(1200)
+				// 		.attr("transform", "translate(0," + barHeight + ")")
+			 //    		.call(make_x_gridlines()
+			 //    			// .tickSize(-barHeight)
+			 //       //  		.tickFormat("")
+			 //    		);
 
 			}
 
+			//SELECTOR FUNCTIONS
+	       	//
+	       	//General graphics functions (no data changes)
+	       	////////////////////////////////////////////////////
 
+		    function handleSelButtonMouseover(d) {
+		    //changes color of button background on mouseover
+
+		    	d3.select(this).style("cursor", "pointer");
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoBarsSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-text-hover", true);
+		    }
+
+
+		    function handleSelButtonMouseout(d) {
+		    //restores original color of button background on mouseout	
+
+		    	d3.select(this).style("cursor", "default");
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoBarsSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-text-hover", false);
+
+		    }
+
+
+		    //
+	       	//
+	       	//HELPER functions 
+	       	////////////////////////////////////////////////////
+		    
 			function getDemoData(d) {
+			//returns data for demographic selection
 
 				if (demoChange == "NO CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						// if (isNaN(+d.POPDEN_2015)) {
-						// 	return 
-						// }
-						// else {return +d.POPDEN_2015;}
 						return +d.POPDEN_2015;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
-						return +d.PERCNONWHITE_2015;
+						return +d["PERCNONWHITE_2015"];
 					}
 					if (demoVar == "UNEMPLOYMENT RATE") {
 						return +d.UNEMPLOYMENT_2015;
@@ -1991,6 +1879,44 @@
 					}
 					if (demoVar == "INCOME") {
 						return incomeChange;
+					}
+				}
+			}
+
+			function getDemoVarName() {
+
+				if (demoChange == "NO CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return "POPDEN_2015";
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return "PERCNONWHITE_2015";
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return "UNEMPLOYMENT_2015";
+					}
+					if (demoVar == "EDUCATION") {
+						return "COLLEGE_2015";
+					}
+					if (demoVar == "INCOME") {
+						return "MEDIANINC_2015";
+					}
+				}
+				if (demoChange == "CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return "POPDEN_CHANGE";
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+						return "PERCNONWHITE_CHANGE";
+					}
+					if (demoVar == "UNEMPLOYMENT RATE") {
+						return "UNEMPLOYMENT_CHANGE";
+					}
+					if (demoVar == "EDUCATION") {
+						return "COLLEGE_CHANGE";
+					}
+					if (demoVar == "INCOME") {
+						return "MEDIANINC_CHANGE";
 					}
 				}
 			}
@@ -2099,7 +2025,6 @@
 	      		} 
 		    }
 			
-
 			// gridlines in x axis function
 			function make_x_gridlines() {		
 			    return d3.axisBottom(barsX)
