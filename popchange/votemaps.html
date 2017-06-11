@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
 	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
+	<link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600,600i,700,700i" rel="stylesheet">
 	<title>Pennsylvania Election Results</title>
 	<style>
 		h1 {/*font-family: "Crimson Text", serif;*/
@@ -14,30 +15,45 @@
     		margin-right: auto;
   		}
 		h2 {font-family: "Roboto Mono", sans-serif;
-  			font-size: 30px;
-  			font-weight:400;
+  			font-size: 36px;
+  			font-weight:700;
   			text-align: justify-all;
   			margin-left: auto;
     		margin-right: auto;
   		}
   		h3 {font-family: "Roboto Mono", sans-serif;
-  			font-size: 35px;
+  			font-size: 24px;
+  			font-weight: 400;
   			text-align: center;
   			margin-left: auto;
     		margin-right: auto;
   		}
 
-  		h4 {font-family: "Roboto", sans-serif;
+  		h4 {font-family: "Roboto Mono", sans-serif;
   			font-size: 20px;
-  			color: #872250;
-  			font-style: Semi-Bold Italic;
-  			text-align: center;  			
+  			font-weight: 300;
+  			width: 600px;
+  			text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+    		margin-bottom: 0px;
+    		/*line-height: 0.7;	*/		
   		}
   		body {
 	  		font-family: "Roboto", Helvetica, sans-serif;
 	  		overflow-wrap: normal;
-	  		width: 1200px;
-	  		text-align: justify-all;
+	  		/*width: 1000px;*/
+	  		text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+	  	}
+	  	p {
+	  		font-family: "Crimson Text", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		/*width: 600px;*/
+	  		text-align: justify;
 	  		text-wrap: normal;
 	  		margin-left: auto;
     		margin-right: auto;
@@ -52,13 +68,24 @@
 			shape-rendering: crispEdges;
 		}
 		.y.axis path {
+			/*stroke-dasharray: 4, 4;*/
+		}
+		.zero.axis path {
 			stroke-dasharray: 4, 4;
 		}
 		.grid line {
-			stroke-dasharray: 4, 4;
+			/*stroke-dasharray: 4, 4;*/
 			stroke: #cccccc;
 			stroke-opacity: 0.7;
 			shape-rendering: crispEdges;
+		}
+		.grid .tick {
+		    stroke: #cccccc;
+		    opacity: 0.85;
+		    shape-rendering: crispEdges;
+		}
+		.grid path {
+			stroke-width: 0;
 		}
 		.colorBar-label {
 			font: 11px "Roboto Mono";
@@ -68,9 +95,6 @@
 		}
 		.color-bar-brushed {
 			/*opacity: 0.6;*/
-		}
-		.grid path {
-			stroke-width: 0;
 		}
 		.dots {
 		  stroke: #cccccc;
@@ -201,6 +225,30 @@
 		.hover {
 			stroke: "#ffffff";
 		}
+		.text-container {
+		    /*background: rgb( 240, 240, 240);*/
+		    width: 600px;
+		    text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+		}
+
+		.leftColumn {
+		    width: 50%;
+		    /*height: 50px;*/
+		    float: left;
+		    display: inline-block;
+		    /*background: rgb(200, 200, 245);*/
+		}
+
+		.rightColumn {
+		    display: inline-block;
+		    float: left;
+		    width: 50%;
+		    margin-left: 30px;
+		    /*background: rgb( 200, 244, 244);*/
+		}
 
 	</style>
 	  <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -214,7 +262,16 @@
 
 </head>
 <body>
-	<h2 style=text-align:center>Pennsylvania Election Results</h2>
+	<h2 style=text-align:center>Beyond the County Line</h2>
+	<h3 style=text-align:center>New Scales of Understanding Election and Demographic Data</h3>
+<!-- 	<h4>Case Study: Pennsylvania</h4> -->
+	<div class="text-container">
+	<p>Why has the county become the default adminstrative unit at which we now understand national election results? County-level results undoubtedly offer better insight into voting trends than a mere reporting of state-wide figures. However, in assessing the complex </p>
+	<h4>About the project >></h4> 
+	<p>The purpose of this work is two-fold. At one level, the project explores that distortions produced by spatial abstractions that underlie both the administration of the state and maps themselves as a form of diagram. At a second level, the project allows the user to construct new knowledge of the contemporary relationship between election results and demographics, using the state of Pennsylvania as a case study. </p>
+	<p> These goals are pursued through the decomposition of conventional spatial boundaries, and the subsequent re-agglomeration of their associated data onto different spatial groupings. More concretely, the project operates in two parts: the first presents election data at the level of the census tract, as a means to create a more granular understanding of the distribution of votes that what can be seen at the county level. The second then examines the Pennsylvania’s demographic data at the US Congressional district level.</p></div>
+	
+
 	<div id="votemap" style=text-align:center></div>
 	<div id="voteselector" style=text-align:center></div>
 	<div id="demoselector" style=text-align:center></div>
@@ -1013,8 +1070,8 @@
 		    //MAKE Bar Chart
 		    ////////////////////////////////////////////////////
 		    var barChartWidth = 900
-		    	barMargin = {top: 20, right: 20, bottom: 20, left: 10},
-		    	barPadding = {top: 40, right: 40, bottom: 40, left: 10},
+		    	barMargin = {top: 20, right: 20, bottom: 20, left: 40},
+		    	barPadding = {top: 40, right: 40, bottom: 40, left: 20},
 		    	barOuterWidth = 870,
 		    	barOuterHeight = popChange.length + barMargin.top + barPadding.top + barMargin.bottom + barPadding.bottom,
 		    	barChartHeight = barOuterHeight,
@@ -1023,12 +1080,19 @@
 			    barWidth = barInnerWidth - barPadding.left - barPadding.right,
 			    barHeight = barInnerHeight - barPadding.top - barPadding.bottom,
 			    colorBarWidth = 30,
-			    brushMargin = {top: 20, right: 20, bottom: 20, left: 40};
+			    brushMargin = {top: 20, right: 10, bottom: 20, left: 40};
 
-			var formatPercent = d3.format(".0%");
+			//define number of quantiles for ticks along Y axis
+			//controls scales of y grid lines as well as values on static y axis
+			//numQuants = 5 -> five quantiles shown on Y axis (i.e. 0.2, 0.4, 0.6, 0.8, 1)
+			var numQuants = 10;
 
+			var formatPercentile = d3.format(".0%");
+
+			//gets data name according to selected variable
 			var demoData = getDemoVarName();
 
+			//sorts data according to selected variable
         	var tractdataSorted = tractdata.sort(function(a, b) {
         		if(!isFinite(a[demoData] && !isFinite(b[demoData]))) {
 					return 0;
@@ -1048,30 +1112,31 @@
 	        	.attr("x", 0)
 	        	.attr("y", 0);
 
-			//this will pick up brushing drag - make wider than visible graphics to facilitate this
+			//this will pick up brushing drag on the color bar - make bar wider than visible graphics to facilitate this
 			var barsColorBar = barChartContainer.append("svg")
-	        	.attr("width", colorBarWidth)
+	        	.attr("width", colorBarWidth + 20)
 	        	.attr("height", barHeight)
-	        	.attr("x", barChartWidth - brushMargin.right - colorBarWidth)
+	        	.attr("x", barChartWidth - brushMargin.right - colorBarWidth - 20)
 	        	.attr("y", barMargin.top + barPadding.top)
 	        	.on("click", handleColorBarsClick);
 
+	       	//"drag to select in map" label text
 	       	var colorBarLabel = barChartContainer.append("text")
 	       		.attr("class", "colorBar-label")
-	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
 	       		.attr("y", 15)
 	       		.text("drag to")
 	       		.append("tspan")
 	       		.text("select")
-	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
 	       		.attr("dy", "1.1em")
 	       		.append("tspan")
 	       		.text("tracts")
-	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
 	       		.attr("dy", "1.1em")
 	       		.append("tspan")
 	       		.text("in map")
-	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2))
+	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
 	       		.attr("dy", "1.1em");;
 	       	
 
@@ -1081,61 +1146,62 @@
 	            .append("g")
 	            .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
+	        //g for chart
 	        var innerBars = barsContainer.append("g")
 	        	.attr("transform", "translate(" + barPadding.left + "," + barPadding.top + ")");
 
-			var barsX = d3.scaleLinear()
-			    .range([0, barWidth]);
-
-			var barsY = d3.scaleBand()
-				.rangeRound([0, barHeight]);
-
-			var barsXAxisTop = d3.axisTop()
-			    .scale(barsX);
-
-			var barsXAxisBottom = d3.axisBottom()
-				.scale(barsX);
-				// .tickFormat(formatPercent);
-
-			var barsYAxis = d3.axisLeft()
-			    .scale(barsY)
-			    .tickSize(0)
-			    .tickFormat("");
-
+			//get min and max values of variable
 			var demoVarMin = d3.min(getDemoVar()),
 				demoVarMax = d3.max(getDemoVar());
 
-			console.log(demoVarMin);
-			console.log(demoVarMax);
+			//scales for use with various axes
+			
+			//use with top and bottom axes
+			//takes in demo variable, returns x position along axis
+			var barsX = d3.scaleLinear()
+				.domain([demoVarMin, demoVarMax]).nice()
+			    .range([0, barWidth]);
 
-			barsX.domain([demoVarMin, demoVarMax]).nice();
-
-			barsY.domain(tractdataSorted.map(function(d) {
+			//use with floating Y axis
+			//takes in GEO_ID, returns y position along axis
+			var barsY = d3.scaleBand()
+				.domain(tractdataSorted.map(function(d) {
 					return d.GEO_ID;
-				}));
+				}))
+				.rangeRound([0, barHeight]);
 
-			// barsY.domain(sortedData.map(function(d) {
-			// 		return d[0];
-			// 	}));
+			//use with Y grid
+			var barsYGrid = d3.scaleLinear()
+				.domain([0, 1])
+			    .range([0, barHeight]);
 
-			// add the X gridlines
+			
+			//Axes Assignments (pt 1)
+			//axis assignment for x grid lines
+			var xGridLines = d3.axisBottom()
+				.scale(barsX)
+				.tickSize(-barHeight, 0, 0)
+			    .tickFormat("");
+
+			
+			//Make Chart Graphical Elements
+			//axis assignment for y grid lines
+			var yGridLines = d3.axisLeft()
+				.scale(barsYGrid)
+				.ticks(numQuants*Math.round(barHeight/barWidth))
+				.tickSize(-barWidth, 0, 0)
+			    .tickFormat("");
+
+			// add X gridlines
+			// add Y gridlines
 			innerBars.append("g")			
 			    .attr("class", "grid")
 			    .attr("transform", "translate(0," + barHeight + ")")
-			    .call(make_x_gridlines()
-			        .tickSize(-barHeight)
-			        .tickFormat("")
-			    );
+			    .call(xGridLines);
 
-
-
-			// // add the Y gridlines
-			// innerBars.append("g")			
-			//     .attr("class", "grid")
-			//     .call(make_y_gridlines()
-			//         .tickSize(-barWidth)
-			//         .tickFormat("")
-			//     );
+			innerBars.append("g")
+				.attr("class", "grid")
+			    .call(yGridLines);
 
 			//append color bars
 			var colorBars = barsColorBar.selectAll(".color-bar")
@@ -1152,7 +1218,7 @@
 	            	}
 	            	else {return 1;}
 	            })
-	            .attr("x", 0)
+	            .attr("x", 10)
 	            .attr("width", 30)
 	            .style("fill", function(d) {
 	            	var tract = d.GEO_ID;
@@ -1191,30 +1257,73 @@
 	            	return (getVoteColor(tract));
 	            });
 
+	        //array of strings of values of quantile breaks
+	        //must be called after bars are appended
+			// var quantileVals = getQuantileValues(numQuants, demoVarMin, demoVarMax);
+
+			var quantileVals = getQuantileValues(numQuants, demoData);
+
+			console.log(quantileVals);
+			
+			//scale for use with static Y axis
+			//evenly spaces array of strings along y axis height
+			var barsYQuantiles = d3.scalePoint()
+				.domain(quantileVals)
+				.range([0, barHeight]);
+
+			//Axes Assignments (pt 2)
+			//top X axis
+			var barsXAxisTop = d3.axisTop()
+			    .scale(barsX);
+			    // .tickFormat(formatPercent);
+
+			//bottom X axis
+			var barsXAxisBottom = d3.axisBottom()
+				.scale(barsX);
+				// .tickFormat(formatPercent);
+
+			//Y axis that moves with data
+			var barsZeroAxis = d3.axisLeft()
+			    .scale(barsY)
+			    .tickSize(0)
+			    .tickFormat("");
+
+			//static Y axis on left side of chart
+			var barsYAxis = d3.axisLeft()
+				.scale(barsYQuantiles);
+
+			//Make axis elements
+			//top X Axis
 			innerBars.append("g")
 			    .attr("class", "x axis")
 			    .attr("id", "demoXAxisTop")
 			    .attr("transform", "translate(0," + -10 + ")")
 			    .call(barsXAxisTop);
 
+			//bottom X Axis (duplicates top X Axis)
 			innerBars.append("g")
 			    .attr("class", "x axis")
 			    .attr("id", "demoXAxisBottom")
-			    .attr("transform", "translate(0," + barHeight + ")")
+			    .attr("transform", "translate(0," + (barHeight + 10) + ")")
 			    .call(barsXAxisBottom);    
 
+			//static left-aligned Y axis to show quantiles
 			innerBars.append("g")
 			    .attr("class", "y axis")
 			    .attr("id", "demoYAxis")
-			    .attr("transform", "translate(" + barsX(0) + ",0)")
+			    .attr("transform", "translate(" + -10 + ",0)")
 			    .call(barsYAxis);
 
-			// tractdata = tractdata.sort(function(a, b) {
-   //          		return d3.descending(a.GEO_ID, b.GEO_ID);
-   //          	});
+			//dynamic Y axis that shifts with data
+			innerBars.append("g")
+			    .attr("class", "zero axis")
+			    .attr("id", "demoZeroAxis")
+			    .attr("transform", "translate(" + barsX(0) + ",0)")
+			    .call(barsZeroAxis);
 
+			//define brushing
 			var barBrush = d3.brushY()
-				.extent([[0, 0], [colorBarWidth, barHeight]])
+				.extent([[0, 0], [colorBarWidth+20, barHeight]])
 				.on("brush", highlightBrushedTracts);
 
 			barsColorBar.append("g")
@@ -1331,9 +1440,15 @@
 					placeNamesText
 						.text("placenames: on");
 					voteG.selectAll(".city")
-						.attr("visibility", "visible");
+						.attr("visibility", function(d) {
+							if (+d.properties.Population >= 28500) {return "visible";}
+							else {return "hidden";}	
+						});
 					voteG.selectAll(".city-label")
-						.attr("visibility", "visible");
+						.attr("visibility", function(d) {
+							if (+d.properties.Population >= 28500) {return "visible";}
+							else {return "hidden";}	
+						});
 				}
 				seePlaces = newSeePlaces;
 			}
@@ -1586,6 +1701,11 @@
 
             	var demoData = getDemoVarName();
 
+            	console.log("I'm in updateDemoBars");
+            	console.log(demoData);
+
+            	//sort data according to selected demographic
+            	//data sort handles NaNs and puts them at bottom of chart
             	var tractdataSorted = tractdata.sort(function(a, b) {
             		if(!isFinite(a[demoData] && !isFinite(b[demoData]))) {
 						return 0;
@@ -1599,51 +1719,93 @@
 					return +b[demoData] > +a[demoData] ? 1 : +b[demoData] < +a[demoData] ? -1 : 0;
             	});
 
-            	var barsX = d3.scaleLinear()
-			    	.range([0, barWidth]);
-
-				var barsY = d3.scaleBand()
-					.rangeRound([0, barHeight]);
-
-				var barsXAxisTop = d3.axisTop()
-				    .scale(barsX);
-
-				var barsXAxisBottom = d3.axisBottom()
-					.scale(barsX);
-					// .tickFormat(formatPercent);
-
-				var barsYAxis = d3.axisLeft()
-				    .scale(barsY)
-				    .tickSize(0)
-				    .tickFormat("");
-
-				var demoVarMin = d3.min(getDemoVar()),
+            	var demoVarMin = d3.min(getDemoVar()),
 					demoVarMax = d3.max(getDemoVar());
-
-				// var demoVarMin = d3.min(+d[demoData]),
-				// 	demoVarMax = d3.max(+d[demoData]);
 
 				console.log(demoVarMin);
 				console.log(demoVarMax);
 
-				barsX.domain([demoVarMin, demoVarMax]).nice();
+    //         	var barsX = d3.scaleLinear()
+			 //    	.range([0, barWidth]);
 
-				barsY.domain(tractdataSorted.map(function(d) {
+				// var barsY = d3.scaleBand()
+				// 	.rangeRound([0, barHeight]);
+
+				// var barsXAxisTop = d3.axisTop()
+				//     .scale(barsX);
+
+				// var barsXAxisBottom = d3.axisBottom()
+				// 	.scale(barsX);
+				// 	// .tickFormat(formatPercent);
+
+				// var barsYAxis = d3.axisLeft()
+				//     .scale(barsY)
+				//     .tickSize(0)
+				//     .tickFormat("");
+
+				// var demoVarMin = d3.min(getDemoVar()),
+				// 	demoVarMax = d3.max(getDemoVar());
+
+				// barsX.domain([demoVarMin, demoVarMax]).nice();
+
+				// barsY.domain(tractdataSorted.map(function(d) {
+				// 		return d.GEO_ID;
+				// 	}));
+
+				
+				//scales for use with various axes
+			
+				//use with top and bottom axes
+				//takes in demo variable, returns x position along axis
+				var barsX = d3.scaleLinear()
+					.domain([demoVarMin, demoVarMax]).nice()
+				    .range([0, barWidth]);
+
+				//use with floating Y axis
+				//takes in GEO_ID, returns y position along axis
+				var barsY = d3.scaleBand()
+					.domain(tractdataSorted.map(function(d) {
 						return d.GEO_ID;
-					}));
+					}))
+					.rangeRound([0, barHeight]);
 
+				//use with Y grid
+				var barsYGrid = d3.scaleLinear()
+					.domain([0, 1])
+				    .range([0, barHeight]);
+
+				
+				//Axes Assignments (pt 1)
+				//axis assignment for x grid lines
+				var xGridLines = d3.axisBottom()
+					.scale(barsX)
+					.tickSize(-barHeight, 0, 0)
+				    .tickFormat("");
+
+				
+				//Make Chart Graphical Elements
+				//axis assignment for y grid lines
+				var yGridLines = d3.axisLeft()
+					.scale(barsYGrid)
+					.ticks(numQuants*Math.round(barHeight/barWidth))
+					.tickSize(-barWidth, 0, 0)
+				    .tickFormat("");
+
+				//remove old grid lines
 				d3.selectAll(".grid")
 					.remove();
 
+				// add X gridlines
+				// add Y gridlines
 				innerBars.append("g")			
 				    .attr("class", "grid")
 				    .attr("transform", "translate(0," + barHeight + ")")
-				    .call(make_x_gridlines()
-				        .tickSize(-barHeight)
-				        .tickFormat(""))
-				    .call(make_y_gridlines()
-				    	.tickSize(-barWidth)
-				    	.tickFormat(""));
+				    .call(xGridLines);
+
+				innerBars.append("g")
+					.attr("class", "grid")
+			    	.call(yGridLines);
+
 
 		  		//update selector bars
 			    d3.selectAll(".color-bar")
@@ -1666,7 +1828,8 @@
 
 		        //update chart bars
 		        d3.selectAll(".bar")
-		           .transition()
+		        	.raise()
+		            .transition()
 				     	.duration(1200)
 		            	.attr("y", function (d) {
 			                return barsY(d.GEO_ID);
@@ -1694,50 +1857,86 @@
 			            	return getVoteColor(tract);
 			            });
 
-			 //    d3.select("#demoXAxisTop")
-			 //    	.transition()
-			 //    		.duration(1200)
-				//     	.attr("transform", "translate(0," + -10 + ")")
-				//     	.call(barsXAxisTop);
 
-				// d3.select("#demoXAxisBottom")
-				// 	.transition()
-			 //    		.duration(1200)
-				//     	.attr("transform", "translate(0," + barHeight + ")")
-				//     	.call(barsXAxisBottom);   
+			    //array of strings of values of quantile breaks
+		        //must be called after bars are appended
+				var quantileVals = getQuantileValues(numQuants, demoData);
 
-				// d3.select("#demoYAxis")
-				//     .transition()
-				//      	.duration(1200)
-				//     	.attr("transform", "translate(" + barsX(0) + ",0)")
-				//     	.call(barsYAxis);
+				console.log(quantileVals);
 
+				//scale for use with static Y axis
+				//evenly spaces array of strings along y axis height
+				var barsYQuantiles = d3.scalePoint()
+					.domain(quantileVals)
+					.range([0, barHeight]);
+
+				//Axes Assignments (pt 2)
+				//top X axis
+				var barsXAxisTop = d3.axisTop()
+				    .scale(barsX);
+				    // .tickFormat(formatPercent);
+
+				//bottom X axis
+				var barsXAxisBottom = d3.axisBottom()
+					.scale(barsX);
+					// .tickFormat(formatPercent);
+
+				//Y axis that moves with data
+				var barsZeroAxis = d3.axisLeft()
+				    .scale(barsY)
+				    .tickSize(0)
+				    .tickFormat("");
+
+				//static Y axis on left side of chart
+				var barsYAxis = d3.axisLeft()
+					.scale(barsYQuantiles);
+
+				
+				//remove old axes
 				d3.select("#demoXAxisTop")
-				    .remove();
-
-				d3.select("#demoYAxis")
 				    .remove();
 
 				d3.select("#demoXAxisBottom")
 				    .remove();
 
-				innerBars.append("g")
-				    .attr("class", "y axis")
-				    .attr("id", "demoYAxis")
-				    .attr("transform", "translate(" + barsX(0) + ",0)")
-				    .call(barsYAxis);
+				d3.select("#demoYAxis")
+				    .remove();
 
+				d3.select("#demoZeroAxis")
+				    .remove();
+
+				//Make axis elements
+				//top X Axis
 				innerBars.append("g")
 				    .attr("class", "x axis")
 				    .attr("id", "demoXAxisTop")
 				    .attr("transform", "translate(0," + -10 + ")")
 				    .call(barsXAxisTop);
 
+				//bottom X Axis (duplicates top X Axis)
 				innerBars.append("g")
 				    .attr("class", "x axis")
 				    .attr("id", "demoXAxisBottom")
-				    .attr("transform", "translate(0," + barHeight + ")")
-				    .call(barsXAxisBottom); 
+				    .attr("transform", "translate(0," + (barHeight + 10) + ")")
+				    .call(barsXAxisBottom);    
+
+				//static left-aligned Y axis to show quantiles
+				innerBars.append("g")
+				    .attr("class", "y axis")
+				    .attr("id", "demoYAxis")
+				    .attr("transform", "translate(" + -10 + ",0)")
+				    .call(barsYAxis);
+
+				//dynamic Y axis that shifts with data
+				innerBars.append("g")
+				    .attr("class", "zero axis")
+				    .attr("id", "demoZeroAxis")
+				    .attr("transform", "translate(" + barsX(0) + ",0)")
+				    .call(barsZeroAxis);
+
+			    /////////////
+
+		
 
 				// d3.selectAll(".grid")
 			 //    	.transition()
@@ -1921,6 +2120,70 @@
 				}
 			}
 
+			function getQuantileValues(numQuants, demoData) {
+
+				var quantiles = Array.from(new Array(numQuants - 1),(val,index)=>(index+1)/numQuants);
+
+				var varArray = [];
+
+				console.log(demoData);
+
+				tractdataSorted.forEach(function(d) {
+					varArray.push(+d[demoData]);
+					});
+
+				var varArrayLen = varArray.length;
+
+				var quantVals = [Math.round(d3.max(varArray)).toString()];
+
+				quantiles.forEach(function(quantValue) {
+
+					var quantVal = (Math.round(varArray[Math.round(quantValue*varArrayLen)])).toString();
+					quantVals.push(quantVal);
+
+				});
+
+				quantVals.push(Math.round(d3.min(varArray)).toString());
+
+				return quantVals;
+
+			}
+
+
+			// function getQuantileValues(numQuants, demoVarMin, demoVarMax) {
+
+			// 	var quantiles = Array.from(new Array(numQuants - 1),(val,index)=>(index+1)/numQuants);
+
+			// 	var quantileVals = [(Math.round(demoVarMax)).toString()];
+
+
+			// 	//get values at each decile
+			// 	quantiles.forEach(function(quantValue) {
+
+			// 		var xVal = d3.selectAll(".bar").filter(function(d) {return this.getAttribute("y") == Math.round(barHeight*quantValue)}).attr("x");
+
+			// 		console.log(xVal);
+
+			// 		var widthVal = d3.selectAll(".bar").filter(function(d) {return this.getAttribute("y") == Math.round(barHeight*quantValue)}).attr("width");
+
+			// 		console.log(widthVal);
+
+			// 		if (xVal >= 0) {
+			// 			var newVal = Math.round(barsX.invert(widthVal)),
+			// 				strVal = newVal.toString();
+			// 			quantileVals.push(strVal);}
+			// 		else {
+			// 			var newVal = Math.round(barsX.invert(-widthVal)),
+			// 				srtVal = newVal.toString();
+			// 			quantileVals.push(strVal);}
+			// 	});
+
+			// 	quantileVals.push((Math.round(demoVarMin)).toString());
+
+			// 	return quantileVals;
+
+			// }
+
 
 		    function getVoteColor(tract) {
 
@@ -2027,14 +2290,14 @@
 			
 			// gridlines in x axis function
 			function make_x_gridlines() {		
-			    return d3.axisBottom(barsX)
+			    return d3.axisBottom(barsX);
 			        // .ticks(5)
 			}
 
 			// gridlines in y axis function
 			function make_y_gridlines() {		
-			    return d3.axisLeft(barsY);
-			        // .ticks(5)
+			    return d3.axisLeft(barsY)
+			        .ticks(10);
 			}
 
 			function handleColorBarsClick() {
