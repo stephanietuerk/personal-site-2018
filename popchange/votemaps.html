@@ -87,6 +87,12 @@
 		.grid path {
 			stroke-width: 0;
 		}
+		.chart-label {
+			font: 12px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #000;
+			text-anchor: end;
+		}
 		.colorBar-label {
 			font: 11px "Roboto Mono";
 			/*font: 12px sans-serif;*/
@@ -266,10 +272,10 @@
 	<h3 style=text-align:center>New Scales of Understanding Election and Demographic Data</h3>
 <!-- 	<h4>Case Study: Pennsylvania</h4> -->
 	<div class="text-container">
-	<p>UNFINISHED PLACEHOLDER TEXT -> Why has the county become the default adminstrative unit at which we now understand national election results? County-level results undoubtedly offer better insight into voting trends than a mere reporting of state-wide figures. However, in assessing the complex </p>
+	<p>Why has the county become the default adminstrative unit at which we now understand national election results? County-level results undoubtedly offer better insight into voting trends than a mere reporting of state-wide figures. However, in assessing the complex </p>
 	<h4>About the project >></h4> 
-	<p>UNFINISHED PLACEHOLDER TEXT -> The purpose of this work is two-fold. At one level, the project explores that distortions produced by spatial abstractions that underlie both the administration of the state and maps themselves as a form of diagram. At a second level, the project allows the user to construct new knowledge of the contemporary relationship between election results and demographics, using the state of Pennsylvania as a case study. </p>
-	<p>UNFINISHED PLACEHOLDER TEXT -> These goals are pursued through the decomposition of conventional spatial boundaries, and the subsequent re-agglomeration of their associated data onto different spatial groupings. More concretely, the project operates in two parts: the first presents election data at the level of the census tract, as a means to create a more granular understanding of the distribution of votes that what can be seen at the county level. The second then examines the Pennsylvania’s demographic data at the US Congressional district level.</p></div>
+	<p>The purpose of this work is two-fold. At one level, the project explores that distortions produced by spatial abstractions that underlie both the administration of the state and maps themselves as a form of diagram. At a second level, the project allows the user to construct new knowledge of the contemporary relationship between election results and demographics, using the state of Pennsylvania as a case study. </p>
+	<p> These goals are pursued through the decomposition of conventional spatial boundaries, and the subsequent re-agglomeration of their associated data onto different spatial groupings. More concretely, the project operates in two parts: the first presents election data at the level of the census tract, as a means to create a more granular understanding of the distribution of votes that what can be seen at the county level. The second then examines the Pennsylvania’s demographic data at the US Congressional district level.</p></div>
 	
 
 	<div id="votemap" style=text-align:center></div>
@@ -1011,58 +1017,43 @@
 
 	        //style dynamic title of map
 	        voteMapTitle
-	        	.text(function() {
-	        		if (voteMapDate == "CHANGE") {
-	        			var dateText = "Change in Margin, 2012 - 2016";
-	        		}
-	        		else {
-	        			var dateText = voteMapDate;
-	        		}
-	        		if (voteMapRace == "PRESIDENT") {
-	        			var mapText = "US Presidential";
-	        		}
-	        		if (voteMapRace == "US SENATE") {
-						var mapText = "US Senate";
-	        		}
-	        		if (voteMapRace == "US CONGRESS") {
-	        			var mapText = "US Congressional";
-	        		}
-	        		return mapText + " Election: " + dateText;
-	        		});
+	        	.text(getVoteMapTitle(voteMapDate, voteMapRace));
 
 	        //style dynamic title of demoBars
 	        demoBarsTitle
-	        	.text(function() {
-	    			if (demoVar == "PERCENT NON-WHITE") {
-	    				var demoVarText = "Non-White, Non-Hispanic Population (% of total)";
-	    			}
-	    			if (demoVar == "UNEMPLOYMENT RATE") {
-	    				var demoVarText = "Unemployment Rate";
-	    			}
-	    			if (demoVar == "EDUCATION LEVEL") {
-	    				var demoVarText = "Population with Bachelor's Degree (% of total)";
-	    			}
-	    			if (demoVar == "INCOME") {
-	    				var demoVarText = "Median Income";
-	    			}
-	    			if (demoChange == "NO CHANGE") {
-	    				var demoChangeText = "",
-	    					demoDateText = "2015";
+	        	.text(getDemoBarsTitle(demoVar, demoChange));
+	      //   	.text(function() {
+	    		// 	if (demoVar == "PERCENT NON-WHITE") {
+	    		// 		var demoVarText = "Non-White, Non-Hispanic Population (% of total)";
+	    		// 	}
+	    		// 	if (demoVar == "UNEMPLOYMENT RATE") {
+	    		// 		var demoVarText = "Unemployment Rate";
+	    		// 	}
+	    		// 	if (demoVar == "EDUCATION LEVEL") {
+	    		// 		var demoVarText = "Population with Bachelor's Degree (% of total)";
+	    		// 	}
+	    		// 	if (demoVar == "INCOME") {
+	    		// 		var demoVarText = "Median Income";
+	    		// 	}
+	    		// 	if (demoChange == "NO CHANGE") {
+	    		// 		var demoChangeText = "",
+	    		// 			demoDateText = "2015";
 
-	    				if (demoVar == "POPULATION DENSITY") {
-	    					var demoVarText = "Population Density";
-	    				}
-	    			}
-	    			if (demoChange == "CHANGE") {
-	    				var demoChangeText = "Change in ",
-	    					demoDateText = "2010-2015";
+	    		// 		if (demoVar == "POPULATION DENSITY") {
+	    		// 			var demoVarText = "Population Density";
+	    		// 		}
+	    		// 	}
+	    		// 	if (demoChange == "CHANGE") {
+	    		// 		var demoChangeText = "Change in ",
+	    		// 			demoDateText = "2010-2015";
 
-	    				if (demoVar == "POPULATION DENSITY") {
-	    					var demoVarText = "Population";
-	    				}
-	    			}
-	    			return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
-	    		})
+	    		// 		if (demoVar == "POPULATION DENSITY") {
+	    		// 			var demoVarText = "Population";
+	    		// 		}
+	    		// 	}
+	    		// 	// return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
+	    		// 	return demoChangeText + demoVarText + " by Census Tract ";
+	    		// })
 			
 
 			//
@@ -1261,7 +1252,7 @@
 	        //must be called after bars are appended
 			// var quantileVals = getQuantileValues(numQuants, demoVarMin, demoVarMax);
 
-			var quantileVals = getQuantileValues(numQuants, demoData);
+			var quantileVals = getQuantileValues(numQuants, demoData, demoVar, demoChange);
 
 			console.log(quantileVals);
 			
@@ -1274,13 +1265,13 @@
 			//Axes Assignments (pt 2)
 			//top X axis
 			var barsXAxisTop = d3.axisTop()
-			    .scale(barsX);
-			    // .tickFormat(formatPercent);
+			    .scale(barsX)
+			    .tickFormat(getTickFormat(demoVar, demoChange));
 
 			//bottom X axis
 			var barsXAxisBottom = d3.axisBottom()
-				.scale(barsX);
-				// .tickFormat(formatPercent);
+				.scale(barsX)
+				.tickFormat(getTickFormat(demoVar, demoChange));
 
 			//Y axis that moves with data
 			var barsZeroAxis = d3.axisLeft()
@@ -1311,7 +1302,7 @@
 			innerBars.append("g")
 			    .attr("class", "y axis")
 			    .attr("id", "demoYAxis")
-			    .attr("transform", "translate(" + -10 + ",0)")
+			    .attr("transform", "translate(" + -20 + ",0)")
 			    .call(barsYAxis);
 
 			//dynamic Y axis that shifts with data
@@ -1320,6 +1311,17 @@
 			    .attr("id", "demoZeroAxis")
 			    .attr("transform", "translate(" + barsX(0) + ",0)")
 			    .call(barsZeroAxis);
+
+			
+
+			//top X axis title
+			innerBars.append("text")
+				.attr("class", "chart-label")
+				.attr("y", -35)
+				.attr("x", barWidth)
+				.text(getChartXLabel(demoVar, demoChange));
+
+			
 
 			//define brushing
 			var barBrush = d3.brushY()
@@ -1490,7 +1492,10 @@
 				voteMapDate = d; 
 				console.log(voteMapDate);
 				console.log(voteMapRace);
-				updateVoteMapTitle(); 
+				
+				voteMapTitle
+	        		.text(getVoteMapTitle(voteMapDate, voteMapRace));
+
 				updateVoteMap();
 				updateDemoBars();
 		    }
@@ -1522,7 +1527,10 @@
 				voteMapRace = d; 
 				console.log(voteMapDate);
 				console.log(voteMapRace);
-				updateVoteMapTitle(); 
+				
+				voteMapTitle
+	        		.text(getVoteMapTitle(voteMapDate, voteMapRace));
+
 				updateVoteMap();
 				updateDemoBars();
 		    }
@@ -1554,7 +1562,10 @@
 				demoVar = d; 
 				console.log(demoVar);
 				console.log(demoChange);
-				updateDemoBarsTitle(); 
+				
+				demoBarsTitle
+	        		.text(getDemoBarsTitle(demoVar, demoChange));
+
 				updateDemoBars();
 		    }
 
@@ -1595,7 +1606,10 @@
 				
 				console.log(demoVar);
 				console.log(demoChange);
-				updateDemoBarsTitle(); 
+				
+				demoBarsTitle
+	        		.text(getDemoBarsTitle(demoVar, demoChange));
+
 				updateDemoBars();
 		    }
 
@@ -1604,68 +1618,101 @@
 	       	//Functions to update elements based on new selection
 	       	////////////////////////////////////////////////////
 
-		    function updateVoteMapTitle() {
+		    function getVoteMapTitle(voteMapDate, voteMapRace) {
 		    //updates map title according to selected date and race variables
-		    	
-		    	voteMapTitle
-		        	.text(function() {
-		        		if (voteMapDate == "CHANGE") {
-		        			var dateText = "Change in Margin, 2012 - 2016";
-		        		}
-		        		else {
-		        			var dateText = voteMapDate;
-		        		}
 
-		        		if (voteMapRace == "PRESIDENT") {
-		        			var mapText = "US Presidential";
-		        		}
-		        		if (voteMapRace == "US SENATE") {
-							var mapText = "US Senate";
-		        		}
-		        		if (voteMapRace == "US CONGRESS") {
-		        			var mapText = "US Congressional";
-		        		}
-		        		return mapText + " Election: " + dateText;
-		        		});
+        		if (voteMapDate == "CHANGE") {
+        			var dateText = "Change in Margin, 2012 - 2016";
+        		}
+        		else {
+        			var dateText = voteMapDate;
+        		}
+
+        		if (voteMapRace == "PRESIDENT") {
+        			var mapText = "US Presidential";
+        		}
+        		if (voteMapRace == "US SENATE") {
+					var mapText = "US Senate";
+        		}
+        		if (voteMapRace == "US CONGRESS") {
+        			var mapText = "US Congressional";
+        		}
+        		return mapText + " Election: " + dateText;
+		        		
 		    }
 
 
-		    function updateDemoBarsTitle() {
+		    // function updateDemoBarsTitle() {
+		    // //updates bar chart title according to selected demographic variables
+
+		    // 	demoBarsTitle
+		    // 		.text(function() {
+		    // 			if (demoVar == "PERCENT NON-WHITE") {
+		    // 				var demoVarText = "Non-White, Non-Hispanic Population";
+		    // 			}
+		    // 			if (demoVar == "UNEMPLOYMENT RATE") {
+		    // 				var demoVarText = "Unemployment Rate";
+		    // 			}
+		    // 			if (demoVar == "EDUCATION") {
+		    // 				var demoVarText = "Population with Bachelor's Degree";
+		    // 			}
+		    // 			if (demoVar == "INCOME") {
+		    // 				var demoVarText = "Median Income";
+		    // 			}
+		    // 			if (demoChange == "NO CHANGE") {
+		    // 				var demoChangeText = "",
+		    // 					demoDateText = "2015";
+
+		    // 				if (demoVar == "POPULATION DENSITY") {
+		    // 					var demoVarText = "Population Density";
+		    // 				}
+		    // 			}
+		    // 			if (demoChange == "CHANGE") {
+		    // 				var demoChangeText = "Change in ",
+		    // 					demoDateText = "2010-2015";
+
+		    // 				if (demoVar == "POPULATION DENSITY") {
+		    // 					var demoVarText = "Population";
+		    // 				}
+		    // 			}
+		    // 			return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
+		    // 		})
+		    // }
+
+		    function getDemoBarsTitle(demoVar, changeVar) {
 		    //updates bar chart title according to selected demographic variables
 
-		    	demoBarsTitle
-		    		.text(function() {
-		    			if (demoVar == "PERCENT NON-WHITE") {
-		    				var demoVarText = "Non-White, Non-Hispanic Population (% of total)";
-		    			}
-		    			if (demoVar == "UNEMPLOYMENT RATE") {
-		    				var demoVarText = "Unemployment Rate";
-		    			}
-		    			if (demoVar == "EDUCATION") {
-		    				var demoVarText = "% of Population with Bachelor's Degree";
-		    			}
-		    			if (demoVar == "INCOME") {
-		    				var demoVarText = "Median Income";
-		    			}
-		    			if (demoChange == "NO CHANGE") {
-		    				var demoChangeText = "",
-		    					demoDateText = "2015";
+    			if (demoVar == "PERCENT NON-WHITE") {
+    				var demoVarText = "Non-White, Non-Hispanic Population";
+    			}
+    			if (demoVar == "UNEMPLOYMENT RATE") {
+    				var demoVarText = "Unemployment Rate";
+    			}
+    			if (demoVar == "EDUCATION") {
+    				var demoVarText = "Population with Bachelor's Degree";
+    			}
+    			if (demoVar == "INCOME") {
+    				var demoVarText = "Median Income";
+    			}
+    			if (demoChange == "NO CHANGE") {
+    				var demoChangeText = "",
+    					demoDateText = "2015";
 
-		    				if (demoVar == "POPULATION DENSITY") {
-		    					var demoVarText = "Population Density";
-		    				}
-		    			}
-		    			if (demoChange == "CHANGE") {
-		    				var demoChangeText = "Change in ",
-		    					demoDateText = "2010-2015";
+    				if (demoVar == "POPULATION DENSITY") {
+    					var demoVarText = "Population Density";
+    				}
+    			}
+    			if (demoChange == "CHANGE") {
+    				var demoChangeText = "Change in ",
+    					demoDateText = "2010-2015";
 
-		    				if (demoVar == "POPULATION DENSITY") {
-		    					var demoVarText = "Population";
-		    				}
-		    			}
-		    			return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
-		    		})
+    				if (demoVar == "POPULATION DENSITY") {
+    					var demoVarText = "Population";
+    				}
+    			}
+    			return demoChangeText + demoVarText + " by Census Tract";
 		    }
+		 
 
 
 		    function updateVoteMap(d) {
@@ -1724,33 +1771,6 @@
 
 				console.log(demoVarMin);
 				console.log(demoVarMax);
-
-    //         	var barsX = d3.scaleLinear()
-			 //    	.range([0, barWidth]);
-
-				// var barsY = d3.scaleBand()
-				// 	.rangeRound([0, barHeight]);
-
-				// var barsXAxisTop = d3.axisTop()
-				//     .scale(barsX);
-
-				// var barsXAxisBottom = d3.axisBottom()
-				// 	.scale(barsX);
-				// 	// .tickFormat(formatPercent);
-
-				// var barsYAxis = d3.axisLeft()
-				//     .scale(barsY)
-				//     .tickSize(0)
-				//     .tickFormat("");
-
-				// var demoVarMin = d3.min(getDemoVar()),
-				// 	demoVarMax = d3.max(getDemoVar());
-
-				// barsX.domain([demoVarMin, demoVarMax]).nice();
-
-				// barsY.domain(tractdataSorted.map(function(d) {
-				// 		return d.GEO_ID;
-				// 	}));
 
 				
 				//scales for use with various axes
@@ -1860,7 +1880,7 @@
 
 			    //array of strings of values of quantile breaks
 		        //must be called after bars are appended
-				var quantileVals = getQuantileValues(numQuants, demoData);
+				var quantileVals = getQuantileValues(numQuants, demoData, demoVar, demoChange);
 
 				console.log(quantileVals);
 
@@ -1873,13 +1893,13 @@
 				//Axes Assignments (pt 2)
 				//top X axis
 				var barsXAxisTop = d3.axisTop()
-				    .scale(barsX);
-				    // .tickFormat(formatPercent);
+				    .scale(barsX)
+				    .tickFormat(getTickFormat(demoVar, demoChange));
 
 				//bottom X axis
 				var barsXAxisBottom = d3.axisBottom()
-					.scale(barsX);
-					// .tickFormat(formatPercent);
+					.scale(barsX)
+					.tickFormat(getTickFormat(demoVar, demoChange));
 
 				//Y axis that moves with data
 				var barsZeroAxis = d3.axisLeft()
@@ -1904,6 +1924,9 @@
 
 				d3.select("#demoZeroAxis")
 				    .remove();
+
+				d3.selectAll(".chart-label")
+					.remove();
 
 				//Make axis elements
 				//top X Axis
@@ -1934,7 +1957,12 @@
 				    .attr("transform", "translate(" + barsX(0) + ",0)")
 				    .call(barsZeroAxis);
 
-			    /////////////
+			    //top X axis title
+				innerBars.append("text")
+					.attr("class", "chart-label")
+					.attr("y", -35)
+					.attr("x", barWidth)
+					.text(getChartXLabel(demoVar, demoChange));
 
 		
 
@@ -2120,13 +2148,11 @@
 				}
 			}
 
-			function getQuantileValues(numQuants, demoData) {
+			function getQuantileValues(numQuants, demoData, demoVar, demoChange) {
 
 				var quantiles = Array.from(new Array(numQuants - 1),(val,index)=>(index+1)/numQuants);
 
 				var varArray = [];
-
-				console.log(demoData);
 
 				tractdataSorted.forEach(function(d) {
 					varArray.push(+d[demoData]);
@@ -2134,56 +2160,73 @@
 
 				var varArrayLen = varArray.length;
 
-				var quantVals = [Math.round(d3.max(varArray)).toString()];
+				if (demoChange == "NO CHANGE") {
+				
+					var quantVals = [Math.round(d3.max(varArray)).toString()];
 
-				quantiles.forEach(function(quantValue) {
+					quantiles.forEach(function(quantValue) {
 
-					var quantVal = (Math.round(varArray[Math.round(quantValue*varArrayLen)])).toString();
-					quantVals.push(quantVal);
+						var quantVal = (Math.round(varArray[Math.round(quantValue*varArrayLen)])).toString();
+						quantVals.push(quantVal);
 
-				});
+					});
 
-				quantVals.push(Math.round(d3.min(varArray)).toString());
+					quantVals.push(Math.round(d3.min(varArray)).toString());
 
-				return quantVals;
+					return quantVals;
+				}
+
+				if (demoChange == "CHANGE") {
+
+					console.log("no change here!");
+
+					var quantVals = [d3.format(".0%")(d3.max(varArray)).toString()];
+
+					quantiles.forEach(function(quantValue) {
+
+						var quantVal = varArray[Math.round(quantValue*varArrayLen)];
+
+						if (quantVal >= 0.01) {
+							var quantValForm = d3.format(".0%")(quantVal).toString();
+						}
+						if (quantVal < 0.01) {
+							var quantValForm = d3.format(".1%")(quantVal).toString();
+						}
+					
+						quantVals.push(quantValForm);
+
+					});
+
+					quantVals.push(d3.format(".0%")(d3.min(varArray)).toString());
+
+					return quantVals;
+				}
 
 			}
 
 
-			// function getQuantileValues(numQuants, demoVarMin, demoVarMax) {
+			function getTickFormat(demoVar, demoChange) {
 
-			// 	var quantiles = Array.from(new Array(numQuants - 1),(val,index)=>(index+1)/numQuants);
-
-			// 	var quantileVals = [(Math.round(demoVarMax)).toString()];
-
-
-			// 	//get values at each decile
-			// 	quantiles.forEach(function(quantValue) {
-
-			// 		var xVal = d3.selectAll(".bar").filter(function(d) {return this.getAttribute("y") == Math.round(barHeight*quantValue)}).attr("x");
-
-			// 		console.log(xVal);
-
-			// 		var widthVal = d3.selectAll(".bar").filter(function(d) {return this.getAttribute("y") == Math.round(barHeight*quantValue)}).attr("width");
-
-			// 		console.log(widthVal);
-
-			// 		if (xVal >= 0) {
-			// 			var newVal = Math.round(barsX.invert(widthVal)),
-			// 				strVal = newVal.toString();
-			// 			quantileVals.push(strVal);}
-			// 		else {
-			// 			var newVal = Math.round(barsX.invert(-widthVal)),
-			// 				srtVal = newVal.toString();
-			// 			quantileVals.push(strVal);}
-			// 	});
-
-			// 	quantileVals.push((Math.round(demoVarMin)).toString());
-
-			// 	return quantileVals;
-
-			// }
-
+				if (demoChange == "CHANGE")
+					return d3.format(".0%");
+				if (demoChange == "NO CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						return d3.format(".0f");
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+	    				return function(d) {return d + "%";};
+	    			}
+	    			if (demoVar == "UNEMPLOYMENT RATE") {
+	    				return function(d) {return d + "%";};
+	    			}
+	    			if (demoVar == "EDUCATION") {
+	    				return function(d) {return d + "%";};
+	    			}
+	    			if (demoVar == "INCOME") {
+	    				return d3.format("$,.0f");
+	    			}
+	    		}
+			}
 
 		    function getVoteColor(tract) {
 
@@ -2288,17 +2331,59 @@
 	      		} 
 		    }
 			
-			// gridlines in x axis function
-			function make_x_gridlines() {		
-			    return d3.axisBottom(barsX);
-			        // .ticks(5)
+			
+			function getChartXLabel(demoVar, demoChange) {
+				
+				if (demoChange == "NO CHANGE") {
+					if (demoVar == "POPULATION DENSITY") {
+						var units = "population/sq mi (2015)";
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+	    				var units = "% of total population (2015)";
+	    			}
+	    			if (demoVar == "UNEMPLOYMENT RATE") {
+	    				var units = "% unemployed (2015)";
+	    			}
+	    			if (demoVar == "EDUCATION") {
+	    				var units = "% of total population (2015)";
+	    			}
+	    			if (demoVar == "INCOME") {
+	    				var units = "(2015)";
+	    			}
+	    		}
+    			if (demoChange == "CHANGE") {
+    				if (demoVar == "POPULATION DENSITY") {
+						var units = "(2010 - 2015)";
+					}
+					if (demoVar == "PERCENT NON-WHITE") {
+	    				var units = "% change in total population (2010 - 2015)";
+	    			}
+	    			if (demoVar == "UNEMPLOYMENT RATE") {
+	    				var units = "(2010 - 2015)";
+	    			}
+	    			if (demoVar == "EDUCATION") {
+	    				var units = "% change in total population (2010 - 2015)";
+	    			}
+	    			if (demoVar == "INCOME") {
+	    				var units = "(2010 - 2015)";
+	    			}
+	    		}
+    				
+    			return units;
 			}
 
-			// gridlines in y axis function
-			function make_y_gridlines() {		
-			    return d3.axisLeft(barsY)
-			        .ticks(10);
-			}
+
+			// // gridlines in x axis function
+			// function make_x_gridlines() {		
+			//     return d3.axisBottom(barsX);
+			//         // .ticks(5)
+			// }
+
+			// // gridlines in y axis function
+			// function make_y_gridlines() {		
+			//     return d3.axisLeft(barsY)
+			//         .ticks(10);
+			// }
 
 			function handleColorBarsClick() {
 
