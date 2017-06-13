@@ -302,11 +302,10 @@
 	
 
 	<div id="votemap" style=text-align:center></div>
-	<div id="voteselector" style=text-align:center></div>
+	<div id="selector" style=text-align:center></div>
 	<div id="demoselector" style=text-align:center></div>
 	<div id="barchart" style=text-align:center></div>
-	<div id="voteplot" style=text-align:center></div>
-	<div id="demosmap" style=text-align:center></div>
+	<div id="sorter" style=text-align:center></div>
 
 	<!-- Page elements and content go here. -->
 	<script>
@@ -330,7 +329,6 @@
 		function makeViz(error, pa, tractdata, cities) {
 			if (error) throw error;
 
-			console.log(tractdata);
 			//
 			//
 			//PROCESS AND FORMAT VOTE DATA
@@ -752,10 +750,6 @@
 			}
 					
 						
-				
-					
-
-			
 
 			//
 			//
@@ -763,149 +757,52 @@
 			////////////////////////////////////////////////////
 
 			//Make container
-			var voteSelBoxWidth = 900,
-				voteSelBoxHeight = 150;
+			var selBoxWidth = 900,
+				selBoxHeight = 300;
 
-			var voteSelContainer = d3.select("#voteselector")
+			var selContainer = d3.select("#selector")
 				.append("svg")
-				.attr("width", voteSelBoxWidth)
-				.attr("height", voteSelBoxHeight);
+				.attr("width", selBoxWidth)
+				.attr("height", selBoxHeight);
+
+			var voteLegendY = 15,
+				voteTitleY = 80,
+				voteSelectorY = 120,
+				demoSelectorY = 165,
+				demoTitleY = 245,
+				demoLegendY = 265;
+				
 
 			var demoSelBoxWidth = 900,
-				demoSelBoxHeight = 80;
-
-			var demoSelContainer= d3.select("#demoselector")
-				.append("svg")
-				.attr("width", demoSelBoxWidth)
-				.attr("height", demoSelBoxHeight);
+				demoSelBoxHeight = 110;
 
 			//Make legend
-			var voteLegendBoxWidth = voteSelBoxWidth,
-				voteLegendBoxHeight = 50,
+			var voteLegendBoxWidth = selBoxWidth,
+				voteLegendBoxHeight = 38,
 				voteLegendBarWidth = 530,
-				voteLegendBarHeight = 12,
+				voteLegendBarHeight = 9,
 				voteLabelsNum = 5;
 
-			var voteLegendBox = voteSelContainer.append("svg")
+			var voteLegendBox = selContainer.append("svg")
 				.attr("width", voteLegendBoxWidth)
 				.attr("height", voteLegendBoxHeight)
-				.attr("y", 100)
+				.attr("y", voteLegendY);
 
-			var defs = voteLegendBox.append("defs");
+			var voteLegend = voteLegendBox.append("g")
+				.attr("class", "vote-legend")
+				.each(makeVoteLegend);
 
-			var voteColorGradient = defs.append("linearGradient")
-    			.attr("id", "voteColor-gradient")
-    			.attr("x1", "0%")
-			    .attr("y1", "0%")
-			    .attr("x2", "100%")
-			    .attr("y2", "0%");
-
-			voteColorGradient.selectAll("stop")
-				.data([
-					{offset: "0%", color: '#3c5bff'}, 
-			        {offset: "50%", color: '#e6f0ff'}, 
-			        {offset: "50%", color: '#f8e5e6'},        
-			        {offset: "100%", color: '#dd0035'} 
-					])
-				.enter().append("stop")
-				.attr("offset", function(d) { return d.offset; })   
-    			.attr("stop-color", function(d) { return d.color; });
-
-    		var voteLegendColorBar = voteLegendBox.append("rect")
-    			.attr("width", voteLegendBarWidth)
-    			.attr("height", voteLegendBarHeight)
-    			.attr("x", (demoSelBoxWidth/2)-(voteLegendBarWidth/2))
-    			.style("fill", "url(#voteColor-gradient)")
-
-    		var voteLegendAxis = voteLegendBox.append("g")
-    			.attr("class", "legend-labels")
-    			.attr("transform", "translate(" + ((demoSelBoxWidth/2)-(voteLegendBarWidth/2)) + "," + voteLegendBarHeight + ")")
+			var demoLegendBox = selContainer.append("svg")
+				.attr("width", voteLegendBoxWidth)
+				.attr("height", voteLegendBoxHeight)
+				.attr("y", demoLegendY);
+				
+			var demoLegend = demoLegendBox.append("g")
+				.attr("class", "demo-legend")
+				.each(makeVoteLegend);
 
 
-// (voteLegendBoxWidth/2)-(voteLegendBarWidth/2)
-    		var voteLegendTickSize = 6;
-    		var labelMax = 1; 
-
-    		var labelsRight = Array.from(new Array(voteLabelsNum + 1),(val,index)=>index*labelMax/voteLabelsNum);
-
-    		var labelsLeft = Array.from(new Array(voteLabelsNum),(val,index)=>((voteLabelsNum-index)*labelMax)/voteLabelsNum);
-    			
-    		var labels = labelsLeft.concat(labelsRight);
-
-    		console.log(labels);
-
-			labels.forEach(function(label, index) {
-				console.log(index);
-				voteLegendAxis.append("line")
-					.attr("class", "legend-labels")
-					.attr("x0", index*voteLegendBarWidth/((voteLabelsNum*2)+1))
-					.attr("x1", index*voteLegendBarWidth/((voteLabelsNum*2)+1))
-					.attr("y0", 0)
-					.attr("y1", voteLegendTickSize);
-
-				voteLegendAxis.append("text")
-					.attr("class", "legend-labels")
-					.attr("x", index*voteLegendBarWidth/((voteLabelsNum*2)))
-					.attr("y", voteLegendTickSize + 5)
-					.text(d3.format(".0%")(label));
-			});
-    		
-
-
-
-
-    		// var legendVoteScale = d3.scaleLinear()
-    		// 	.domain([-1, 1])
-    		// 	.range([0, voteLegendBarWidth]);
-
-    		// var legendChangeScale = d3.scaleLinear()
-    		// 	.domain([-0.5, 0.5])
-    		// 	.range([0, voteLegendBarWidth]);
-
-    		// var legendLabels = d3.axisBottom()
-    		// 	.scale(function () {
-    		// 		if (voteMapDate == "CHANGE") {
-    		// 			return legendChangeScale;
-    		// 		}
-    		// 		else {return legendVoteScale;}
-    		// 	});
-
-
-    		// var legendLabels = makeLegendLabels(voteLabelsNum, 1, voteLegendBarWidth);
-
-    		// voteLegendBox.append("g")
-    		// 	.attr("class", "legend-labels")
-    		// 	.attr("transform", "translate(0," + -(voteLegendBoxHeight-voteLegendBarHeight) + ")")
-    		// 	.call(legendLabels);
-
-    		// makeLegendLabels(voteLabelsNum, 1, voteLegendBarWidth);
-
-    		// function makeLegendLabels(voteLabelsNum, labelMax, width) {
-
-    		// 	var tickSize = 6; 
-
-    		// 	var labelsRight = Array.from(new Array(voteLabelsNum + 1),(val,index)=>index*labelMax/voteLabelsNum);
-
-    		// 	var labels = Array.from(new Array(voteLabelsNum),(val,index)=>((voteLabelsNum-index)*labelMax)/voteLabelsNum);
-    			
-    		// 	labels.push(labelsRight);
-
-    		// 	labels.forEach(function(label, index) {
-    		// 		voteLegendBox.append("line")
-    		// 			.attr("class", "legend-labels")
-    		// 			.attr("x0", index/width)
-    		// 			.attr("x1", index/width)
-    		// 			.attr("y0", 0)
-    		// 			.attr("y1", tickSize);
-
-    		// 		voteLegendBox.append("text")
-    		// 			.attr("class", "legend-labels")
-    		// 			.attr("x", index/width)
-    		// 			.attr("y", tickSize + 3)
-    		// 			.text(label);
-    		// 	})
-    		// }
-
+					
 			
 			//Set dimension variables
 			var voteDateLabels = ["2016", "2012", "CHANGE"],
@@ -935,43 +832,43 @@
 				demoSelSpacing = 15;
 
 
-			var voteDateContainer = voteSelContainer.append("svg")
+			var voteDateContainer = selContainer.append("svg")
 				.attr("class", "voteMapBtn-container")
 				.attr("width", voteDateBoxWidth)
 				.attr("height", voteDateBoxHeight)
-				.attr("x", ((voteSelBoxWidth/2)-(voteDateBoxWidth)-voteSelSpacing))
-				.attr("y", 50);
+				.attr("x", ((selBoxWidth/2)-(voteDateBoxWidth)-voteSelSpacing))
+				.attr("y", voteSelectorY);
 
-			var voteRaceContainer = voteSelContainer.append("svg")
+			var voteRaceContainer = selContainer.append("svg")
 				.attr("class", "voteMapBtn-container")
 				.attr("width", voteRaceBoxWidth)
 				.attr("height", voteRaceBoxHeight)
-				.attr("x", ((voteSelBoxWidth/2)+voteSelSpacing))
-				.attr("y", 50);
+				.attr("x", ((selBoxWidth/2)+voteSelSpacing))
+				.attr("y", voteSelectorY);
 
-			var demoVarContainer = demoSelContainer.append("svg")
+			var demoVarContainer = selContainer.append("svg")
 				.attr("class", "demoBarsBtn-container")
 				.attr("width", demoVarBoxWidth)
 				.attr("height", demoVarBoxHeight)
-				.attr("x", ((voteSelBoxWidth/2)-voteDateBoxWidth-voteSelSpacing))
-				.attr("y", 0);
+				.attr("x", ((selBoxWidth/2)-voteDateBoxWidth-voteSelSpacing))
+				.attr("y", demoSelectorY);
 
-			var demoChangeContainer = demoSelContainer.append("svg")
+			var demoChangeContainer = selContainer.append("svg")
 				.attr("class", "demoBarsBtn-container")
 				.attr("width", demoChangeBoxWidth)
 				.attr("height", demoChangeBoxHeight)
-				.attr("x", ((voteSelBoxWidth/2)-voteDateBoxWidth+demoSelSpacing+(demoButtonWidth*demoVarLabels.length)))
-				.attr("y", 0);
+				.attr("x", ((selBoxWidth/2)-voteDateBoxWidth+demoSelSpacing+(demoButtonWidth*demoVarLabels.length)))
+				.attr("y", demoSelectorY);
 
-			var voteMapTitle = voteSelContainer.append("text")
+			var voteMapTitle = selContainer.append("text")
 				.attr("class", "voteMap-title")
-				.attr("x", voteSelBoxWidth/2)
-				.attr("y", 25);
+				.attr("x", selBoxWidth/2)
+				.attr("y", voteTitleY);
 
-			var demoBarsTitle = demoSelContainer.append("text")
+			var demoBarsTitle = selContainer.append("text")
 				.attr("class", "demoBars-title")
-				.attr("x", demoSelBoxWidth/2)
-				.attr("y", 70)
+				.attr("x", selBoxWidth/2)
+				.attr("y", demoTitleY)
 
 			var voteDateButtons = voteDateContainer.selectAll("g")
 				.data(voteDateLabels)
@@ -1357,8 +1254,6 @@
 			// var quantileVals = getQuantileValues(numQuants, demoVarMin, demoVarMax);
 
 			var quantileVals = getQuantileValues(numQuants, demoData, demoVar, demoChange);
-
-			console.log(quantileVals);
 			
 			//scale for use with static Y axis
 			//evenly spaces array of strings along y axis height
@@ -1444,6 +1339,74 @@
 			barsColorBar.append("g")
 				.attr("class", "brush")
 				.call(barBrush);
+
+			// //
+			// //
+			// //Make Sort Buttons 
+			// ////////////////////////////////////////////////////
+
+			// //Make container
+			// var sortBoxWidth = 900,
+			// 	sortBoxHeight = 300;
+
+			// var sortContainer = d3.select("#sorter")
+			// 	.append("svg")
+			// 	.attr("width", sortBoxWidth)
+			// 	.attr("height", sortBoxHeight);
+
+			// var voteLegendY = 15,
+			// 	voteTitleY = 80,
+			// 	voteSelectorY = 120,
+			// 	demoSelectorY = 165,
+			// 	demoTitleY = 245,
+			// 	demoLegendY = 265;
+
+			// //Set dimension variables
+			// var sortVarLabels = ["POPULATION DENSITY", "PERCENT NON-WHITE", "UNEMPLOYMENT RATE", "EDUCATION", "INCOME"],
+			// 	sortChangeLabels = ["CHANGE 2010-2015"];
+
+			// var sortButtonWidth = voteDateButtonWidth,
+			// 	sortButtonHeight = 30;
+
+			// var sortVarBoxWidth = sortButtonWidth*sortVarLabels.length,
+			// 	sortVarBoxHeight = sortButtonHeight,
+			// 	sortChangeBoxWidth = sortButtonWidth*sortChangeLabels.length,
+			// 	sortChangeBoxHeight = sortButtonHeight
+			// 	sortSpacing = 15;
+
+			// var sortVarContainer = sortContainer.append("svg")
+			// 	.attr("class", "sortBtn-container")
+			// 	.attr("width", sortVarBoxWidth)
+			// 	.attr("height", sortVarBoxHeight)
+			// 	.attr("x", ((sortBoxWidth/2)-voteDateBoxWidth-sortSpacing))
+			// 	.attr("y", sortY);
+
+			// var sortChangeContainer = sortContainer.append("svg")
+			// 	.attr("class", "sortBtn-container")
+			// 	.attr("width", sortChangeBoxWidth)
+			// 	.attr("height", sortChangeBoxHeight)
+			// 	.attr("x", ((sortBoxWidth/2)-voteDateBoxWidth+sortSpacing+(sortButtonWidth*sortVarLabels.length)))
+			// 	.attr("y", sortY);
+
+			// var sortTitle = sortContainer.append("text")
+			// 	.attr("class", "demoBars-title")
+			// 	.attr("x", selBoxWidth/2)
+			// 	.attr("y", demoTitleY)
+
+			// var sortVarButtons = sortVarContainer.selectAll("g")
+			// 	.data(demoVarLabels)
+			// 	.enter()
+			// 	.append("g")
+			// 	.attr("class", "sortVar-buttons");
+
+			// var sortChangeButtons = sortChangeContainer.selectAll("g")
+			// 	.data(sortChangeLabels)
+			// 	.enter()
+			// 	.append("g")
+			// 	.attr("class", "sortChange-buttons");
+
+
+
 
 
 		   	////////////////////////////////////////////////////
@@ -1614,11 +1577,24 @@
 		    		.classed("voteMapSelBtn-text-noPress", true);
 
 				voteMapDate = d; 
-				console.log(voteMapDate);
-				console.log(voteMapRace);
 				
 				voteMapTitle
 	        		.text(getVoteMapTitle(voteMapDate, voteMapRace));
+
+				voteLegendBox.selectAll("*")
+					.remove();
+
+				demoLegendBox.selectAll("*")
+					.remove();
+
+				var voteLegend = voteLegendBox.append("g")
+					.attr("class", "vote-legend")
+					.each(makeVoteLegend);
+
+				var demoLegend = demoLegendBox.append("g")
+					.attr("class", "demo-legend")
+					.each(makeVoteLegend);
+
 
 				updateVoteMap();
 				updateDemoBars();
@@ -1649,8 +1625,6 @@
 		    		.classed("voteMapSelBtn-text-noPress", true);
 
 				voteMapRace = d; 
-				console.log(voteMapDate);
-				console.log(voteMapRace);
 				
 				voteMapTitle
 	        		.text(getVoteMapTitle(voteMapDate, voteMapRace));
@@ -1684,8 +1658,6 @@
 		    		.classed("demoBarsSelBtn-text-noPress", true);
 
 				demoVar = d; 
-				console.log(demoVar);
-				console.log(demoChange);
 				
 				demoBarsTitle
 	        		.text(getDemoBarsTitle(demoVar, demoChange));
@@ -1727,9 +1699,6 @@
 		    	}
 
 		    	demoChange = demoChangeNew;
-				
-				console.log(demoVar);
-				console.log(demoChange);
 				
 				demoBarsTitle
 	        		.text(getDemoBarsTitle(demoVar, demoChange));
@@ -1805,8 +1774,6 @@
 		    function updateVoteMap(d) {
 		    //updates map colors according to selected date and race variables
 				
-				console.log(voteMapDate);
-				console.log(voteMapRace);
 				d3.selectAll(".vote-tracts").filter(function() {return this.getAttribute("class") != "tracts-brushed";})
 			    // d3.selectAll(".vote-tracts")
 			      	.transition()
@@ -1835,9 +1802,6 @@
 
             	var demoData = getDemoVarName();
 
-            	console.log("I'm in updateDemoBars");
-            	console.log(demoData);
-
             	//sort data according to selected demographic
             	//data sort handles NaNs and puts them at bottom of chart
             	var tractdataSorted = tractdata.sort(function(a, b) {
@@ -1855,9 +1819,6 @@
 
             	var demoVarMin = d3.min(getDemoVar()),
 					demoVarMax = d3.max(getDemoVar());
-
-				console.log(demoVarMin);
-				console.log(demoVarMax);
 
 				
 				//scales for use with various axes
@@ -1969,8 +1930,6 @@
 		        //must be called after bars are appended
 				var quantileVals = getQuantileValues(numQuants, demoData, demoVar, demoChange);
 
-				console.log(quantileVals);
-
 				//scale for use with static Y axis
 				//evenly spaces array of strings along y axis height
 				var barsYQuantiles = d3.scalePoint()
@@ -2072,9 +2031,108 @@
 	       	//General graphics functions (no data changes)
 	       	////////////////////////////////////////////////////
 
-	       	function makeLegendLabels() {
+	       	function makeVoteLegend() {
 
-	       	}
+				var legend = d3.select(this)
+					.attr("class", "legend");
+
+				var legendPadding = {top: 12, bottom: 12};
+
+				var defs = legend.append("defs");
+
+				var voteColorGradient = defs.append("linearGradient")
+	    			.attr("id", "voteColor-gradient")
+	    			.attr("x1", "0%")
+				    .attr("y1", "0%")
+				    .attr("x2", "100%")
+				    .attr("y2", "0%");
+
+				voteColorGradient.selectAll("stop")
+					.data([
+						{offset: "0%", color: '#3c5bff'}, 
+				        {offset: "50%", color: '#e6f0ff'}, 
+				        {offset: "50%", color: '#f8e5e6'},        
+				        {offset: "100%", color: '#dd0035'} 
+						])
+					.enter().append("stop")
+					.attr("offset", function(d) { return d.offset; })   
+	    			.attr("stop-color", function(d) { return d.color; });
+
+	    		var voteLegendColorBar = legend.append("rect")
+	    			.attr("width", voteLegendBarWidth)
+	    			.attr("height", voteLegendBarHeight)
+	    			.attr("x", (selBoxWidth/2)-(voteLegendBarWidth/2))
+	    			.attr("y", legendPadding.top)
+	    			.style("fill", "url(#voteColor-gradient)")
+
+	    		var voteLegendAxis = legend.append("g")
+	    			.attr("class", "legend")
+	    			.attr("id", "legendAxis")
+	    			.attr("transform", "translate(" + ((selBoxWidth/2)-(voteLegendBarWidth/2)) + "," + (voteLegendBarHeight+legendPadding.top) + ")")
+	    			.each(makeLegendLabels);
+			
+			}
+
+
+			function makeLegendLabels() {
+
+    			var legendLabels = d3.select(this)
+    				.attr("class", "legend-labels");
+
+    			var labels = getLabels(voteMapDate, voteLabelsNum);
+
+				labels.forEach(function(label, index) {
+
+					legendLabels.append("text")
+						.attr("class", "legend-labels legend-label-vals")
+						.attr("x", index*voteLegendBarWidth/((voteLabelsNum*2)))
+						.attr("y", voteLegendBarHeight + 3)
+						.text(d3.format(".0%")(label));
+				});
+
+				var marginLabel = legendLabels.append("text")
+					.attr("class", "legend-labels-title legend-labels")
+					.attr("x", voteLegendBarWidth/2)
+					.attr("y", -14)
+					.text(function() {
+						if (voteMapDate != "CHANGE") {return "vote margin";}
+	    				if (voteMapDate == "CHANGE") {return "change in margin";}
+					});
+
+				var demLabel = legendLabels.append("text")
+					.attr("class", "legend-labels")
+					.attr("x", -5)
+					.attr("y", -4)
+					.text("Democrat")
+					.style("text-anchor", "end")
+					.style("dominant-baseline", "middle");
+
+				var repLabel = legendLabels.append("text")
+					.attr("class", "legend-labels")
+					.attr("x", voteLegendBarWidth+5)
+					.attr("y", -4)
+					// .attr("y", voteLegendBarHeight + 3)
+					.text("Republican")
+					.style("text-anchor", "start")
+					.style("dominant-baseline", "middle");
+				
+				}
+
+
+			function getLabels(voteMapDate, voteLabelsNum){
+	    				
+    				if (voteMapDate == "CHANGE") {var labelMax = 0.5;}
+	    			if (voteMapDate != "CHANGE") {var labelMax = 1;}
+
+		    		var labelsRight = Array.from(new Array(voteLabelsNum + 1),(val,index)=>index*labelMax/voteLabelsNum);
+
+		    		var labelsLeft = Array.from(new Array(voteLabelsNum),(val,index)=>((voteLabelsNum-index)*labelMax)/voteLabelsNum);
+		    			
+		    		var labels = labelsLeft.concat(labelsRight);
+
+		    		return labels;
+	    	}
+
 
 		    function handleSelButtonMouseover(d) {
 		    //changes color of button background on mouseover
@@ -2273,8 +2331,6 @@
 				}
 
 				if (demoChange == "CHANGE") {
-
-					console.log("no change here!");
 
 					var quantVals = [formatVal(d3.max(varArray)).toString()];
 
