@@ -301,7 +301,7 @@
 	<p>
 	<h4>About the project &gt;&gt;</h4>
 	<p>The purpose of this work is two-fold. At one level, the project explores distortions produced by spatial abstractions that underlie both the administration of the state and maps themselves as a form of diagram. At a second level, the project allows the user to construct new knowledge of the contemporary relationship between election results and demographics, using the state of Pennsylvania as a case study. These goals are pursued through the decomposition of conventional spatial boundaries, and the subsequent re-agglomeration of their associated data onto different spatial groupings. </p>
-	<p>The project has two parts. The first creates a new data set by agglomerating election data at the scale of the voting district onto Pennsylvania's 3,217 census tracts, utilizing the Missouri Census Data Center's <a href="http://mcdc.missouri.edu/websas/geocorr_index.shtml">Geocorr14 geographic correspondence files</a>. This data is visualized in a traditional red-blue map showing the electoral margins of each census tract, offering a much more detailed understanding of how Pennsylvanians voted in both 2012 and 2016 elections than what is available through maps that show county level results. However, the choice to map election data by census tract was motivated by a desire not only to better understand voting patterns, but also to create a tool for exploring the relationships between voting patterns and demographic characteristics. Without converting voting data to the census tract level, the county is the smallest geographic scale at which demographic data produced by the US Census Bureau and election data coincide. With this newly created data set, election results and demographic data can now be directly compared at the much more granular census tract level. The bar chart orders census tracts by five selected demographics -- population density, percent of the population that is non-white and non-hispanic, unemployment rate, percent of the population with a bachelor's degree, and median income. The bars are colored by the vote margin of each census tract, allowing the user to visually understand the relationship, or lack thereof, between voting patterns and demographic characteristics. The visualization also allows the user to select census tracts by demographic criteria which are highlighted in the map, as a means to understand the relationship between demographic characteristics and geography. This tool is partcularly useful in its ability to identify anomalous census tracts.</p>
+	<p>The project has two parts. The first creates a new data set by agglomerating election data at the scale of the voting district onto Pennsylvania's 3,217 census tracts, utilizing the Missouri Census Data Center's <a href="http://mcdc.missouri.edu/websas/geocorr_index.shtml">Geocorr14 geographic correspondence files</a>. This data is visualized in a traditional red-blue map showing the electoral margins of each census tract, offering a much more detailed understanding of how Pennsylvanians voted in both 2012 and 2016 elections than what is available through maps that show county level results. However, the choice to map election data by census tract was motivated by a desire not only to better understand voting patterns, but also to create a tool for exploring the relationships between voting patterns and demographic characteristics. Without converting voting data to the census tract level, the county is the smallest geographic scale at which demographic data produced by the US Census Bureau and election data coincide. With this newly created data set, election results and demographic data can now be directly compared at the much more granular census tract level. The bar chart orders census tracts by five selected demographics -- population density, percent of the population that is non-white and non-hispanic, unemployment rate, percent of the population with a bachelor's degree, and median income. The bars are colored by the vote margin of each census tract, allowing the user to visually understand the relationship, or lack thereof, between voting patterns and demographic characteristics. The visualization also allows the user to select census tracts by demographic criteria which are highlighted in the map, as a means to understand the state's demographic and political geography. This tool is partcularly useful in its ability to identify anomalous census tracts.</p>
 	<p>The second part of the project seeks to understand the demographics of Pennsylvania's Congressional Districts. (More to come on this.)</p>
 	</div>
 	</body>
@@ -326,7 +326,7 @@
 
 		d3.queue()
 		    .defer(d3.json, "jsons/PA_CensusTracts_2010.json") 
-		    .defer(d3.tsv, "data/CT_AllData.tsv")
+		    .defer(d3.csv, "data/CT_AllData.csv")
 		    .defer(d3.json, "data/PA_Cities.json")
 		    .await(makeViz); 
 
@@ -458,67 +458,67 @@
 		  	tractdata.forEach(function(d) {
 		  		var popChange = +d.TOTALPOP_CHANGE,
 		  			popDen = +d.POPDEN_2015,
-		  			popDenChange = +d.POPDEN_CHANGE,
-		  			nonWhite = +d.PERCNONWHITE_2015,
-		  			nonWhiteChange = +d.PERCNONWHITE_CHANGE,
-		  			unempl = +d.UNEMPLOYMENT_2015,
-		  			unemplChange = +d.UNEMPLOYMENT_CHANGE,
+		  			// popDenChange = +d.POPDEN_CHANGE,
+		  			nonWhite = +d.NONWHITE_2015,
+		  			nonWhiteChange = +d.NONWHITE_CHANGE,
+		  			unempl = +d.UNEMPLOY_2015,
+		  			unemplChange = +d.UNEMPLOY_CHANGE,
 		  			college = +d.COLLEGE_2015,
 		  			collegeChange = +d.COLLEGE_CHANGE,
-		  			income = +d.MEDIANINC_2015,
-		  			incomeChange = +d.MEDIANINC_CHANGE;
+		  			income = +d.INC_2015,
+		  			incomeChange = +d.INC_CHANGE;
 
-		  		if (popChange == "error" || popChange == "null") {
+		  		if (isNaN(popChange)) {
 		  			popChangeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {popChangeByTract[d.GEO_ID] = popChange;}
 
-		  		if (popDen== "error" || popDen == "null") {
+		  		if (isNaN(popDen)) {
 		  			popDenByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {popDenByTract[d.GEO_ID] = popDen;}
 
-		  		if (popDenChange == "error" || popDenChange == "null") {
-		  			popDenChangeByTract[d.GEO_ID] = "ERROR";
-		  		}
-		  		else {popDenChangeByTract[d.GEO_ID] = popDenChange;}
+		  		// if (isNaN(popDenChange)) {
+		  		// 	popDenChangeByTract[d.GEO_ID] = "ERROR";
+		  		// }
+		  		// else {popDenChangeByTract[d.GEO_ID] = popDenChange;}
 
-		  		if (nonWhite == "error" || nonWhite == "null") {
+		  		if (isNaN(nonWhite)) {
 		  			popChangeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {nonWhiteByTract[d.GEO_ID] = nonWhite;}
 
-		  		if (nonWhiteChange == "error" || nonWhiteChange == "null") {
+		  		if (isNaN(nonWhiteChange)) {
 		  			nonWhiteChangeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {nonWhiteChangeByTract[d.GEO_ID] = nonWhiteChange;}
 		  		
-		  		if (unempl == "error" || unempl == "null") {
+		  		if (isNaN(unempl)) {
 		  			unemployByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {unemployByTract[d.GEO_ID] = unempl;}
 		  		
-		  		if (unemplChange == "error" || unemplChange == "null") {
+		  		if (isNaN(unemplChange)) {
 		  			unemployChangeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {unemployChangeByTract[d.GEO_ID] = unemplChange;}
 
-		  		if (college == "error" || college == "null") {
+		  		if (isNaN(college)) {
 		  			collegeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {collegeByTract[d.GEO_ID] = college;}
 
-		  		if (collegeChange == "error" || collegeChange == "null") {
+		  		if (isNaN(collegeChange)) {
 		  			collegeChangeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {collegeChangeByTract[d.GEO_ID] = collegeChange;}
 
-		  		if (income == "error" || income == "null") {
+		  		if (isNaN(income)) {
 		  			incomeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {incomeByTract[d.GEO_ID] = income;}
 	
-				if (incomeChange == "error" || incomeChange == "null") {
+				if (isNaN(incomeChange)) {
 		  			incomeChangeByTract[d.GEO_ID] = "ERROR";
 		  		}
 		  		else {incomeChangeByTract[d.GEO_ID] = incomeChange;}
@@ -530,7 +530,7 @@
 		  		usp2016Totals = d3.values(usp2016TotalsByTract),
 		  		popChange = d3.values(popChangeByTract),
 		  		popDen = d3.values(popDenByTract),
-		  		popDenChange = d3.values(popDenChangeByTract),
+		  		// popDenChange = d3.values(popDenChangeByTract),
 		  		nonWhite = d3.values(nonWhiteByTract),
 		  		nonWhiteChange = d3.values(nonWhiteChangeByTract),
 		  		unemploy = d3.values(unemployByTract),
@@ -1895,6 +1895,7 @@
 			            })
 			            .style("fill", function(d) {
 			            	var tract = d.GEO_ID;
+			            	if getVoteColor(tract) == "0,0,0"
 			            	return (getVoteColor(tract));
 			            	});
 
@@ -2197,33 +2198,33 @@
 						return +d.POPDEN_2015;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
-						return +d["PERCNONWHITE_2015"];
+						return +d.NONWHITE_2015;
 					}
 					if (demoVar == "UNEMPLOYMENT RATE") {
-						return +d.UNEMPLOYMENT_2015;
+						return +d.UNEMPLOY_2015;
 					}
 					if (demoVar == "EDUCATION") {
 						return +d.COLLEGE_2015;
 					}
 					if (demoVar == "INCOME") {
-						return +d.MEDIANINC_2015;
+						return +d.INC_2015;
 					}
 				}
 				if (demoChange == "CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						return +d.POPDEN_CHANGE;
+						return +d.TOTALPOP_CHANGE;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
-						return +d.PERCNONWHITE_CHANGE;
+						return +d.NONWHITE_CHANGE;
 					}
 					if (demoVar == "UNEMPLOYMENT RATE") {
-						return +d.UNEMPLOYMENT_CHANGE;
+						return +d.UNEMPLOY_CHANGE;
 					}
 					if (demoVar == "EDUCATION") {
 						return +d.COLLEGE_CHANGE;
 					}
 					if (demoVar == "INCOME") {
-						return +d.MEDIANINC_CHANGE;
+						return +d.INC_CHANGE;
 					}
 				}
 			}
@@ -2250,7 +2251,7 @@
 				}
 				if (demoChange == "CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						return popDenChange;
+						return popChange;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
 						return nonWhiteChange;
@@ -2274,33 +2275,33 @@
 						return "POPDEN_2015";
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
-						return "PERCNONWHITE_2015";
+						return "NONWHITE_2015";
 					}
 					if (demoVar == "UNEMPLOYMENT RATE") {
-						return "UNEMPLOYMENT_2015";
+						return "UNEMPLOY_2015";
 					}
 					if (demoVar == "EDUCATION") {
 						return "COLLEGE_2015";
 					}
 					if (demoVar == "INCOME") {
-						return "MEDIANINC_2015";
+						return "INC_2015";
 					}
 				}
 				if (demoChange == "CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						return "POPDEN_CHANGE";
+						return "TOTALPOP_CHANGE";
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
-						return "PERCNONWHITE_CHANGE";
+						return "NONWHITE_CHANGE";
 					}
 					if (demoVar == "UNEMPLOYMENT RATE") {
-						return "UNEMPLOYMENT_CHANGE";
+						return "UNEMPLOY_CHANGE";
 					}
 					if (demoVar == "EDUCATION") {
 						return "COLLEGE_CHANGE";
 					}
 					if (demoVar == "INCOME") {
-						return "MEDIANINC_CHANGE";
+						return "INC_CHANGE";
 					}
 				}
 			}
