@@ -1,0 +1,11 @@
+body {
+	font-family: Open Sans;
+}
+
+.titlename {
+	color: rgb(200,200,200);
+	text-align: center;
+	margin: 0 auto;
+	font-size: 30px;
+	letter-spacing: 6.67vw;
+}
