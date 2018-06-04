@@ -40,7 +40,7 @@
 
 		d3.queue()
 		    .defer(d3.json, "jsons/PA_CensusTracts_2010.json") 
-		    .defer(d3.tsv, "data/CT_AllData.tsv")
+		    .defer(d3.csv, "data/CT_AllData.csv")
 		    .defer(d3.json, "data/PA_Cities.json")
 		    .await(makeViz); 
 
