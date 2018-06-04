@@ -1,0 +1,3187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
+	<link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600,600i,700,700i" rel="stylesheet">
+	<title>Pennsylvania Election Results</title>
+	<style>
+		h1 {/*font-family: "Crimson Text", serif;*/
+	  		font-family: "Roboto Mono";
+  			font-size: 90px;
+  			text-align: justify-all;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+		h2 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 36px;
+  			font-weight:700;
+  			text-align: justify-all;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+  		h3 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 24px;
+  			font-weight: 400;
+  			text-align: center;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+
+  		h4 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 20px;
+  			font-weight: 300;
+  			width: 600px;
+  			text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+    		margin-bottom: 0px;
+    		/*line-height: 0.7;	*/		
+  		}
+  		body {
+	  		font-family: "Roboto", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		/*width: 1000px;*/
+	  		text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+	  	}
+	  	p {
+	  		font-family: "Crimson Text", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		/*width: 600px;*/
+	  		text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+	  	}
+	  	.cd-rect {
+		    fill: none;
+		    stroke: lightgray;
+		    stroke-width: 1px;
+		    /*stroke-dasharray: 2, 2;*/
+		}
+	  	.mbar {
+	  		stroke: black;
+	  		stroke-width: 1px;
+	  	}
+	  	.qbox {
+	  		fill: lightgray;
+	        opacity: 0.7;
+	        stroke: black;
+	  	}
+	  	.pa-line {
+	  		stroke: darkgray;
+	  		stroke-dasharray: 1, 1;
+	  		stroke-width: 1px;
+	  	}
+		.active-mouseover-nonSelect {
+	  		stroke: white;
+	  		stroke-width: 2px;
+	  		opacity: .5;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	  	.active-mouseover {
+	  		stroke: black;
+	  		stroke-width: 5px;
+	  		opacity: 1;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	  	.axis text {
+			font: 10px sans-serif;
+		}
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: #000;
+			shape-rendering: crispEdges;
+		}
+		.y.axis path {
+			/*stroke-dasharray: 4, 4;*/
+		}
+		.zero.axis path {
+			stroke-dasharray: 4, 4;
+		}
+		.grid line {
+			/*stroke-dasharray: 4, 4;*/
+			stroke: #cccccc;
+			stroke-opacity: 0.7;
+			shape-rendering: crispEdges;
+		}
+		.grid .tick {
+		    stroke: #cccccc;
+		    stroke-dasharray: 4, 4;
+		    opacity: 0.85;
+		    shape-rendering: crispEdges;
+		}
+		.grid path {
+			stroke-width: 0;
+		}
+		.chart-label {
+			font: 11px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #000;
+			text-anchor: end;
+		}
+		.chart-yaxis-label {
+			font: 11px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #000;
+			text-anchor: end;
+		}
+		.legend-labels text {
+			font: 10px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #bbbbbb;
+			text-anchor: middle;
+		}
+		.colorBar-label {
+			font: 11px "Roboto Mono";
+			/*font: 12px sans-serif;*/
+			fill: #bbbbbb;
+			text-anchor: middle;
+		}
+		.color-bar-brushed {
+			/*opacity: 0.6;*/
+		}
+		.dots {
+		  stroke: #cccccc;
+		  stroke-opacity: 0.5;
+		}
+		.dots-non-brushed{
+
+		}
+		.click-overlay{
+			fill: none;
+			pointer-events: all;
+		}
+		.click-overlay-variable{
+			fill: none;
+		}
+		.map-text{
+			font: 14px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.map-sel-text{
+			font: 11px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.reset-text{
+			font: 14px Roboto Mono;
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: end;
+		}
+		.city{
+			fill: none;
+			stroke: black;
+			vector-effect: non-scaling-stroke;
+		}
+		.town{
+			fill: none;
+			stroke: black;
+			vector-effect: non-scaling-stroke;
+		}
+		.city-label{
+			font: 9px Roboto Mono;
+			font-weight: 400;
+			fill: black;
+			stroke: none;
+		}
+		.demoMapSelBtn-rect-noPress{
+			fill: #bbbbbb;
+			stroke: white;
+			stroke-width: 1px;
+		}
+		.demoMapSelBtn-text-noPress{
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: white;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.demoMapSelBtn-rect-press {
+			fill: white;
+			stroke: #bbbbbb;
+			stroke-width: 1px;
+		}
+		.demoMapSelBtn-text-press {
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.voteMapSelBtn-rect-noPress{
+			fill: #bbbbbb;
+			stroke: white;
+			stroke-width: 1px;
+		}
+		.voteMapSelBtn-text-noPress{
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: white;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.voteMapSelBtn-rect-press {
+			fill: white;
+			stroke: #bbbbbb;
+			stroke-width: 1px;
+		}
+		.voteMapSelBtn-text-press {
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.selBtn-rect-hover{
+			fill: #cccccc;
+/*			stroke: white;
+			stroke-width: 1px;*/
+		}
+		.selBtn-text-hover{
+			fill: white;
+		}
+		.demoBars-title {
+			font: 18px "Roboto Mono";
+			font-weight: 300;
+			fill: #aaaaaa;
+			stroke: none;
+			text-anchor: middle;
+		}
+		.voteMap-title {
+			font: 18px "Roboto Mono";
+			font-weight: 300;
+			fill: #aaaaaa;
+			stroke: none;
+			text-anchor: middle;
+		}
+		.cd-boundaries {
+			stroke: white;
+			stroke-width: 0.8;
+      		stroke-linejoin: round;
+      		vector-effect: non-scaling-stroke;
+		}
+		.tracts-brushed {
+			/*stroke: blue;
+	  		stroke-width: 2px;*/
+	  		/*opacity: .5;*/
+/*	  		stroke-dasharray: 2, 2;*/
+	  		stroke-linejoin: round;
+		}
+		.hover {
+			stroke: "#ffffff";
+		}
+		.text-container {
+		    /*background: rgb( 240, 240, 240);*/
+		    width: 600px;
+		    text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+		}
+
+		.leftColumn {
+		    width: 50%;
+		    /*height: 50px;*/
+		    float: left;
+		    display: inline-block;
+		    /*background: rgb(200, 200, 245);*/
+		}
+
+		.rightColumn {
+		    display: inline-block;
+		    float: left;
+		    width: 50%;
+		    margin-left: 30px;
+		    /*background: rgb( 200, 244, 244);*/
+		}
+
+		
+
+	</style>
+	  <script src="https://d3js.org/d3.v4.min.js"></script>
+      <script src="https://d3js.org/d3-array.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+      <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+      <script src="https://d3js.org/topojson.v2.min.js"></script>
+      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.js"></script>
+
+</head>
+<body>
+	<h2 style=text-align:center>Beyond the County Line</h2>
+	<h3 style=text-align:center>New Scales of Understanding Election and Demographic Data</h3>
+<!-- 	<h4>Case Study: Pennsylvania</h4> -->
+	<div class="text-container">
+	</div>
+	</body>
+	</html>
+	
+	<div id="cdselector" style=text-align:center></div>
+	<div id="cdmap" style=text-align:center></div>
+	<div id="cdbars" style=text-align:center></div>
+
+	<!-- Page elements and content go here. -->
+	<script>
+		var rColor = "#f4003d",
+			dColor = "#2437ff",
+			dMapColor = "#394bff",
+			oColor = "#f6b500",
+			initialColor = "#cccccc" //light grey
+			dkGrey = "#bbbbbb";
+
+
+		// Queue up datasets using d3 Queue
+
+		d3.queue()
+          	.defer(d3.json, "jsons/PA_CDs_2015.json")
+		    .defer(d3.tsv, "data/CD_AllData.tsv")
+		    .defer(d3.csv, "data/CT_AllData.csv")
+		    .defer(d3.json, "data/PA_Cities.json")
+		    .await(makeMap); 
+
+
+		function makeMap(error, pa, cddata, ctdata, cities) {
+			if (error) throw error;
+
+			console.log(cddata);
+			console.log(ctdata);
+
+
+			//
+			//
+			//PROCESS AND FORMAT VOTE DATA
+			///////////////////////////////////////////////////
+			
+			//CD DATA
+			var usp2016MarginByCD = {},
+		  		usp2012MarginByCD = {},
+		  		uspChangeMarginByCD = {},
+		  		uss2016MarginByCD = {},
+		  		uss2012MarginByCD = {},
+		  		ussChangeMarginByCD = {},
+		  		usc2016MarginByCD = {},
+		  		usc2012MarginByCD = {},
+		  		uscChangeMarginByCD = {};
+
+		  	cddata.forEach(function(d) {
+
+				if (isNaN(+d.USP_MARGIN_2016)) {
+		  			usp2016MarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {usp2016MarginByCD[d.CD] = +d.USP_MARGIN_2016;}
+
+		  		if (isNaN(+d.USP_MARGIN_2012)) {
+		  			usp2012MarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {usp2012MarginByCD[d.CD] = +d.USP_MARGIN_2012;}
+
+		  		if (isNaN(+d.USP_MARGIN_CHANGE)) {
+		  			uspChangeMarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {uspChangeMarginByCD[d.CD] = +d.USP_MARGIN_CHANGE;}
+
+		  		if (isNaN(+d.USS_MARGIN_2016)) {
+		  			uss2016MarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {uss2016MarginByCD[d.CD] = +d.USS_MARGIN_2016;}
+
+		  		if (isNaN(+d.USS_MARGIN_2012)) {
+		  			uss2012MarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {uss2012MarginByCD[d.CD] = +d.USS_MARGIN_2012;}
+
+		  		if (isNaN(+d.USS_MARGIN_CHANGE)) {
+		  			ussChangeMarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {ussChangeMarginByCD[d.CD] = +d.USS_MARGIN_CHANGE;}
+
+		  		if (isNaN(+d.USC_MARGIN_2016)) {
+		  			usc2016MarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {usc2016MarginByCD[d.CD] = +d.USC_MARGIN_2016;}
+
+		  		if (isNaN(+d.USC_MARGIN_2012)) {
+		  			usc2012MarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {usc2012MarginByCD[d.CD] = +d.USC_MARGIN_2012;}
+
+		  		if (isNaN(+d.USC_MARGIN_CHANGE)) {
+		  			uscChangeMarginByCD[d.CD] = "ERROR";
+		  		}
+		  		else {uscChangeMarginByCD[d.CD] = +d.USC_MARGIN_CHANGE;}
+		  	});
+
+		  	//CT DATA
+			var usp2016MarginByCT = {},
+		  		usp2012MarginByCT = {},
+		  		uspChangeMarginByCT = {},
+		  		uss2016MarginByCT = {},
+		  		uss2012MarginByCT = {},
+		  		ussChangeMarginByCT = {},
+		  		usc2016MarginByCT = {},
+		  		usc2012MarginByCT = {},
+		  		uscChangeMarginByCT = {};
+
+		  	ctdata.forEach(function(d) {
+
+				if (isNaN(+d.USP_MARGIN_2016)) {
+		  			usp2016MarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {usp2016MarginByCT[d.GEO_ID] = +d.USP_MARGIN_2016;}
+
+		  		if (isNaN(+d.USP_MARGIN_2012)) {
+		  			usp2012MarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {usp2012MarginByCT[d.GEO_ID] = +d.USP_MARGIN_2012;}
+
+		  		if (isNaN(+d.USP_MARGIN_CHANGE)) {
+		  			uspChangeMarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {uspChangeMarginByCT[d.GEO_ID] = +d.USP_MARGIN_CHANGE;}
+
+		  		if (isNaN(+d.USS_MARGIN_2016)) {
+		  			uss2016MarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {uss2016MarginByCT[d.GEO_ID] = +d.USS_MARGIN_2016;}
+
+		  		if (isNaN(+d.USS_MARGIN_2012)) {
+		  			uss2012MarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {uss2012MarginByCT[d.GEO_ID] = +d.USS_MARGIN_2012;}
+
+		  		if (isNaN(+d.USS_MARGIN_CHANGE)) {
+		  			ussChangeMarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {ussChangeMarginByCT[d.GEO_ID] = +d.USS_MARGIN_CHANGE;}
+
+		  		if (isNaN(+d.USC_MARGIN_2016)) {
+		  			usc2016MarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {usc2016MarginByCT[d.GEO_ID] = +d.USC_MARGIN_2016;}
+
+		  		if (isNaN(+d.USC_MARGIN_2012)) {
+		  			usc2012MarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {usc2012MarginByCT[d.GEO_ID] = +d.USC_MARGIN_2012;}
+
+		  		if (isNaN(+d.USC_MARGIN_CHANGE)) {
+		  			uscChangeMarginByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {uscChangeMarginByCT[d.GEO_ID] = +d.USC_MARGIN_CHANGE;}
+	
+		  	});
+		  	
+
+
+		  	//
+			//
+			//PROCESS AND FORMAT DEMOGRAPHIC DATA
+			///////////////////////////////////////////////////
+
+			var popChangeByCD = {},
+				popDenByCD = {},
+		  		nonWhiteByCD = {},
+		  		nonWhiteChangeByCD = {},
+		  		unemployByCD = {},
+		  		unemployChangeByCD = {},
+		  		collegeByCD = {},
+		  		collegeChangeByCD = {},
+		  		incomeByCD = {},
+		  		incomeChangeByCD = {};
+		  	
+
+		  	cddata.forEach(function(d) {
+		  		var popChange = +d.TOTALPOP_CHANGE,
+		  			popDen = +d.POPDEN_2015,
+		  			nonWhite = +d.NONWHITE_2015,
+		  			nonWhiteChange = +d.NONWHITE_CHANGE,
+		  			unempl = +d.UNEMPLOY_2015,
+		  			unemplChange = +d.UNEMPLOY_CHANGE,
+		  			college = +d.COLLEGE_2015,
+		  			collegeChange = +d.COLLEGE_CHANGE,
+		  			income = +d.INC_2015,
+		  			incomeChange = +d.INC_CHANGE;
+
+		  		if (isNaN(popChange)) {
+		  			popChangeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {popChangeByCD[d.CD] = popChange;}
+
+		  		if (isNaN(popDen)) {
+		  			popDenByCD[d.CD] = "ERROR";
+		  		}
+		  		else {popDenByCD[d.CD] = popDen;}
+
+		  		if (isNaN(nonWhite)) {
+		  			popChangeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {nonWhiteByCD[d.CD] = nonWhite;}
+
+		  		if (isNaN(nonWhiteChange)) {
+		  			nonWhiteChangeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {nonWhiteChangeByCD[d.CD] = nonWhiteChange;}
+		  		
+		  		if (isNaN(unempl)) {
+		  			unemployByCD[d.CD] = "ERROR";
+		  		}
+		  		else {unemployByCD[d.CD] = unempl;}
+		  		
+		  		if (isNaN(unemplChange)) {
+		  			unemployChangeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {unemployChangeByCD[d.CD] = unemplChange;}
+
+		  		if (isNaN(college)) {
+		  			collegeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {collegeByCD[d.CD] = college;}
+
+		  		if (isNaN(collegeChange)) {
+		  			collegeChangeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {collegeChangeByCD[d.CD] = collegeChange;}
+
+		  		if (isNaN(income)) {
+		  			incomeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {incomeByCD[d.CD] = income;}
+	
+				if (isNaN(incomeChange)) {
+		  			incomeChangeByCD[d.CD] = "ERROR";
+		  		}
+		  		else {incomeChangeByCD[d.CD] = incomeChange;}
+		  	});
+		  	
+
+
+		  	var popChangeByCT = {},
+				popDenByCT = {},
+		  		nonWhiteByCT = {},
+		  		nonWhiteChangeByCT = {},
+		  		unemployByCT = {},
+		  		unemployChangeByCT = {},
+		  		collegeByCT = {},
+		  		collegeChangeByCT = {},
+		  		incomeByCT = {},
+		  		incomeChangeByCT = {};
+		  	
+
+		  	ctdata.forEach(function(d) {
+		  		var popChange = +d.TOTALPOP_CHANGE,
+		  			popDen = +d.POPDEN_2015,
+		  			nonWhite = +d.NONWHITE_2015,
+		  			nonWhiteChange = +d.NONWHITE_CHANGE,
+		  			unempl = +d.UNEMPLOY_2015,
+		  			unemplChange = +d.UNEMPLOY_CHANGE,
+		  			college = +d.COLLEGE_2015,
+		  			collegeChange = +d.COLLEGE_CHANGE,
+		  			income = +d.INC_2015,
+		  			incomeChange = +d.INC_CHANGE;
+
+		  		if (isNaN(popChange)) {
+		  			popChangeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {popChangeByCT[d.GEO_ID] = popChange;}
+
+		  		if (isNaN(popDen)) {
+		  			popDenByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {popDenByCT[d.GEO_ID] = popDen;}
+
+		  		if (isNaN(nonWhite)) {
+		  			popChangeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {nonWhiteByCT[d.GEO_ID] = nonWhite;}
+
+		  		if (isNaN(nonWhiteChange)) {
+		  			nonWhiteChangeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {nonWhiteChangeByCT[d.GEO_ID] = nonWhiteChange;}
+		  		
+		  		if (isNaN(unempl)) {
+		  			unemployByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {unemployByCT[d.GEO_ID] = unempl;}
+		  		
+		  		if (isNaN(unemplChange)) {
+		  			unemployChangeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {unemployChangeByCT[d.GEO_ID] = unemplChange;}
+
+		  		if (isNaN(college)) {
+		  			collegeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {collegeByCT[d.GEO_ID] = college;}
+
+		  		if (isNaN(collegeChange)) {
+		  			collegeChangeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {collegeChangeByCT[d.GEO_ID] = collegeChange;}
+
+		  		if (isNaN(income)) {
+		  			incomeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {incomeByCT[d.GEO_ID] = income;}
+	
+				if (isNaN(incomeChange)) {
+		  			incomeChangeByCT[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {incomeChangeByCT[d.GEO_ID] = incomeChange;}
+		  	});
+
+		  	console.log("incomebyCT", incomeByCT);
+
+		  	//Set initial variables for visualizations
+		  	var catSel = "DEMO"
+
+		  	var voteMapDate = "2016",
+				voteMapRace = "US CONGRESS";
+
+			var demoVar = "PERCENT NON-WHITE";
+				demoChange = "NO CHANGE";
+
+			var seePlaces = "ON";
+
+
+			//
+			//
+			//Make CD MAP
+			///////////////////////////////////////////////////
+
+			//Make container
+			var mapBoxWidth = 650,
+			    mapBoxHeight = 400;
+
+			var mapContainer = d3.select("#cdmap")
+				.append("svg")
+			    .attr("width", mapBoxWidth)
+			    .attr("height", mapBoxHeight)
+			    .append("g");
+
+			var mapG = mapContainer.append("g");
+
+
+			//container for mouse events
+			// var mapZoomBox = mapContainer.append("rect")
+			// 	.attr("class", "click-overlay")
+			// 	.attr("width", mapBoxWidth)
+			// 	.attr("height", mapBoxHeight)
+			// 	.on("mouseover", function() {
+			// 		mapZoomBox
+			// 			.style("stroke", initialColor)
+			//     		.style("stroke-width", "3px")
+			//     		.style("stroke-linecap", "butt")
+			//     		.style("stroke-dasharray", "2, 3");
+			// 	})
+			// 	.on("mouseout", function() {
+			// 		mapZoomBox
+			// 			.style("stroke", "none");
+			// 	})
+
+			 	
+
+			//Set projection information
+		  	var mapProjection = d3.geoAlbers()
+			    .rotate( [77.1945,0] )
+	    		.center( [0, 41.2033] );
+			    
+	    	var mapPath = d3.geoPath()
+			    .projection(mapProjection)
+			    .pointRadius(function(d) {
+		    		if (+d.properties.Population > 1000000) {return (5);}
+		    		if (+d.properties.Population >100000) {return (3);}
+		    		else {return (2);}
+		    	});
+		  	
+
+		  	var allBounds = topojson.feature(pa, pa.objects.PA_CDs);
+
+		  	mapProjection
+		  		.scale(1)
+		  		.translate([0,0]);
+
+		  	var b = mapPath.bounds(allBounds),
+			    s = .95 / Math.max((b[1][0] - b[0][0]) / mapBoxWidth, (b[1][1] - b[0][1]) / mapBoxHeight),
+			    t = [(mapBoxWidth - s * (b[1][0] + b[0][0])) / 2, (mapBoxHeight - s * (b[1][1] + b[0][1])) / 2];
+
+			mapProjection
+		    	.scale(s)
+		    	.translate(t);
+
+		  //   var zoom = d3.zoom()
+		  //   	.scaleExtent([1,10])
+		  //   	.on("zoom", zoomed);
+
+		  //   mapContainer
+				// .call(zoom);
+
+
+
+	      	//Make map geometry elements
+		  	mapG.append("g")
+			    .selectAll("path")
+		    	.data(topojson.feature(pa, pa.objects.PA_CDs).features) 
+		      	.enter().append("path")
+		      	.attr("class", "cd-boundaries")
+		      	.attr("CD", function(d) {return d.properties.CD114FP;})
+		      	.attr("d", mapPath)
+		      	.style("fill", function(d) { 
+		      		var boundary = d.properties.CD114FP;
+				     		return getCDColor(boundary); 
+		      	});
+		      	// .style("stroke", "white")
+		      	// .style("stroke-width", "0.8px");
+ 
+		    mapG.selectAll(".city")
+		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
+		    	.enter().append("path")
+		    	.attr("d", mapPath)
+		    	.attr("class", "city")
+		    	.attr("visibility", function(d) {
+		    		if (seePlaces == "ON") {
+		    			if (+d.properties.Population >= 28500) {return "visible";}
+		    			else {return "hidden";}
+		    		}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		});
+
+		    mapG.selectAll(".city-label")
+		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
+		    	.enter().append("text")
+		    	.attr("class", "city-label")
+		    	.attr("transform", function(d) {return "translate(" + mapProjection(d.geometry.coordinates) + ")"; })
+		    	.attr("visibility", function(d) {
+		    		if (seePlaces == "ON") {
+		    			if (+d.properties.Population >= 28500) {return "visible"}
+		    			else {return "hidden";}
+		    		}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		})
+		    	.attr("dy", function(d) {
+		    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh" || d.properties.City == "Levittown") {return "-.35em";}
+		    		// if (d.properties.City == "Wilkinsburg" || d.properties.City == "Monroesville" || d.properties.City == "Upper St. Clair") {return "1.3em";}
+		    		else {return ".7em";}})
+		    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -5 : 5; })
+    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; })
+    			.text(function(d) {return d.properties.City;});
+
+
+
+		  //   var exploreText = voteMapContainer.append("text")
+				// .attr("class", "map-text")
+				// .attr("x", voteMapBoxWidth - 25)
+				// .attr("y", 50)
+				// .text("zoom and move map to explore"); 
+
+			var placeNamesText = mapContainer.append("text")
+				.attr("class", "map-sel-text")
+				.attr("x", mapBoxWidth - 25)
+				.attr("y", 25)
+				.text(function() {
+					if (seePlaces == "ON") {return "placenames: on";}
+					if (seePlaces == "OFF") {return "placenames: off";}
+				});
+
+
+			var placeNamesBox = mapContainer.append("rect")
+				.attr("class", "click-overlay")
+				.attr("width", 120)
+				.attr("height", 20)
+				.attr("x", mapBoxWidth - 135)
+				.attr("y", 10)
+				.on("click", togglePlaceNames)
+				.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
+				.on("mouseout", function(d) {d3.select(this).style("cursor", "default");});
+
+			// var resetTextBox = mapContainer.append("rect")
+			// 	.attr("class", "click-overlay-variable")
+			// 	.attr("id", "resetClickOverlay")
+			// 	.attr("width", 120)
+			// 	.attr("height", 30)
+			// 	.attr("x", mapBoxWidth - 135)
+			// 	.attr("y", 35)
+			// 	.attr("pointer-events", "none")
+			// 	.on("click", resetZoom)
+			// 	.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
+			// 	.on("mouseout", function(d) {d3.select(this).style("cursor", "default");});
+			
+			// function resetZoom() {
+			// 	mapContainer
+			// 		.transition()
+			// 		.duration(750)
+			// 			.call(zoom.transform, d3.zoomIdentity);
+			// }
+					
+			//
+			//
+			//Make Selector Buttons and Dynamic Titles
+			////////////////////////////////////////////////////
+
+			//Make container
+			var selBoxWidth = 900,
+				selBoxHeight = 200;
+
+			var selContainer = d3.select("#cdselector")
+				.append("svg")
+				.attr("width", selBoxWidth)
+				.attr("height", selBoxHeight);
+
+			var voteLegendY = 15,
+				voteTitleY = 80,
+				voteSelectorY = 120,
+				demoSelectorY = 165,
+				demoTitleY = 245,
+				demoLegendY = 265;
+				
+
+			var demoSelBoxWidth = 900,
+				demoSelBoxHeight = 110;
+
+			//Make legend
+			var voteLegendBoxWidth = selBoxWidth,
+				voteLegendBoxHeight = 38,
+				voteLegendBarWidth = 530,
+				voteLegendBarHeight = 9,
+				voteLabelsNum = 5;
+
+			var voteLegendBox = selContainer.append("svg")
+				.attr("width", voteLegendBoxWidth)
+				.attr("height", voteLegendBoxHeight)
+				.attr("y", voteLegendY);
+
+			var voteLegend = voteLegendBox.append("g")
+				.attr("class", "vote-legend")
+				.each(makeVoteLegend);
+
+			var demoLegendBox = selContainer.append("svg")
+				.attr("width", voteLegendBoxWidth)
+				.attr("height", voteLegendBoxHeight)
+				.attr("y", demoLegendY);
+				
+			// var demoLegend = demoLegendBox.append("g")
+			// 	.attr("class", "demo-legend")
+			// 	.each(makeVoteLegend);
+
+
+					
+			
+			//Set dimension variables
+			var voteDateLabels = ["2016", "2012", "CHANGE"],
+				voteRaceLabels = ["PRESIDENT", "US SENATE", "US CONGRESS"];
+
+			var demoVarLabels = ["POPULATION DENSITY", "PERCENT NON-WHITE", "UNEMPLOYMENT RATE", "EDUCATION", "INCOME"],
+				demoChangeLabels = ["CHANGE 2010-2015"];
+
+			var voteDateBoxWidth = 250,
+				voteDateBoxHeight =18,
+				voteRaceBoxWidth = 250,
+				voteRaceBoxHeight = 18,
+				voteSelSpacing = 15;
+
+			var voteDateButtonWidth = voteDateBoxWidth/(voteDateLabels.length),
+				voteDateButtonHeight = voteDateBoxHeight,
+				voteRaceButtonWidth = voteRaceBoxWidth/(voteRaceLabels.length),
+				voteRaceButtonHeight = voteRaceBoxHeight;
+
+			var demoButtonWidth = voteDateButtonWidth,
+				demoButtonHeight = 30;
+
+			var demoVarBoxWidth = demoButtonWidth*demoVarLabels.length,
+				demoVarBoxHeight = demoButtonHeight,
+				demoChangeBoxWidth = demoButtonWidth*demoChangeLabels.length,
+				demoChangeBoxHeight = demoButtonHeight
+				demoSelSpacing = 15;
+
+
+			var voteDateContainer = selContainer.append("svg")
+				.attr("class", "voteMapBtn-container")
+				.attr("width", voteDateBoxWidth)
+				.attr("height", voteDateBoxHeight)
+				.attr("x", ((selBoxWidth/2)-(voteDateBoxWidth)-voteSelSpacing))
+				.attr("y", voteSelectorY);
+
+			var voteRaceContainer = selContainer.append("svg")
+				.attr("class", "voteMapBtn-container")
+				.attr("width", voteRaceBoxWidth)
+				.attr("height", voteRaceBoxHeight)
+				.attr("x", ((selBoxWidth/2)+voteSelSpacing))
+				.attr("y", voteSelectorY);
+
+			var demoVarContainer = selContainer.append("svg")
+				.attr("class", "demoMapBtn-container")
+				.attr("width", demoVarBoxWidth)
+				.attr("height", demoVarBoxHeight)
+				.attr("x", ((selBoxWidth/2)-voteDateBoxWidth-voteSelSpacing))
+				.attr("y", demoSelectorY);
+
+			var demoChangeContainer = selContainer.append("svg")
+				.attr("class", "demoMapBtn-container")
+				.attr("width", demoChangeBoxWidth)
+				.attr("height", demoChangeBoxHeight)
+				.attr("x", ((selBoxWidth/2)-voteDateBoxWidth+demoSelSpacing+(demoButtonWidth*demoVarLabels.length)))
+				.attr("y", demoSelectorY);
+
+			var voteMapTitle = selContainer.append("text")
+				.attr("class", "voteMap-title")
+				.attr("x", selBoxWidth/2)
+				.attr("y", voteTitleY);
+
+			var demoMapTitle = selContainer.append("text")
+				.attr("class", "demoMap-title")
+				.attr("x", selBoxWidth/2)
+				.attr("y", demoTitleY)
+
+			var voteDateButtons = voteDateContainer.selectAll("g")
+				.data(voteDateLabels)
+				.enter()
+				.append("g")
+				.attr("class", "date-buttons");
+
+			var voteRaceButtons = voteRaceContainer.selectAll("g")
+				.data(voteRaceLabels)
+				.enter()
+				.append("g")
+				.attr("class", "race-buttons");
+
+			var demoVarButtons = demoVarContainer.selectAll("g")
+				.data(demoVarLabels)
+				.enter()
+				.append("g")
+				.attr("class", "demoVar-buttons");
+
+			var demoChangeButtons = demoChangeContainer.selectAll("g")
+				.data(demoChangeLabels)
+				.enter()
+				.append("g")
+				.attr("class", "demoChange-buttons");
+
+			//make colored rectangle of date buttons
+			voteDateButtons.append("rect")
+				.attr("class", function(d) {
+					if (catSel == "VOTE" && voteMapDate == d) {return "voteMapSelBtn-rect-date voteMapSelBtn-rect-press selBtn-rect-press";}
+					else {return "voteMapSelBtn-rect-date voteMapSelBtn-rect-noPress selBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", voteDateButtonWidth)
+				.attr("height", voteDateButtonHeight)
+				.attr("x", function(d,i) {return voteDateButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteButtonClick);
+
+			//make colored rectangle of race buttons
+			voteRaceButtons.append("rect")
+				.attr("class", function(d) {
+					if (catSel == "VOTE" && voteMapRace == d) {return "voteMapSelBtn-rect-race voteMapSelBtn-rect-press selBtn-rect-press";}
+					else {return "voteMapSelBtn-rect-race voteMapSelBtn-rect-noPress selBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", voteRaceButtonWidth)
+				.attr("height", voteRaceButtonHeight)
+				.attr("x", function(d,i) {return voteRaceButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteButtonClick);
+
+			//make colored rectangle of demo variable buttons
+			demoVarButtons.append("rect")
+				.attr("class", function(d) {
+					if (catSel == "DEMO" && demoVar == d) {return "demoMapSelBtn-rect-vars demoMapSelBtn-rect-press selBtn-rect-press";}
+					else {return "demoMapSelBtn-rect-vars demoMapSelBtn-rect-noPress selBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", demoButtonWidth)
+				.attr("height", demoButtonHeight)
+				.attr("x", function(d,i) {return demoButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoButtonClick);
+
+			//make colored rectangle of demo change button
+			demoChangeButtons.append("rect")
+				.attr("class", function(d) {
+					if (catSel == "DEMO" && demoChange == "CHANGE") {return "demoMapSelBtn-rect-change demoMapSelBtn-rect-press selBtn-rect-press";}
+					else {return "demoMapSelBtn-rect-change demoMapSelBtn-rect-noPress selBtn-rect-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("width", demoButtonWidth)
+				.attr("height", demoButtonHeight)
+				.attr("x", function(d,i) {return demoButtonWidth*i;})
+				.attr("y", 0)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoButtonClick);
+
+
+			//make text of date buttons
+			voteDateButtons.append("text")
+				.attr("class", function(d) {
+					if (catSel == "VOTE" && voteMapDate == d) {return "voteMapSelBtn-text-date voteMapSelBtn-text-press selBtn-text-press";}
+					else {return "voteMapSelBtn-text-date voteMapSelBtn-text-noPress selBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((voteDateButtonWidth*i) + (voteDateButtonWidth/2));
+				})
+				.attr("y", voteDateButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteButtonClick)
+	            .text(function(d) {return d;});
+
+	        //make text of race buttons
+	        voteRaceButtons.append("text")
+				.attr("class", function(d) {
+					if (catSel == "VOTE" && voteMapRace == d) {return "voteMapSelBtn-text-race voteMapSelBtn-text-press selBtn-text-press";}
+					else {return "voteMapSelBtn-text-race voteMapSelBtn-text-noPress selBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((voteRaceButtonWidth*i) + (voteRaceButtonWidth/2));
+				})
+				.attr("y", voteRaceButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleVoteButtonClick)
+	            .text(function(d) {return d;});
+
+	        //make text of demo variable buttons
+	        demoVarButtons.append("text")
+				.attr("class", function(d) {
+					if (catSel == "DEMO" && demoVar == d) {return "demoMapSelBtn-text-vars demoMapSelBtn-text-press selBtn-text-press";}
+					else {return "demoMapSelBtn-text-vars demoMapSelBtn-text-noPress selBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((demoButtonWidth*i) + (demoButtonWidth/2));
+				})
+				.attr("y", demoButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoButtonClick)
+	            .text(function(d) {return d;})
+	            .call(wrap, demoButtonWidth-6);
+    
+
+	        //make text of demo change button
+	        demoChangeButtons.append("text")
+				.attr("class", function(d) {
+					if (catSel == "DEMO" && demoChange == "CHANGE") {return "demoMapSelBtn-text-change demoMapSelBtn-text-press selBtn-text-press";}
+					else {return "demoMapSelBtn-text-change demoMapSelBtn-text-noPress selBtn-text-noPress";}
+				})
+				.attr("buttonVal", function(d) {return d;})
+				.attr("x", function(d,i) {return ((demoButtonWidth*i) + (demoButtonWidth/2));
+				})
+				.attr("y", demoButtonHeight/2)
+				.on("mouseover", handleSelButtonMouseover)
+				.on("mouseout", handleSelButtonMouseout)
+				.on("click", handleDemoButtonClick)
+	            .text(function(d) {return d;})
+	            .call(wrap, demoButtonWidth-6);
+
+	        //box outlines
+			voteDateContainer.append("rect")
+	        	.attr("width", voteDateBoxWidth)
+	        	.attr("height", voteDateBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        voteRaceContainer.append("rect")
+	        	.attr("width", voteDateBoxWidth)
+	        	.attr("height", voteDateBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        demoVarContainer.append("rect")
+	        	.attr("width", demoVarBoxWidth)
+	        	.attr("height", demoVarBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        demoChangeContainer.append("rect")
+	        	.attr("width", demoChangeBoxWidth)
+	        	.attr("height", demoChangeBoxHeight)
+	        	.style("fill", "none")
+	        	.style("stroke", dkGrey)
+	        	.style("stroke-width", "2px");
+
+	        // //style dynamic title of map
+	        // voteMapTitle
+	        // 	.text(getVoteMapTitle(voteMapDate, voteMapRace));
+
+	        // //style dynamic title of demoBars
+	        // demoBarsTitle
+	        // 	.text(getDemoBarsTitle(demoVar, demoChange));
+
+	        //
+		    //
+		    //MAKE Bar Chart
+		    ////////////////////////////////////////////////////
+		    
+		    var cdBarWidth = 20,
+		    	cdBarHeight = 800,
+		    	barMargin = {top:40, right:13, bottom:0, left:13},
+		    	boxMargin = {top: 30, right: 30, bottom: 0, left: 30},
+		    	cdBarsContWidth = ((barMargin.left+cdBarWidth+barMargin.right)*18)+boxMargin.left+boxMargin.right,
+		    	cdBarsContHeight = cdBarHeight + barMargin.top + barMargin.bottom;
+
+		    //nest data by CD
+		    var tractDatabyCD = d3.nest()
+		    	.key(function(d) {return (d.CD114);})
+		    	.entries(ctdata);
+
+		    console.log(tractDatabyCD);
+
+		    //get max and min values for entire state
+			var demoVarMin = d3.min(d3.values(getCTVarData())),
+				demoVarMax = d3.max(d3.values(getCTVarData()));
+
+		    var cdBarsContainer = d3.select("#cdbars")
+		    	.append("svg")
+				.attr("class", "container")
+				.attr("width", cdBarsContWidth)
+				.attr("height", cdBarsContHeight);
+
+			var tractDataSorted = tractDatabyCD.sort(function(a,b) {
+					return +a.key - +b.key;
+				});
+
+			var barSvg = cdBarsContainer.selectAll("svg")
+				.data(tractDataSorted)
+				.enter()
+				.append("svg")
+				.attr("CD", function(d) {return +d.key;})
+				.attr("width", cdBarWidth+barMargin.left+barMargin.right)
+				.attr("height", cdBarHeight+barMargin.top+barMargin.bottom)
+				.attr("x", function (d, i) {
+					return (boxMargin.left+(i*(cdBarWidth+barMargin.right+barMargin.left)));
+				});
+		    	
+		    //Append placeholder "svg:g" for each bar that rectangles will be appended to
+		    var barG = barSvg.append("g")
+		    	.attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")")
+				.each(makeBar);
+
+			// var defs = barSvg.append("defs");
+
+			// var gradVars = getCTGradVars();
+
+			// var y1 = gradVars[0],
+			// 	gradient = gradVars[1];
+
+			// var demoColorGradient = defs.append("linearGradient")
+   //  			.attr("id", "demoColor-gradient")
+   //  			.attr("gradientUnits", "userSpaceOnUse")
+   //  			.attr("x1", "0%")
+			//     .attr("y1", y1)
+			//     .attr("x2", "0%")
+			//     .attr("y2", "0%");
+
+			// demoColorGradient.selectAll("stop")
+			// 	.data(gradient)
+			// 	.enter().append("stop")
+			// 	.attr("offset", function(d) { return d.offset; })   
+   //  			.attr("stop-color", function(d) { return d.color; });
+
+			var cdVarDict = getCDVarData();
+
+			console.log("cdVarDict", cdVarDict);
+
+			var paVal = cdVarDict["PA"];
+
+			console.log("paVal", paVal);
+
+			var barsY = d3.scaleLinear()
+				.domain([demoVarMin, demoVarMax])
+				.range([cdBarHeight-1, 1]);
+
+			var barsYVote = d3.scaleLinear()
+				.domain([-1, 1])
+				.range([cdBarHeight-1, 1]);
+
+			var barsYVoteChange = d3.scaleLinear()
+				.domain([demoVarMin, 0, demoVarMax])
+				.range([cdBarHeight-1, cdBarHeight/2, 1]);
+			
+			var stateLine = cdBarsContainer.append("line")
+				.attr("class", "pa-line")
+				.attr("x1", 0)
+				.attr("x2", cdBarsContWidth)
+				.attr("y1", function() {
+					if (catSel == "VOTE") {
+						if (voteMapDate == "CHANGE") {
+							return Math.round(barsYVoteChange(paVal));
+						}
+						else {
+							return Math.round(barsYVote(paVal));
+						}
+					}
+					if (catSel == "DEMO") {
+					return Math.round(barsY(paVal));
+					}
+				})
+				.attr("y2", function() {
+					if (catSel == "VOTE") {
+						if (voteMapDate == "CHANGE") {
+							return Math.round(barsYVoteChange(paVal));
+						}
+						else {
+							return Math.round(barsYVote(paVal));
+						}
+					}
+					if (catSel == "DEMO") {
+					return Math.round(barsY(paVal));
+					}
+				});
+				
+			
+			// updateStateLine();
+
+
+			
+
+
+			
+
+
+	        ////////////////////////////////////////////////////
+	       	//
+	       	//FUNCTIONS WITHIN drawMap function
+	       	////////////////////////////////////////////////////
+
+	       	//
+	       	//
+	       	//MAP FUNCTIONS
+	       	////////////////////////////////////////////////////	
+
+	       	function zoomed() {
+		    //Controls zoom behavior of map
+		    //Turns on labels of smaller city when zoom level reaches 3
+		    //Turns on bounding box for map when zoomed
+		    //Scales placename labels on zoom
+		    	mapG.attr("transform", d3.event.transform);
+
+		    	var zoomScale = d3.zoomTransform(this).k;
+
+		    	//controls scale and visibility of cities
+		    	mapG.selectAll(".city")
+		    		.attr("d", mapPath.pointRadius(function(d) {
+		    		if (+d.properties.Population > 1000000) {return (5/zoomScale);}
+		    		if (+d.properties.Population > 100000) {return (3/zoomScale);}
+		    		else {return (2/zoomScale);}
+		    		}))
+		    		.attr("visibility", function(d) {
+		    			if (seePlaces == "ON") {
+		    				if (zoomScale >= 3) {return "visible";}
+		    				if (zoomScale < 3) {
+		    					if (+d.properties.Population >= 28500) {return "visible";}
+		    					if (+d.properties.Population < 28500) {return "hidden";}
+		    				}
+		    			}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		});
+
+		    	//controls scale and visibility of city labels
+		    	mapG.selectAll(".city-label")
+		    		.style("font-size", function() {return 9/zoomScale + "px";})
+		    		.attr("visibility", function(d) {
+		    			if (seePlaces == "ON") {
+		    				if (zoomScale >= 3) {return "visible";}
+		    				if (zoomScale < 3) {
+		    					if (+d.properties.Population >= 28500) {return "visible";}
+		    					if (+d.properties.Population < 28500) {return "hidden";}
+		    				}
+		    			}
+		    		if (seePlaces == "OFF") {return "hidden";}
+		    		})
+		    		.attr("dy", function(d) {
+			    		if (d.properties.City == "Bethlehem" || d.properties.City == "Philadelphia" || d.properties.City == "Pittsburgh") {return -.35/zoomScale+"em";}
+			    		if (d.properties.City == "Wilkinsburg" || d.properties.City == "Monroeville" || d.properties.City == "Upper St. Clair") {return 3/zoomScale+"em";}
+			    		else {return .7/zoomScale+"em";}})
+			    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -7/zoomScale : 7/zoomScale; })
+	    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; });
+
+	    		//
+	    		// exploreText
+	    		// 	.text(function() {
+	    		// 		if (zoomScale >= 1.2) {
+	    		// 			return "reset map";}
+	    		// 		else {return "zoom and move map to explore";}
+	    		// 	})
+	    		// 	.style("fill", function() {
+	    		// 		if (zoomScale >= 1.2) 
+	    		// 			return "black";
+	    		// 	});
+
+	    		// placeNamesText
+	    		// 	.style("fill", function() {
+	    		// 		if (zoomScale >= 1.2) 
+	    		// 			return "black";
+	    		// 	});
+
+
+	    		// resetTextBox
+	    		// 	.attr("pointer-events", function() {
+	    		// 		if (zoomScale >= 1.2) {
+	    		// 			return "all";
+	    		// 		}
+	    		// 		else {return "none";}
+	    		// 	});
+
+	    			
+
+	    		// //turns on dashed map bounding box on zoom
+	    		// //makes reset button
+		    	// if (d3.zoomTransform(this).k != 1) {
+			    // 	mapZoomBox
+			    // 		.style("stroke", initialColor)
+			    // 		.style("stroke-width", "3px")
+			    // 		.style("stroke-linecap", "butt")
+			    // 		.style("stroke-dasharray", "2, 3");
+			    // }
+
+
+			    // //turns off dashed map bounding box when zoom back out to 1
+			    // if (d3.zoomTransform(this).k == 1) {
+			    // 	mapZoomBox
+			    // 		.style("stroke", "none");
+			    // }
+		    }
+
+
+		    function togglePlaceNames () {
+		    //controls visibility of placenames on map via user input
+
+				if (seePlaces == "ON") {
+					var newSeePlaces = "OFF";
+					placeNamesText
+						.text("placenames: off");
+					mapG.selectAll(".city")
+						.attr("visibility", "hidden");
+					mapG.selectAll(".city-label")
+						.attr("visibility", "hidden");
+				}
+				if (seePlaces == "OFF") {
+					var newSeePlaces = "ON";
+					placeNamesText
+						.text("placenames: on");
+					mapG.selectAll(".city")
+						.attr("visibility", function(d) {
+							if (+d.properties.Population >= 28500) {return "visible";}
+							else {return "hidden";}	
+						});
+					mapG.selectAll(".city-label")
+						.attr("visibility", function(d) {
+							if (+d.properties.Population >= 28500) {return "visible";}
+							else {return "hidden";}	
+						});
+				}
+				seePlaces = newSeePlaces;
+			}		
+
+			//
+	       	//
+	       	//SELECTOR FUNCTIONS
+	       	////////////////////////////////////////////////////
+
+		    //SELECTOR FUNCTIONS
+	       	//
+	       	//Functions to register new selection
+	       	////////////////////////////////////////////////////
+
+		    function handleVoteButtonClick(d) {
+		    //updates global variable to newly chosen var via mouse click
+		    //reclasses buttons when one is clicked
+		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
+		    	
+		    	catSel = "VOTE"
+
+		    	if (d == "2016" || d == "2012" || d == "CHANGE") {
+		    		voteMapDate = d;
+		    	}
+
+		    	if (d == "PRESIDENT" || d ==  "US SENATE" || d == "US CONGRESS") {
+		    		voteMapRace = d;
+		    	}
+
+		    	//change classes for selected vote map button
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == voteMapDate;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", true)
+		    		.classed("voteMapSelBtn-rect-noPress", false);
+
+		    	d3.selectAll(".voteMapSelBtn-text-date").filter(function() {return this.getAttribute("buttonVal") == voteMapDate;})
+		    		.classed("voteMapSelBtn-text-press", true)
+		    		.classed("voteMapSelBtn-text-noPress", false);
+
+		    	//change classes for other vote date buttons
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") != voteMapDate;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", false)
+		    		.classed("voteMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".voteMapSelBtn-text-date").filter(function() {return this.getAttribute("buttonVal") != voteMapDate;})
+		    		.classed("voteMapSelBtn-text-press", false)
+		    		.classed("voteMapSelBtn-text-noPress", true);
+
+		    	//change classes for selected vote race button
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == voteMapRace;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", true)
+		    		.classed("voteMapSelBtn-rect-noPress", false);
+
+		    	d3.selectAll(".voteMapSelBtn-text-race").filter(function() {return this.getAttribute("buttonVal") == voteMapRace;})
+		    		.classed("voteMapSelBtn-text-press", true)
+		    		.classed("voteMapSelBtn-text-noPress", false);
+
+		    	//change classes for other vote race buttons
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") != voteMapRace;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", false)
+		    		.classed("voteMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".voteMapSelBtn-text-race").filter(function() {return this.getAttribute("buttonVal") != voteMapRace;})
+		    		.classed("voteMapSelBtn-text-press", false)
+		    		.classed("voteMapSelBtn-text-noPress", true);
+
+		    	//change classes for demo var buttons
+		    	d3.selectAll(".demoMapSelBtn-rect-vars")
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("demoMapSelBtn-rect-press", false)
+		    		.classed("demoMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".demoMapSelBtn-text-vars")
+		    		.classed("demoMapSelBtn-text-press", false)
+		    		.classed("demoMapSelBtn-text-noPress", true);
+
+		    	//change classes for demo change buttons
+		    	d3.selectAll(".demoMapSelBtn-rect-change")
+	    			.classed("selBtn-rect-hover", false)
+		    		.classed("demoMapSelBtn-rect-press", false)
+		    		.classed("demoMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".demoMapSelBtn-text-change")
+		    		.classed("demoMapSelBtn-text-press", false)
+		    		.classed("demoMapSelBtn-text-noPress", true);
+				
+				// voteMapTitle
+	   //      		.text(getVoteMapTitle(voteMapDate, voteMapRace));
+
+				// voteLegendBox.selectAll("*")
+				// 	.remove();
+
+				// demoLegendBox.selectAll("*")
+				// 	.remove();
+
+				// var voteLegend = voteLegendBox.append("g")
+				// 	.attr("class", "vote-legend")
+				// 	.each(makeVoteLegend);
+
+				// var demoLegend = demoLegendBox.append("g")
+				// 	.attr("class", "demo-legend")
+				// 	.each(makeVoteLegend);
+
+
+				updateMap();
+
+				updateCDBars();
+				// updateDemoBars();
+
+				updateStateLine();
+		    }
+
+
+
+		    function handleDemoButtonClick(d) {
+		    //updates global variable to newly chosen var via mouse click
+		    //reclasses buttons when one is clicked
+		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
+		    	// console.log(catSel)
+		    	// console.log(voteMapDate)
+		    	// console.log(voteMapRace)
+		    	// console.log(demoVar)
+		    	// console.log(demoChange)
+		    	catSel = "DEMO"
+
+		    	if (d == "POPULATION DENSITY" || d == "PERCENT NON-WHITE" || d == "UNEMPLOYMENT RATE" || d == "EDUCATION" || d == "INCOME") {
+		    		demoVar = d;
+		    	}
+
+		    	if (d == "CHANGE 2010-2015") {
+		    		if (demoChange == "NO CHANGE") { 
+						var demoChangeNew = "CHANGE";
+					}
+					if (demoChange == "CHANGE") {
+						var demoChangeNew = "NO CHANGE";
+					}
+					demoChange = demoChangeNew;
+		    	}
+		    	
+		    	//change classes for selected demo var button
+		    	d3.selectAll(".demoMapSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == demoVar;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("demoMapSelBtn-rect-press", true)
+		    		.classed("demoMapSelBtn-rect-noPress", false);
+
+		    	d3.selectAll(".demoMapSelBtn-text-vars").filter(function() {return this.getAttribute("buttonVal") == demoVar;})
+		    		.classed("demoMapSelBtn-text-press", true)
+		    		.classed("demoMapSelBtn-text-noPress", false);
+
+		    	//change classes for other demo var buttons
+		    	d3.selectAll(".demoMapSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") != demoVar;})
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("demoMapSelBtn-rect-press", false)
+		    		.classed("demoMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".demoMapSelBtn-text-vars").filter(function() {return this.getAttribute("buttonVal") != demoVar;})
+		    		.classed("demoMapSelBtn-text-press", false)
+		    		.classed("demoMapSelBtn-text-noPress", true);
+
+		    	//change classes for demo change button
+		    	if (demoChange == "CHANGE") {
+			    	d3.selectAll(".demoMapSelBtn-rect-change")
+			    		.classed("selBtn-rect-hover", false)
+			    		.classed("demoMapSelBtn-rect-press", true)
+			    		.classed("demoMapSelBtn-rect-noPress", false);
+
+			    	d3.selectAll(".demoMapSelBtn-text-change")
+			    		.classed("demoMapSelBtn-text-press", true)
+			    		.classed("demoMapSelBtn-text-noPress", false);
+		    	}
+		    	if (demoChange == "NO CHANGE") {
+		    		d3.selectAll(".demoMapSelBtn-rect-change")
+		    			.classed("selBtn-rect-hover", false)
+			    		.classed("demoMapSelBtn-rect-press", false)
+			    		.classed("demoMapSelBtn-rect-noPress", true);
+
+			    	d3.selectAll(".demoMapSelBtn-text-change")
+			    		.classed("demoMapSelBtn-text-press", false)
+			    		.classed("demoMapSelBtn-text-noPress", true);
+		    	}
+
+		    	//change classes for vote date buttons
+		    	d3.selectAll(".voteMapSelBtn-rect-date")
+		    		.classed("voteMapSelBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", false)
+		    		.classed("voteMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".voteMapSelBtn-text-date")
+		    		.classed("voteMapSelBtn-text-press", false)
+		    		.classed("voteMapSelBtn-text-noPress", true);
+
+		    	//change classes for vote race buttons
+		    	d3.selectAll(".voteMapSelBtn-rect-race")
+		    		.classed("selBtn-rect-hover", false)
+		    		.classed("voteMapSelBtn-rect-press", false)
+		    		.classed("voteMapSelBtn-rect-noPress", true);
+
+		    	d3.selectAll(".voteMapSelBtn-text-race")
+		    		.classed("voteMapSelBtn-text-press", false)
+		    		.classed("voteMapSelBtn-text-noPress", true);
+
+				
+				// console.log(catSel)
+		  //   	console.log(demoVar)
+		  //   	console.log(demoChange)
+				
+				// demoBarsTitle
+	   //      		.text(getDemoBarsTitle(demoVar, demoChange));
+
+				updateMap();
+				updateCDBars();
+				updateStateLine();
+				// updateDemoBars();
+		    }
+
+
+
+		    //SELECTOR FUNCTIONS
+	       	//
+	       	//Functions to update elements based on new selection
+	       	////////////////////////////////////////////////////
+
+		    function getVoteMapTitle(voteMapDate, voteMapRace) {
+		    //updates map title according to selected date and race variables
+
+        		if (voteMapDate == "CHANGE") {
+        			var dateText = "Change in Margin, 2012 - 2016";
+        		}
+        		else {
+        			var dateText = voteMapDate;
+        		}
+
+        		if (voteMapRace == "PRESIDENT") {
+        			var mapText = "US Presidential";
+        		}
+        		if (voteMapRace == "US SENATE") {
+					var mapText = "US Senate";
+        		}
+        		if (voteMapRace == "US CONGRESS") {
+        			var mapText = "US Congressional";
+        		}
+        		return mapText + " Election: " + dateText;
+		        		
+		    }
+
+
+		    function getDemoBarsTitle(demoVar, changeVar) {
+		    //updates bar chart title according to selected demographic variables
+
+    			if (demoVar == "PERCENT NON-WHITE") {
+    				var demoVarText = "Non-White, Non-Hispanic Population";
+    			}
+    			if (demoVar == "UNEMPLOYMENT RATE") {
+    				var demoVarText = "Unemployment Rate";
+    			}
+    			if (demoVar == "EDUCATION") {
+    				var demoVarText = "Population with Bachelor's Degree";
+    			}
+    			if (demoVar == "INCOME") {
+    				var demoVarText = "Median Income";
+    			}
+    			if (demoChange == "NO CHANGE") {
+    				var demoChangeText = "",
+    					demoDateText = "2015";
+
+    				if (demoVar == "POPULATION DENSITY") {
+    					var demoVarText = "Population Density";
+    				}
+    			}
+    			if (demoChange == "CHANGE") {
+    				var demoChangeText = "Change in ",
+    					demoDateText = "2010-2015";
+
+    				if (demoVar == "POPULATION DENSITY") {
+    					var demoVarText = "Population";
+    				}
+    			}
+    			return demoChangeText + demoVarText + " by Census Tract";
+		    }
+		 
+
+
+		    function updateMap(d) {
+		    //updates map colors according to selected date and race variables
+				
+				d3.selectAll(".cd-boundaries")
+			      	.transition()
+				     	.duration(400)	
+				     	.style("fill", function(d) {
+				     		var boundary = d.properties.CD114FP;
+				     		return getCDColor(boundary); 
+				     	});
+				     	// .style("stroke", function(d) {
+				     	// 	var cd = d.properties.CD114FP;
+				     	// 	if 
+				     	// }); 		
+
+
+		    }
+
+
+		    //SELECTOR FUNCTIONS
+	       	//
+	       	//General graphics functions (no data changes)
+	       	////////////////////////////////////////////////////
+
+	       	function makeVoteLegend() {
+
+				var legend = d3.select(this)
+					.attr("class", "legend");
+
+				var legendPadding = {top: 12, bottom: 12};
+
+				var defs = legend.append("defs");
+
+				var voteColorGradient = defs.append("linearGradient")
+	    			.attr("id", "voteColor-gradient")
+	    			.attr("x1", "0%")
+				    .attr("y1", "0%")
+				    .attr("x2", "100%")
+				    .attr("y2", "0%");
+
+				voteColorGradient.selectAll("stop")
+					.data([
+						{offset: "0%", color: '#3c5bff'}, 
+				        {offset: "50%", color: '#e6f0ff'}, 
+				        {offset: "50%", color: '#f8e5e6'},        
+				        {offset: "100%", color: '#dd0035'} 
+						])
+					.enter().append("stop")
+					.attr("offset", function(d) { return d.offset; })   
+	    			.attr("stop-color", function(d) { return d.color; });
+
+	    		var voteLegendColorBar = legend.append("rect")
+	    			.attr("width", voteLegendBarWidth)
+	    			.attr("height", voteLegendBarHeight)
+	    			.attr("x", (selBoxWidth/2)-(voteLegendBarWidth/2))
+	    			.attr("y", legendPadding.top)
+	    			.style("fill", "url(#voteColor-gradient)")
+
+	    		var voteLegendAxis = legend.append("g")
+	    			.attr("class", "legend")
+	    			.attr("id", "legendAxis")
+	    			.attr("transform", "translate(" + ((selBoxWidth/2)-(voteLegendBarWidth/2)) + "," + (voteLegendBarHeight+legendPadding.top) + ")")
+	    			.each(makeLegendLabels);
+			
+			}
+
+
+			function makeLegendLabels() {
+
+    			var legendLabels = d3.select(this)
+    				.attr("class", "legend-labels");
+
+    			var labels = getLabels(voteMapDate, voteLabelsNum);
+
+				labels.forEach(function(label, index) {
+
+					legendLabels.append("text")
+						.attr("class", "legend-labels legend-label-vals")
+						.attr("x", index*voteLegendBarWidth/((voteLabelsNum*2)))
+						.attr("y", voteLegendBarHeight + 3)
+						.text(d3.format(".0%")(label));
+				});
+
+				var marginLabel = legendLabels.append("text")
+					.attr("class", "legend-labels-title legend-labels")
+					.attr("x", voteLegendBarWidth/2)
+					.attr("y", -14)
+					.text(function() {
+						if (voteMapDate != "CHANGE") {return "vote margin";}
+	    				if (voteMapDate == "CHANGE") {return "change in margin";}
+					});
+
+				var demLabel = legendLabels.append("text")
+					.attr("class", "legend-labels")
+					.attr("x", -5)
+					.attr("y", -4)
+					.text("Democrat")
+					.style("text-anchor", "end")
+					.style("dominant-baseline", "middle");
+
+				var repLabel = legendLabels.append("text")
+					.attr("class", "legend-labels")
+					.attr("x", voteLegendBarWidth+5)
+					.attr("y", -4)
+					// .attr("y", voteLegendBarHeight + 3)
+					.text("Republican")
+					.style("text-anchor", "start")
+					.style("dominant-baseline", "middle");
+				
+				}
+
+
+			function getLabels(voteMapDate, voteLabelsNum){
+	    				
+    				if (voteMapDate == "CHANGE") {var labelMax = 0.5;}
+	    			if (voteMapDate != "CHANGE") {var labelMax = 1;}
+
+		    		var labelsRight = Array.from(new Array(voteLabelsNum + 1),(val,index)=>index*labelMax/voteLabelsNum);
+
+		    		var labelsLeft = Array.from(new Array(voteLabelsNum),(val,index)=>((voteLabelsNum-index)*labelMax)/voteLabelsNum);
+		    			
+		    		var labels = labelsLeft.concat(labelsRight);
+
+		    		return labels;
+	    	}
+
+
+		    function handleSelButtonMouseover(d) {
+		    //changes color of button background on mouseover
+
+		    	d3.select(this).style("cursor", "pointer");
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".voteMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoMapSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoMapSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", true);
+
+		    	d3.selectAll(".demoMapSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-text-hover", true);
+		    }
+
+
+		    function handleSelButtonMouseout(d) {
+		    //restores original color of button background on mouseout	
+
+		    	d3.select(this).style("cursor", "default");
+
+		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".voteMapSelBtn-rect-race").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoMapSelBtn-rect-vars").filter(function() {return this.getAttribute("buttonVal") == d;}).filter(".demoMapSelBtn-rect-noPress")
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoMapSelBtn-rect-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-rect-hover", false);
+
+		    	d3.selectAll(".demoMapSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
+		    		.classed("selBtn-text-hover", false);
+
+		    }
+
+
+		    //
+	       	//
+	       	//CD BAR FUNCTIONS
+	       	////////////////////////////////////////////////////
+
+	       	function makeBar(CD114) {
+
+				//process data for each CD
+
+
+				var barSvg = d3.select(this)
+					.attr("class", "cdbar")
+					.attr("CD", function(d) {console.log(CD114); return CD114.key;})
+					.style("fill", "none");
+
+				
+
+				// console.log(demoVarMin);
+				// console.log(demoVarMax);
+
+
+				var barsY = d3.scaleLinear()
+					.domain([demoVarMin, demoVarMax])
+					.range([cdBarHeight-1, 1]);
+
+				var barsYVote = d3.scaleLinear()
+					.domain([-1, 1])
+					.range([cdBarHeight-1, 1]);
+
+				var barsYVoteChange = d3.scaleLinear()
+					.domain([demoVarMin, 0, demoVarMax])
+					.range([cdBarHeight-1, cdBarHeight/2, 1]);
+
+
+				var defs = barSvg.append("defs");
+
+				var gradVars = getCTGradVars();
+
+				var y1 = gradVars[0],
+					gradient = gradVars[1];
+
+				var demoColorGradient = defs.append("linearGradient")
+	    			.attr("id", "demoColor-gradient")
+	    			.attr("gradientUnits", "userSpaceOnUse")
+	    			.attr("x1", "0%")
+				    .attr("y1", y1)
+				    .attr("x2", "0%")
+				    .attr("y2", "0%");
+
+				demoColorGradient.selectAll("stop")
+					.data(gradient)
+					.enter().append("stop")
+					.attr("offset", function(d) { return d.offset; })   
+	    			.attr("stop-color", function(d) { return d.color; });
+
+
+				var barRect = barSvg.append("rect")
+					.attr("class", "cd-rect click-overlay")
+					.attr("width", cdBarWidth)
+					.attr("height", cdBarHeight)
+					.on("mouseover", function(d) {
+						d3.selectAll(".cd-boundaries").filter(function(d){return this.getAttribute("CD") != CD114.key})
+							.classed("active-mouseover-nonSelect", true);
+
+						d3.selectAll(".cd-boundaries").filter(function(d){return this.getAttribute("CD") == CD114.key})
+							.classed("active-mouseover", true)
+							.style("stroke", "black")
+							.style("stroke-width", "1.2px")
+							.style("stroke-dasharray", "2,2")
+							.raise();
+					})
+					.on("mouseout", function(d) {
+						d3.selectAll(".cd-boundaries").filter(function(d){return this.getAttribute("CD") != CD114.key})
+							.classed("active-mouseover-nonSelect", false);
+
+						d3.selectAll(".cd-boundaries").filter(function(d){return this.getAttribute("CD") == CD114.key})
+							.classed("active-mouseover", false)
+							.style("stroke", "white")
+							.style("stroke-width", "0.8px")
+							.style("stroke-dasharray", "none")
+							.raise();
+					});
+
+				var barChart = barSvg.selectAll(".bars")
+					.data(CD114.values)
+				  .enter()
+					.append("rect")
+					.attr("class", "bars")
+					.attr("pointer-events", "none")
+					.attr("y", function(d) {
+						var tract = d.GEO_ID,
+							varDict = getCTVarData();
+
+						if (isNaN(varDict[tract])) {
+		            		return 0;
+		            	}
+						else {
+							if (catSel == "VOTE") {
+								if (voteMapDate == "CHANGE") {
+									return Math.round(barsYVoteChange(varDict[tract]));
+								}
+								else {
+									return Math.round(barsYVote(varDict[tract]));
+								}
+							}
+							if (catSel == "DEMO") {
+							return Math.round(barsY(varDict[tract]));
+							}
+						}
+					})
+					.attr("height", function(d) {
+						var tract = d.GEO_ID,
+							varDict = getCTVarData();
+		            	if (isNaN(varDict[tract])) {
+		            		return 0;
+		            	}
+		            	else {return 1;}
+	            	})
+	            	.attr("width", cdBarWidth)
+	            	// .style("stroke", "steelblue")
+	            	// .style("fill", "none")
+	            	// .style("stroke", "url(#demoColor-gradient)")
+	            	// .style("stroke-width", "1");
+	            	.style("fill", "url(#demoColor-gradient)")
+	            	// .style("fill", function(d) {
+
+	            	// 	return getCTColor(d.GEO_ID);});
+	            	.style("opacity", "1");
+
+	            
+	            //Make Box Plots
+	            var selVar = getSelVar();
+
+	            var cdVals = CD114.values;
+
+				var selVarVals = cdVals.map(function(d) {
+						if (isNaN(+d[selVar])) {
+						}
+						else {return +d[selVar];}});
+
+				console.log(selVarVals);
+
+				var selValsSorted = selVarVals.sort(function(a, b) {
+	        		if(!isFinite(a) && !isFinite(b)) {
+						return 0;
+					}
+					if( !isFinite(a) ) {
+				        return -1;
+				    }
+				    if( !isFinite(b) ) {
+				        return 1;
+				    }
+					return +a > +b ? 1 : +a < +b ? -1 : 0;
+	        	});
+
+				var q1 = d3.quantile(selValsSorted, 0.25),
+					q3 = d3.quantile(selValsSorted, 0.75);
+
+				var mean = d3.mean(selValsSorted);
+
+
+				// console.log("q1", q1);
+				// console.log("q3", q3);
+				// console.log("mean", mean);
+
+	            var quartBoxes = barSvg.append("rect")
+	            	.attr("class", "boxplots qbox")
+	            	.attr("CD", function(d) {return CD114.key;})
+	            	.attr("width", cdBarWidth)
+	            	.attr("height", function() {
+	            		var iqr = q3-q1;
+
+	            		if (catSel == "VOTE") {
+							if (voteMapDate == "CHANGE") {
+								return Math.round(barsYVoteChange(iqr));
+							}
+							else {
+								return Math.round(barsYVote(iqr));
+							}
+						}
+						if (catSel == "DEMO") {
+							var q1Y = Math.round(barsY(q1)),
+								q3Y = Math.round(barsY(q3));
+
+							console.log("q1Y", q1Y);
+							console.log("q3Y", q3Y);
+							return q1Y-q3Y;
+						}
+	            	})
+	            	.attr("x", 0)
+	            	.attr("y", function() {
+	            		if (catSel == "VOTE") {
+							if (voteMapDate == "CHANGE") {
+								return Math.round(barsYVoteChange(q3));
+							}
+							else {
+								return Math.round(barsYVote(q3));
+							}
+						}
+						if (catSel == "DEMO") {
+							return Math.round(barsY(q3));
+						}
+	            	});
+
+	            var meanBar = barSvg.append("line")
+	            	.attr("class", "boxplots mbar")
+	            	.attr("CD", function(d) {return CD114.key;})
+	            	.attr("x1", 0)
+	            	.attr("x2", cdBarWidth)
+	            	.attr("y1", function() {
+	            		if (catSel == "VOTE") {
+							if (voteMapDate == "CHANGE") {
+								return Math.round(barsYVoteChange(mean));
+							}
+							else {
+								return Math.round(barsYVote(mean));
+							}
+						}
+						if (catSel == "DEMO") {
+							return Math.round(barsY(mean));
+						}
+	            	})
+	            	.attr("y2", function() {
+	            		if (catSel == "VOTE") {
+							if (voteMapDate == "CHANGE") {
+								return Math.round(barsYVoteChange(mean));
+							}
+							else {
+								return Math.round(barsYVote(mean));
+							}
+						}
+						if (catSel == "DEMO") {
+							return Math.round(barsY(mean));
+						}
+	            	});
+
+			
+			}
+
+			function updateStateLine() {
+				
+				var selVar = getSelVar();
+
+				var yVal = cddata[selVar]["PA"];
+
+				// stateLine
+				// 	.transition()
+				// 	.duration()
+				// 	.attr("y1", function() {
+
+				// 	})
+				// 	.attr("y2", );
+
+			}
+			
+			function getSelVar() {
+
+	        	if (catSel == "VOTE") {
+					if (voteMapDate == "2016" && voteMapRace == "PRESIDENT") {
+	      				return "USP_MARGIN_2016";
+	      			}
+	      			if (voteMapDate == "2016" && voteMapRace == "US SENATE") {
+	      				return "USS_MARGIN_2012";
+	      			}
+	      			if (voteMapDate == "2016" && voteMapRace == "US CONGRESS") {
+	      				return "USC_MARGIN_2016";
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "PRESIDENT") {
+	      				return "USP_MARGIN_2012";
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "US SENATE") {
+	      				return "USS_MARGIN_2012";
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "US CONGRESS") {
+	      				return "USC_MARGIN_2012";
+			      	}
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "PRESIDENT") {
+	      				return "USP_MARGIN_CHANGE";
+	      			}
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "US SENATE") {
+						return "USS_MARGIN_CHANGE";
+			      	}	
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "US CONGRESS") {
+	      				return "USC_MARGIN_CHANGE";
+			      	} 
+		      	}
+
+		      	if (catSel == "DEMO") {
+					if (demoChange == "NO CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return "POPDEN_2015";
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return "NONWHITE_2015";
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return "UNEMPLOY_2015";
+						}
+						if (demoVar == "EDUCATION") {
+							return "COLLEGE_2015";
+						}
+						if (demoVar == "INCOME") {
+							return "INC_2015";
+						}
+					}
+					if (demoChange == "CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return "TOTALPOP_CHANGE";
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return "NONWHITE_CHANGE";
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return "UNEMPLOY_CHANGE";
+						}
+						if (demoVar == "EDUCATION") {
+							return "COLLEGE_CHANGE";
+						}
+						if (demoVar == "INCOME") {
+							return "INC_CHANGE";
+						}
+					}
+				}
+	        }
+
+
+			function getCTGradVars() {
+				// console.log(catSel, demoChange, demoVar);
+
+
+		    	if (catSel == "DEMO") {
+		    		var selDemo = d3.values(getCTVarData());
+		    		// console.log(selDemo);
+
+		    		var demoMax = d3.max(selDemo);
+	    				demoMin = d3.min(selDemo);
+
+			    	var selDemoPos = [],
+			    		selDemoNeg = [];
+
+			    	selDemo.forEach(function(value) {
+			    		if (value >= 0) {
+			    			selDemoPos.push(value);
+			    		}
+			    		if (value < 0) {
+			    			selDemoNeg.push(value);
+			    		}
+			    	})
+
+					if (Math.abs(demoMax) >= Math.abs(demoMin)) {
+	    				var bins = d3.scaleQuantile()
+	    					.domain(selDemoPos)
+	    					.range(d3.range(5));
+	    				var threshVals = bins.quantiles();
+	    				// console.log(threshVals);
+	    				if (demoMin >= 0) {
+	    					var stop0 = 0
+	    						stop1 = threshVals[0]/(demoMax-demoMin),
+	    						stop2 = threshVals[1]/(demoMax-demoMin),
+	    						stop3 = threshVals[2]/(demoMax-demoMin),
+	    						stop4 = threshVals[3]/(demoMax-demoMin),
+	    						stop5 = 1;
+
+	    					// console.log(stop0, stop1, stop2, stop3, stop4, stop5);
+
+	    					// var gradient = [{offset: 0, color: "#c7eafd"}, 
+				      // 						{offset: 0.2, color: "#b8d0fc"},
+				      // 						{offset: 0.4, color: "#c1aefb"}, 
+				      // 						{offset: 0.6, color: "#e479fa"},
+				      // 						{offset: 0.8, color: "#fa35d2"}, 
+				      // 						{offset: 100, color: "#e8198b"}];
+
+				      
+				      		// //dark blue to pink
+				      		// var gradient = [{offset: stop0, color: "#0250c5"}, 
+				      		// 				{offset: stop1, color: "#8409f0"},
+				      		// 				{offset: stop2, color: "#aa0ecc"}, 
+				      		// 				{offset: stop3, color: "#c112b7"},
+				      		// 				{offset: stop4, color: "#d516a4"}, 
+				      		// 				{offset: stop5, color: "#e8198b"}];
+
+				      		var gradient = [{offset: stop0, color: "#c7eafd"}, 
+				      						{offset: stop1, color: "#b8d0fc"},
+				      						{offset: stop2, color: "#c1aefb"}, 
+				      						{offset: stop3, color: "#e479fa"},
+				      						{offset: stop4, color: "#fa35d2"}, 
+				      						{offset: stop5, color: "#e8198b"}];
+
+				      		var y1 = cdBarHeight;
+	    				}
+	    				if (demoMin < 0) {
+	    					var stop0 = 0,
+	    						stop1 = .5-(threshVals[3]/demoMax),
+	    						stop2 = .5-(threshVals[2]/demoMax),
+	    						stop3 = .5-(threshVals[1]/demoMax),
+	    						stop4 = .5-(threshVals[0]/demoMax),
+	    						stop5 = .5,
+	    						stop6 = .5,
+	    						stop7 = .5+(threshVals[0]/demoMax),
+	    						stop8 = .5+(threshVals[1]/demoMax),
+	    						stop9 = .5+(threshVals[2]/demoMax),
+	    						stop10 = .5+(threshVals[3]/demoMax),
+	    						stop11 = 1;
+
+	    					// console.log(stop0, stop1, stop2, stop3, stop4, stop5, stop6, stop7, stop8, stop9, stop10, stop11);
+
+	    					var gradient = [{offset: stop0, color: "#494741"},
+	    									{offset: stop1, color: "#67625c"}, 
+				      						{offset: stop2, color: "#867e7a"},
+				      						{offset: stop3, color: "#a59c99"}, 
+				      						{offset: stop4, color: "#bfbcbc"},
+				      						{offset: stop5, color: "#dddddd"}, 
+				      						{offset: stop6, color: "#c7eafd"}, 
+				      						{offset: stop7, color: "#b8d0fc"},
+				      						{offset: stop8, color: "#c1aefb"}, 
+				      						{offset: stop9, color: "#e479fa"},
+				      						{offset: stop10, color: "#fa35d2"}, 
+				      						{offset: stop11, color: "#e8198b"}];
+
+
+				      		var y1 = ((2*demoMax)/(demoMax+Math.abs(demoMin)))*cdBarHeight;
+	    				}
+	    			}
+	    			if (Math.abs(demoMax) < Math.abs(demoMin)) {
+	    				// console.log("it's me");
+	    				// console.log(demoMin, demoMax);
+	    				var bins = d3.scaleQuantile()
+	    					.domain(selDemoNeg)
+	    					.range(d3.range(5));
+	    				var threshVals = bins.quantiles();
+						var stop0 = 0,
+							stop1 = .5-(threshVals[3]/demoMin),
+							stop2 = .5-(threshVals[2]/demoMin),
+							stop3 = .5-(threshVals[1]/demoMin),
+							stop4 = .5-(threshVals[0]/demoMin),
+							stop5 = .5,
+							stop6 = .5,
+							stop7 = .5+(threshVals[0]/demoMin),
+							stop8 = .5+(threshVals[1]/demoMin),
+							stop9 = .5+(threshVals[2]/demoMin),
+							stop10 = .5+(threshVals[3]/demoMin),
+							stop11 = 1;
+
+						var gradient = [{offset: stop0, color: "#494741"},
+    									{offset: stop1, color: "#67625c"}, 
+			      						{offset: stop2, color: "#867e7a"},
+			      						{offset: stop3, color: "#a59c99"}, 
+			      						{offset: stop4, color: "#bfbcbc"},
+			      						{offset: stop5, color: "#dddddd"}, 
+			      						{offset: stop6, color: "#c7eafd"}, 
+			      						{offset: stop7, color: "#b8d0fc"},
+			      						{offset: stop8, color: "#c1aefb"}, 
+			      						{offset: stop9, color: "#e479fa"},
+			      						{offset: stop10, color: "#fa35d2"}, 
+			      						{offset: stop11, color: "#e8198b"}];
+
+				      	var y1 = (Math.abs(demoMin)*2/(Math.abs(demoMin)+demoMax))*cdBarHeight;
+	    			}
+	    		}
+
+				if (catSel == "VOTE") {
+			      	// if (voteMapDate == "CHANGE") {
+
+			      	// }// red light to dark 
+			      	// else {
+			      		var gradient = [{offset: 0, color: "#3c5bff"},
+    									{offset: .1, color: "#517fff"}, 
+			      						{offset: .2, color: "#709dff"},
+			      						{offset: .3, color: "#95baff"}, 
+			      						{offset: .4, color: "#bcd5ff"},
+			      						{offset: .5, color: "#e6f0ff"},
+			      						{offset: .5, color: "#f8e5e6"}, 
+			      						{offset: .6, color: "#f3c4c7"},
+			      						{offset: .7, color: "#f3a0a5"},
+			      						{offset: .8, color: "#f57680"},
+			      						{offset: .9, color: "#fa3752"},
+			 
+			      						{offset: 1, color: "#dd0035"}];
+
+			      		var y1 = cdBarHeight;
+		      		 
+				}   
+				return [y1, gradient];
+			    
+			}
+
+			function updateCDBars(d) {
+
+
+				//get new variable min and max vales
+				var demoVarMin = d3.min(d3.values(getCTVarData())),
+					demoVarMax = d3.max(d3.values(getCTVarData()));
+
+				// console.log(demoVarMin, demoVarMax);
+
+				var barsY = d3.scaleLinear()
+					.domain([demoVarMin, demoVarMax])
+					.range([cdBarHeight-1, 1]);
+
+				var barsYVote = d3.scaleLinear()
+					.domain([-1, 1])
+					.range([cdBarHeight-1, 1]);
+
+				var barsYVoteChange = d3.scaleLinear()
+					.domain([demoVarMin, 0, demoVarMax])
+					.range([cdBarHeight-1, cdBarHeight/2, 1]);
+
+				d3.selectAll("defs").remove();
+
+				var defs = barG.append("defs");
+
+				var gradVars = getCTGradVars();
+
+				var y1 = gradVars[0],
+					gradient = gradVars[1];
+
+				var demoColorGradient = defs.append("linearGradient")
+	    			.attr("id", "demoColor-gradient")
+	    			.attr("gradientUnits", "userSpaceOnUse")
+	    			.attr("x1", "0%")
+				    .attr("y1", y1)
+				    .attr("x2", "0%")
+				    .attr("y2", "0%");
+
+				demoColorGradient.selectAll("stop")
+					.data(gradient)
+					.enter().append("stop")
+					.attr("offset", function(d) { return d.offset; })   
+	    			.attr("stop-color", function(d) { return d.color; });
+
+				d3.selectAll(".bars")
+					.raise()
+					.transition()
+						.duration(700)
+						.attr("y", function(d) {
+							var tract = d.GEO_ID,
+								varDict = getCTVarData();
+
+							if (isNaN(varDict[tract])) {
+			            		return 0;
+			            	}
+							else {
+								if (catSel == "VOTE") {
+									if (voteMapDate == "CHANGE") {
+										return Math.round(barsYVoteChange(varDict[tract]));
+									}
+									else {
+										return Math.round(barsYVote(varDict[tract]));
+									}
+								}
+								if (catSel == "DEMO") {
+								return Math.round(barsY(varDict[tract]));
+								}
+							}
+						})
+						.attr("height", function(d) {
+							var tract = d.GEO_ID,
+								varDict = getCTVarData();
+			            	if (isNaN(varDict[tract])) {
+			            		return 0;
+			            	}
+			            	else {return 1;}
+		            	})
+		            	// .style("fill", "steelblue");
+		            	.style("fill", "url(#demoColor-gradient)");
+		            	// .style("fill", function(d) {return getCTColor(d.GEO_ID);});
+
+		        var selVar = getSelVar();
+		        
+
+		        tractDataSorted.forEach(function(d) {
+
+		        	console.log(d.key);
+		        	console.log(selVar);
+
+		            var cdVals = d.values;
+
+					var selVarVals = cdVals.map(function(d) {
+						if (isNaN(+d[selVar])) {
+						}
+						else {return +d[selVar];}});
+
+					// console.log(selVarVals);
+
+					var selValsSorted = selVarVals.sort(function(a, b) {
+		        		if(!isFinite(a) && !isFinite(b)) {
+							return 0;
+						}
+						if( !isFinite(a) ) {
+					        return -1;
+					    }
+					    if( !isFinite(b) ) {
+					        return 1;
+					    }
+						return +a > +b ? 1 : +a < +b ? -1 : 0;
+		        	});
+
+					console.log(selValsSorted);
+
+					var q1 = d3.quantile(selValsSorted, 0.25),
+						q3 = d3.quantile(selValsSorted, 0.75);
+
+					var mean = d3.mean(selValsSorted);
+
+					
+
+
+					console.log("q1", q1);
+					console.log("q3", q3);
+					console.log("mean", mean);
+
+		            d3.selectAll(".qbox").filter(function() {return this.getAttribute("CD") == d.key})
+		            	.raise()
+		            	.transition()
+			            	.duration(700)
+			            	.attr("height", function() {
+			            		var iqr = q3-q1;
+
+			            		if (catSel == "VOTE") {
+									if (voteMapDate == "CHANGE") {
+										return Math.round(barsYVoteChange(iqr));
+									}
+									else {
+										return Math.round(barsYVote(iqr));
+									}
+								}
+								if (catSel == "DEMO") {
+									var q1Y = Math.round(barsY(q1)),
+										q3Y = Math.round(barsY(q3));
+
+									console.log("q1Y", q1Y);
+									console.log("q3Y", q3Y);
+									return q1Y-q3Y;
+								}
+			            	})
+			            	.attr("y", function() {
+			            		if (catSel == "VOTE") {
+									if (voteMapDate == "CHANGE") {
+										return Math.round(barsYVoteChange(q3));
+									}
+									else {
+										return Math.round(barsYVote(q3));
+									}
+								}
+								if (catSel == "DEMO") {
+									return Math.round(barsY(q3));
+								}
+			            	});
+
+		            d3.selectAll(".mbar").filter(function() {return this.getAttribute("CD") == d.key})
+		            	.raise()
+		            	.transition()
+		            	.duration(700)
+		            	.attr("y1", function() {
+		            		if (catSel == "VOTE") {
+								if (voteMapDate == "CHANGE") {
+									return Math.round(barsYVoteChange(mean));
+								}
+								else {
+									return Math.round(barsYVote(mean));
+								}
+							}
+							if (catSel == "DEMO") {
+								return Math.round(barsY(mean));
+							}
+		            	})
+		            	.attr("y2", function() {
+		            		if (catSel == "VOTE") {
+								if (voteMapDate == "CHANGE") {
+									return Math.round(barsYVoteChange(mean));
+								}
+								else {
+									return Math.round(barsYVote(mean));
+								}
+							}
+							if (catSel == "DEMO") {
+								return Math.round(barsY(mean));
+							}
+		            	});
+
+			        });
+		            
+
+
+
+
+		    }
+
+
+
+	       	
+
+
+		    //
+	       	//
+	       	//CD HELPER functions 
+	       	////////////////////////////////////////////////////
+
+
+			function getCDVarData() {
+
+				if (catSel == "VOTE") {
+					if (voteMapDate == "2016" && voteMapRace == "PRESIDENT") {
+	      				return usp2016MarginByCD;
+	      			}
+	      			if (voteMapDate == "2016" && voteMapRace == "US SENATE") {
+	      				return uss2016MarginByCD;
+	      			}
+	      			if (voteMapDate == "2016" && voteMapRace == "US CONGRESS") {
+	      				return usc2016MarginByCD;
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "PRESIDENT") {
+	      				return usp2012MarginByCD;
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "US SENATE") {
+	      				return uss2012MarginByCD;
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "US CONGRESS") {
+	      				return usc2012MarginByCD;
+			      	}
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "PRESIDENT") {
+	      				return uspChangeMarginByCD;
+	      			}
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "US SENATE") {
+						return ussChangeMarginByCD;
+			      	}	
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "US CONGRESS") {
+	      				return uscChangeMarginByCD;
+			      	} 
+		      	}
+
+		      	if (catSel == "DEMO") {
+					if (demoChange == "NO CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return popDenByCD;
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return nonWhiteByCD;
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return unemployByCD;
+						}
+						if (demoVar == "EDUCATION") {
+							return collegeByCD;
+						}
+						if (demoVar == "INCOME") {
+							return incomeByCD;
+						}
+					}
+					if (demoChange == "CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return popChangeByCD;
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return nonWhiteChangeByCD;
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return unemployChangeByCD;
+						}
+						if (demoVar == "EDUCATION") {
+							return collegeChangeByCD;
+						}
+						if (demoVar == "INCOME") {
+							return incomeChangeByCD;
+						}
+					}
+				}
+			}
+
+
+			function getCDColor(bound) {
+
+				numColors = 18;
+
+				var demoColor = d3.scaleLinear()
+	    			.domain(getCDColorDomain(numColors))
+	    			.range(getCDColorRange(numColors));
+
+	    		//Set colors
+			    var voteColorRed = d3.scaleLinear()
+		      		.domain([0,1])
+		      		.range(['#f8e5e6','#dd0035']);
+
+		      	var voteColorBlue = d3.scaleLinear()
+		      		.domain([-1,0])
+		      		.range(['#3c5bff', '#e6f0ff']);
+
+		      	var changeColorRed = d3.scaleLinear()
+		      		.domain([0,.5])
+		      		.range(['#f8e5e6','#dd0035']);
+
+		      	var changeColorBlue = d3.scaleLinear()
+		      		.domain([-0.5,0])
+		      		.range(['#3c5bff', '#e6f0ff']);
+
+		      	var varDict = getCDVarData();
+
+		      	if (catSel == "VOTE") {
+		      		if (voteMapDate == "CHANGE") {
+		      			if (varDict[bound] >= 0) {
+	      					return changeColorRed(varDict[bound]);
+	      				} 
+	      				if (varDict[bound] < 0) {
+	      					return changeColorBlue(varDict[bound]);
+	      				}
+		      		}
+      				else {
+      					if (varDict[bound] >= 0) {
+	      					return voteColorRed(varDict[bound]);
+	      				} 
+	      				if (varDict[bound] < 0) {
+	      					return voteColorBlue(varDict[bound]);
+	      				}
+			      	}
+	      		} 
+			    if (catSel == "DEMO") {
+			      	return demoColor(varDict[bound]);
+			    }
+		    }
+
+
+	    	function getCDColorDomain() {
+
+		    	var numColors = 6; 
+
+		    	var numColorsRange = Array.from(new Array(numColors),(val,index)=>index+1);
+
+		    	var selDemo = d3.values(getCDVarData());
+		    	// console.log(selDemo);
+
+		    	var demoMax = d3.max(selDemo);
+	    			demoMin = d3.min(selDemo);
+
+	    		// console.log(demoMax);
+	    		// console.log(demoMin);
+
+		    	var selDemoPos = [],
+		    		selDemoNeg = [];
+
+		    	selDemo.forEach(function(value) {
+		    		if (value >= 0) {
+		    			selDemoPos.push(value);
+		    		}
+		    		if (value < 0) {
+		    			selDemoNeg.push(value);
+		    		}
+		    	})
+
+    			// if (Math.abs(demoMax) >= Math.abs(demoMin)) {
+    			// 	var bins = d3.scaleQuantile()
+    			// 		.domain(selDemoPos)
+    			// 		.range(numColorsRange);
+    			// 	var threshVals = bins.quantiles();
+    			// 	if (demoMin >= 0) {
+    			// 		threshVals.push(demoMax);
+    			// 		// console.log(threshVals);
+    			// 		return threshVals;
+    			// 	}
+    			// 	if (demoMin < 0) {
+    			// 		var negThreshVals = threshVals.map(function(n){
+    			// 			return (n*-1);
+    			// 		});
+    			// 		negThreshVals.reverse();
+    			// 		negThreshVals.push(0);
+    			// 		var orderedThreshVals = negThreshVals.concat(threshVals);
+    			// 		orderedThreshVals.push(demoMax);
+    			// 		return orderedThreshVals;
+    			// 	}
+    			// }
+
+    			//currently set to return values at % of min, max - i.e. does NOT color top 20 values red, regardless of value, colors values that are 0.8*max red. 
+    			if (Math.abs(demoMax) >= Math.abs(demoMin)) {
+    				if (demoMin >= 0) {
+    					var diff = (demoMax-demoMin)/5;
+    					var stdev = d3.deviation(selDemo);
+    					var mean = d3.mean(selDemo);
+    					var median = d3.median(selDemo);
+    					var low = mean-(stdev*3);
+    					var high = mean+(stdev*3);
+    					var diff2 = (high-low)/5;
+    					return [demoMin, demoMin+(diff), demoMin+(2*diff), demoMin+(3*diff), demoMin+(4*diff), demoMax];
+    					// return [demoMin, demoMin+(.5*diff), demoMin+(1.5*diff), demoMin+(2.5*diff), demoMin+(3.5*diff), demoMax];
+    				}
+    				if (demoMin < 0) {
+    					var diff = demoMax/5;
+    					return [-demoMax, -demoMax+(diff), -demoMax+(2*diff), -demoMax+(3*diff), -demoMax+(4*diff), 0, diff, 2*diff, 3*diff, 4*diff, demoMax];
+    				}
+    			}
+    			if (Math.abs(demoMax) < Math.abs(demoMin)) {
+    				var diff = demoMin/5;
+    				return [demoMin, demoMin+(diff), demoMin+(2*diff), demoMin+(3*diff), demoMin+(4*diff), 0, diff, 2*diff, 3*diff, 4*diff, -demoMin];
+    					// return [demoMin, -demoMin];
+	    		}
+	    	}
+
+
+	    	function getCDColorRange(numColors) {
+
+	    		var YGBgrad1 = ["#eff68f", "#9ce673", "#5ccc94", "#46ad9d", "#318f98", "#1c7293"],
+	    			YGBgrad2 = ["#eff4b3", "#aae28f", "#71c99b", "#54ab9d", "#388f97", "#1c7293"],
+	    			YORgrad1 = ["#eff4b3", "#f2de9d", "#f0c798", "#f1af8f", "#f4938e", "#fa709a"],
+	    			YOPgrad1 = ["#eff4b3", "#e4bc84", "#e37a65", "#bf3c7d", "#7b2077", "#330867"],
+	    			YOPgrad2 = ["#fff0a7", "#ffc697", "#ff9897", "#ff58b4", "#de00d9", "#8d00f8"],
+	    			YOPgrad3 = ["#fff0a7", "#ffc96c", "#ff9d4a", "#ff674f", "#f40073", "#bd0082"],
+	    			BPRgrad1 = ["#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			LtBDkBgrad1 = ["#c7eafd", "#8cd1fc", "#4eb6fb", "#1d99f3", "#0e79e7", "#0051ee"],
+	    			rangeGrad1 = ["#0051ee", "#0e79e7", "#1d99f3", "#4eb6fb", "#8cd1fc", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad2 = ["#2c526f", "#3a6a8d", "#4883ac", "#579ccc", "#6cb7ea", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad3 = ["#006ca2", "#0067e5", "#864dff", "#c226ff", "#e400ee", "#fb00da", "#ff42bc", "#ff60a1", "#ff7587", "#ff8768", "#ff982b", "#f1ac00"],
+	    			rangeGrad4 = ["#f1ac00", "#ff982b", "#ff8768", "#ff7587", "#ff60a1", "#ff42bc", "#fb00da", "#e400ee", "#c226ff", "#864dff", "#0067e5", "#006ca2"],
+	    			rangeGrad5 = ["#555555", "#6e6e6e", "#898989", "#a4a4a4", "#c0c0c0", "#dddddd", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad6 = ["#3c4950", "#4d5d65", "#5e717b", "#708692", "#829caa", "#95b2c2", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad7 = ["#4c4739", "#635d4c", "#7c745f", "#958c73", "#afa588", "#cabe9d", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad8 = ["#494741", "#67625c", "#867e7a", "#a59c99", "#bfbcbc", "#dddddd", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"];
+	    			rangeGrad9 = ["#494741", "#63615a", "#7e7c74", "#9b988f", "#b8b6ab", "#d6d4c9", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"]
+
+	    		var numColorsRange = Array.from(new Array(numColors),(val,index)=>((index+1)/numColors));
+
+	    		var selDemo = d3.values(getCDVarData());
+		    	
+		    	var demoMax = d3.max(selDemo);
+	    			demoMin = d3.min(selDemo);
+
+		    	var selDemoPos = [],
+		    		selDemoNeg = [];
+
+		    	selDemo.forEach(function(value) {
+		    		if (value >= 0) {
+		    			selDemoPos.push(value);
+		    		}
+		    		if (value < 0) {
+		    			selDemoNeg.push(value);
+		    		}
+		    	})
+
+	    		if (demoMin >= 0) {
+    				return BPRgrad1;
+    			}
+    			if (demoMin < 0) {
+    				return rangeGrad8;
+    				// posColorVals = [];
+    				// negColorVals = [];
+    				
+    				// numColorsRange.forEach(function(value, i){
+    				// 	var posColorVal = d3.interpolatePuRd(value),
+    				// 		negColorVal = d3.interpolateBlues(value);
+    				// 	posColorVals.push(posColorVal);
+    				// 	negColorVals.push(negColorVal);
+    				// })
+    				// var invNegColorVals = negColorVals;
+    				// invNegColorVals.reverse();
+
+	    			// var	orderedColorVals = invNegColorVals.concat(posColorVals);
+    				// return orderedColorVals;
+    			}
+
+    			// if (demoMin >= 0) {
+	    		// 	colorVals = [];
+    			// 	numColorsRange.forEach(function(value, i){
+    			// 		var colorVal = d3.interpolateYlOrRd(value)
+    			// 		colorVals.push(colorVal);
+    			// 	})
+    			// 	// console.log(colorVals);
+    			// 	return colorVals;
+    			// }
+    			// if (demoMin < 0) {
+    			// 	posColorVals = [];
+    			// 	negColorVals = [];
+    				
+    			// 	numColorsRange.forEach(function(value, i){
+    			// 		var posColorVal = d3.interpolateYlOrRd(value),
+    			// 			negColorVal = d3.interpolateYlGnBu(value);
+    			// 		posColorVals.push(posColorVal);
+    			// 		negColorVals.push(negColorVal);
+    			// 	})
+    			// 	var invNegColorVals = negColorVals;
+    			// 	invNegColorVals.reverse();
+
+	    		// 	var	orderedColorVals = invNegColorVals.concat(posColorVals);
+    			// 	return orderedColorVals;
+    			// }	
+	    	}
+
+
+	    	//
+	       	//
+	       	//CT HELPER functions 
+	       	////////////////////////////////////////////////////
+
+	       	function getCTVarData() {
+
+				if (catSel == "VOTE") {
+					if (voteMapDate == "2016" && voteMapRace == "PRESIDENT") {
+	      				return usp2016MarginByCT;
+	      			}
+	      			if (voteMapDate == "2016" && voteMapRace == "US SENATE") {
+	      				return uss2016MarginByCT;
+	      			}
+	      			if (voteMapDate == "2016" && voteMapRace == "US CONGRESS") {
+	      				return usc2016MarginByCT;
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "PRESIDENT") {
+	      				return usp2012MarginByCT;
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "US SENATE") {
+	      				return uss2012MarginByCT;
+	      			}
+	      			if (voteMapDate == "2012" && voteMapRace == "US CONGRESS") {
+	      				return usc2012MarginByCT;
+			      	}
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "PRESIDENT") {
+	      				return uspChangeMarginByCT;
+	      			}
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "US SENATE") {
+						return ussChangeMarginByCT;
+			      	}	
+	      			if (voteMapDate == "CHANGE" && voteMapRace == "US CONGRESS") {
+	      				return uscChangeMarginByCT;
+			      	} 
+		      	}
+
+		      	if (catSel == "DEMO") {
+					if (demoChange == "NO CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return popDenByCT;
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return nonWhiteByCT;
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return unemployByCT;
+						}
+						if (demoVar == "EDUCATION") {
+							return collegeByCT;
+						}
+						if (demoVar == "INCOME") {
+							return incomeByCT;
+						}
+					}
+					if (demoChange == "CHANGE") {
+						if (demoVar == "POPULATION DENSITY") {
+							return popChangeByCT;
+						}
+						if (demoVar == "PERCENT NON-WHITE") {
+							return nonWhiteChangeByCT;
+						}
+						if (demoVar == "UNEMPLOYMENT RATE") {
+							return unemployChangeByCT;
+						}
+						if (demoVar == "EDUCATION") {
+							return collegeChangeByCT;
+						}
+						if (demoVar == "INCOME") {
+							return incomeChangeByCT;
+						}
+					}
+				}
+			}
+
+
+			function getCTColor(bound) {
+
+				numColors = 6;
+
+	    		//Set colors
+			    var voteColorRed = d3.scaleLinear()
+		      		.domain([0,1])
+		      		.range(['#f8e5e6','#dd0035']);
+
+		      	var voteColorBlue = d3.scaleLinear()
+		      		.domain([-1,0])
+		      		.range(['#3c5bff', '#e6f0ff']);
+
+		      	var changeColorRed = d3.scaleLinear()
+		      		.domain([0,.5])
+		      		.range(['#f8e5e6','#dd0035']);
+
+		      	var changeColorBlue = d3.scaleLinear()
+		      		.domain([-0.5,0])
+		      		.range(['#3c5bff', '#e6f0ff']);
+
+		      	var demoColor = d3.scaleLinear()
+	    			.domain(getCTColorDomain(numColors))
+	    			.range(["#c7eafd", "#e8198b"]);
+	    			// .range(getCTColorRange(numColors));
+
+		      	var varDict = getCTVarData();
+
+		      	if (catSel == "VOTE") {
+		      		if (voteMapDate == "CHANGE") {
+		      			if (varDict[bound] >= 0) {
+	      					return changeColorRed(varDict[bound]);
+	      				} 
+	      				if (varDict[bound] < 0) {
+	      					return changeColorBlue(varDict[bound]);
+	      				}
+		      		}
+      				else {
+      					if (varDict[bound] >= 0) {
+	      					return voteColorRed(varDict[bound]);
+	      				} 
+	      				if (varDict[bound] < 0) {
+	      					return voteColorBlue(varDict[bound]);
+	      				}
+			      	}
+	      		} 
+			    if (catSel == "DEMO") {
+			      	return demoColor(varDict[bound]);
+			    }
+		    }
+
+
+		    function getCTColorDomain(numColors) {
+
+		    	// var numColors = 6; 
+
+		    	var numColorsRange = Array.from(new Array(numColors),(val,index)=>index+1);
+
+		    	var selDemo = d3.values(getCTVarData());
+
+		    	var demoMax = d3.max(selDemo);
+	    			demoMin = d3.min(selDemo);
+
+	    		return [demoMin, demoMax];
+
+	    		// console.log(demoMax);
+	    		// console.log(demoMin);
+
+		    	// var selDemoPos = [],
+		    	// 	selDemoNeg = [];
+
+		    	// selDemo.forEach(function(value) {
+		    	// 	if (value >= 0) {
+		    	// 		selDemoPos.push(value);
+		    	// 	}
+		    	// 	if (value < 0) {
+		    	// 		selDemoNeg.push(value);
+		    	// 	}
+		    	// })
+
+    			// // if (Math.abs(demoMax) >= Math.abs(demoMin)) {
+    			// // 	var bins = d3.scaleQuantile()
+    			// // 		.domain(selDemoPos)
+    			// // 		.range(numColorsRange);
+    			// // 	var threshVals = bins.quantiles();
+    			// // 	if (demoMin >= 0) {
+    			// // 		threshVals.push(demoMax);
+    			// // 		// console.log(threshVals);
+    			// // 		return threshVals;
+    			// // 	}
+    			// // 	if (demoMin < 0) {
+    			// // 		var negThreshVals = threshVals.map(function(n){
+    			// // 			return (n*-1);
+    			// // 		});
+    			// // 		negThreshVals.reverse();
+    			// // 		negThreshVals.push(0);
+    			// // 		var orderedThreshVals = negThreshVals.concat(threshVals);
+    			// // 		orderedThreshVals.push(demoMax);
+    			// // 		return orderedThreshVals;
+    			// // 	}
+    			// // }
+
+    			// //currently set to return values at % of min, max - i.e. does NOT color top 20 values red, regardless of value, colors values that are 0.8*max red. 
+    			// if (Math.abs(demoMax) >= Math.abs(demoMin)) {
+    			// 	if (demoMin >= 0) {
+    			// 		var diff = (demoMax-demoMin)/5;
+    			// 		// var stdev = d3.deviation(selDemo);
+    			// 		// var mean = d3.mean(selDemo);
+    			// 		// var median = d3.median(selDemo);
+    			// 		// var low = mean-(stdev*3);
+    			// 		// var high = mean+(stdev*3);
+    			// 		// var diff2 = (high-low)/5;
+    			// 		return [demoMin, demoMin+(diff), demoMin+(2*diff), demoMin+(3*diff), demoMin+(4*diff), demoMax];
+    			// 		// return [demoMin, demoMin+(.5*diff), demoMin+(1.5*diff), demoMin+(2.5*diff), demoMin+(3.5*diff), demoMax];
+    			// 	}
+    			// 	if (demoMin < 0) {
+    			// 		var diff = demoMax/5;
+    			// 		return [-demoMax, -demoMax+(diff), -demoMax+(2*diff), -demoMax+(3*diff), -demoMax+(4*diff), 0, diff, 2*diff, 3*diff, 4*diff, demoMax];
+    			// 	}
+    			// }
+    			// if (Math.abs(demoMax) < Math.abs(demoMin)) {
+    			// 	var diff = demoMin/5;
+    			// 	return [demoMin, demoMin+(diff), demoMin+(2*diff), demoMin+(3*diff), demoMin+(4*diff), 0, diff, 2*diff, 3*diff, 4*diff, -demoMin];
+    			// 		// return [demoMin, -demoMin];
+	    		// }
+	    	}
+
+
+	    	function getCTColorRange(numColors) {
+
+	    		var YGBgrad1 = ["#eff68f", "#9ce673", "#5ccc94", "#46ad9d", "#318f98", "#1c7293"],
+	    			YGBgrad2 = ["#eff4b3", "#aae28f", "#71c99b", "#54ab9d", "#388f97", "#1c7293"],
+	    			YORgrad1 = ["#eff4b3", "#f2de9d", "#f0c798", "#f1af8f", "#f4938e", "#fa709a"],
+	    			YOPgrad1 = ["#eff4b3", "#e4bc84", "#e37a65", "#bf3c7d", "#7b2077", "#330867"],
+	    			YOPgrad2 = ["#fff0a7", "#ffc697", "#ff9897", "#ff58b4", "#de00d9", "#8d00f8"],
+	    			YOPgrad3 = ["#fff0a7", "#ffc96c", "#ff9d4a", "#ff674f", "#f40073", "#bd0082"],
+	    			BPRgrad1 = ["#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			LtBDkBgrad1 = ["#c7eafd", "#8cd1fc", "#4eb6fb", "#1d99f3", "#0e79e7", "#0051ee"],
+	    			rangeGrad1 = ["#0051ee", "#0e79e7", "#1d99f3", "#4eb6fb", "#8cd1fc", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad2 = ["#2c526f", "#3a6a8d", "#4883ac", "#579ccc", "#6cb7ea", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad3 = ["#006ca2", "#0067e5", "#864dff", "#c226ff", "#e400ee", "#fb00da", "#ff42bc", "#ff60a1", "#ff7587", "#ff8768", "#ff982b", "#f1ac00"],
+	    			rangeGrad4 = ["#f1ac00", "#ff982b", "#ff8768", "#ff7587", "#ff60a1", "#ff42bc", "#fb00da", "#e400ee", "#c226ff", "#864dff", "#0067e5", "#006ca2"],
+	    			rangeGrad5 = ["#555555", "#6e6e6e", "#898989", "#a4a4a4", "#c0c0c0", "#dddddd", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad6 = ["#3c4950", "#4d5d65", "#5e717b", "#708692", "#829caa", "#95b2c2", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad7 = ["#4c4739", "#635d4c", "#7c745f", "#958c73", "#afa588", "#cabe9d", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"],
+	    			rangeGrad8 = ["#494741", "#67625c", "#867e7a", "#a59c99", "#bfbcbc", "#dddddd", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"];
+	    			rangeGrad9 = ["#494741", "#63615a", "#7e7c74", "#9b988f", "#b8b6ab", "#d6d4c9", "#c7eafd", "#b8d0fc", "#c1aefb", "#e479fa", "#fa35d2", "#e8198b"]
+
+	    		var numColorsRange = Array.from(new Array(numColors),(val,index)=>((index+1)/numColors));
+
+	    		var selDemo = d3.values(getCTVarData());
+		    	
+		    	var demoMax = d3.max(selDemo);
+	    			demoMin = d3.min(selDemo);
+
+		    	var selDemoPos = [],
+		    		selDemoNeg = [];
+
+		    	selDemo.forEach(function(value) {
+		    		if (value >= 0) {
+		    			selDemoPos.push(value);
+		    		}
+		    		if (value < 0) {
+		    			selDemoNeg.push(value);
+		    		}
+		    	})
+
+	    		if (demoMin >= 0) {
+    				return BPRgrad1;
+    			}
+    			if (demoMin < 0) {
+    				return rangeGrad8;
+    				// posColorVals = [];
+    				// negColorVals = [];
+    				
+    				// numColorsRange.forEach(function(value, i){
+    				// 	var posColorVal = d3.interpolatePuRd(value),
+    				// 		negColorVal = d3.interpolateBlues(value);
+    				// 	posColorVals.push(posColorVal);
+    				// 	negColorVals.push(negColorVal);
+    				// })
+    				// var invNegColorVals = negColorVals;
+    				// invNegColorVals.reverse();
+
+	    			// var	orderedColorVals = invNegColorVals.concat(posColorVals);
+    				// return orderedColorVals;
+    			}
+
+    			// if (demoMin >= 0) {
+	    		// 	colorVals = [];
+    			// 	numColorsRange.forEach(function(value, i){
+    			// 		var colorVal = d3.interpolateYlOrRd(value)
+    			// 		colorVals.push(colorVal);
+    			// 	})
+    			// 	// console.log(colorVals);
+    			// 	return colorVals;
+    			// }
+    			// if (demoMin < 0) {
+    			// 	posColorVals = [];
+    			// 	negColorVals = [];
+    				
+    			// 	numColorsRange.forEach(function(value, i){
+    			// 		var posColorVal = d3.interpolateYlOrRd(value),
+    			// 			negColorVal = d3.interpolateYlGnBu(value);
+    			// 		posColorVals.push(posColorVal);
+    			// 		negColorVals.push(negColorVal);
+    			// 	})
+    			// 	var invNegColorVals = negColorVals;
+    			// 	invNegColorVals.reverse();
+
+	    		// 	var	orderedColorVals = invNegColorVals.concat(posColorVals);
+    			// 	return orderedColorVals;
+    			// }	
+	    	}
+
+	    	//
+	       	//
+	       	//UTILITY functions 
+	       	////////////////////////////////////////////////////
+
+	    	function wrap(text, width) {
+
+	    		text.each(function() {	
+	    		var text = d3.select(this),
+            		words = text.text().split(" ").reverse(),
+            		word,
+            		width = demoButtonWidth-6,
+            		line = [],
+            		lines = 1,
+            		lineNumber = 0,
+            		lineHeight = 1.1,
+            		x = this.getAttribute("x"),
+            		y = this.getAttribute("y"),
+            		dy = 0,
+            		tspan = text.text(null)
+            			.append("tspan")
+                        .attr("x", x)
+                        // .attr("y", y)
+                        .attr("dy", dy + "em");
+
+
+                    while (word = words.pop()) {
+			            line.push(word);
+			            tspan.text(line.join(" "));
+			            if (tspan.node().getComputedTextLength() > width) {
+			                line.pop();
+			                var lineJoin = line.join(" ");			                
+			                tspan.text(line.join(" "))
+			                	.attr("y", y-(6));
+			                line = [word];
+			                tspan = text.append("tspan")
+			                            .attr("x", x)
+			                            .attr("y", y)
+			                            .attr("dy", 6)
+			                            // .attr("dy", ++lineNumber * lineHeight + dy + "em")
+			                            .text(word);
+			                // lines = lineNumber+1;
+			            }
+			            else {tspan.attr("y", y);}
+			        }
+				});
+	    	}
+
+			
+		}
+	</script>	
+</body>
+</html>

@@ -1,0 +1,307 @@
+h1 {/*font-family: "Crimson Text", serif;*/
+	  		font-family: "Roboto Mono";
+  			font-size: 90px;
+  			text-align: justify-all;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+		h2 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 36px;
+  			font-weight:700;
+  			text-align: justify-all;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+  		h3 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 24px;
+  			font-weight: 400;
+  			text-align: center;
+  			margin-left: auto;
+    		margin-right: auto;
+  		}
+
+  		h4 {font-family: "Roboto Mono", sans-serif;
+  			font-size: 20px;
+  			font-weight: 300;
+  			width: 600px;
+  			text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+    		margin-bottom: 0px;
+    		/*line-height: 0.7;	*/		
+  		}
+  		body {
+	  		font-family: "Roboto", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		/*width: 1000px;*/
+	  		text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+	  	}
+	  	p {
+	  		font-family: "Crimson Text", Helvetica, sans-serif;
+	  		overflow-wrap: normal;
+	  		/*width: 600px;*/
+	  		text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+	  	}
+	  	.cd-rect {
+		    fill: none;
+		    stroke: lightgray;
+		    stroke-width: 1px;
+		    /*stroke-dasharray: 2, 2;*/
+		}
+	  	.mbar {
+	  		stroke: black;
+	  		stroke-width: 1px;
+	  	}
+	  	.qbox {
+	  		fill: lightgray;
+	        opacity: 0.7;
+	        stroke: black;
+	  	}
+	  	.pa-line {
+	  		stroke: darkgray;
+	  		stroke-dasharray: 1, 1;
+	  		stroke-width: 1px;
+	  	}
+		.active-mouseover-nonSelect {
+	  		stroke: white;
+	  		stroke-width: 2px;
+	  		opacity: .5;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	  	.active-mouseover {
+	  		stroke: black;
+	  		stroke-width: 5px;
+	  		opacity: 1;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	  	.axis text {
+			font: 10px sans-serif;
+		}
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: #000;
+			shape-rendering: crispEdges;
+		}
+		.y.axis path {
+			/*stroke-dasharray: 4, 4;*/
+		}
+		.zero.axis path {
+			stroke-dasharray: 4, 4;
+		}
+		.grid line {
+			/*stroke-dasharray: 4, 4;*/
+			stroke: #cccccc;
+			stroke-opacity: 0.7;
+			shape-rendering: crispEdges;
+		}
+		.grid .tick {
+		    stroke: #cccccc;
+		    stroke-dasharray: 4, 4;
+		    opacity: 0.85;
+		    shape-rendering: crispEdges;
+		}
+		.grid path {
+			stroke-width: 0;
+		}
+		.chart-label {
+			font: 11px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #000;
+			text-anchor: end;
+		}
+		.chart-yaxis-label {
+			font: 11px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #000;
+			text-anchor: end;
+		}
+		.legend-labels text {
+			font: 10px sans-serif;
+			/*font: 12px sans-serif;*/
+			fill: #bbbbbb;
+			text-anchor: middle;
+		}
+		.colorBar-label {
+			font: 11px "Roboto Mono";
+			/*font: 12px sans-serif;*/
+			fill: #bbbbbb;
+			text-anchor: middle;
+		}
+		.color-bar-brushed {
+			/*opacity: 0.6;*/
+		}
+		.dots {
+		  stroke: #cccccc;
+		  stroke-opacity: 0.5;
+		}
+		.dots-non-brushed{
+
+		}
+		.click-overlay{
+			fill: none;
+			pointer-events: all;
+		}
+		.click-overlay-variable{
+			fill: none;
+		}
+		.map-text{
+			font: 14px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.map-sel-text{
+			font: 11px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.reset-text{
+			font: 14px Roboto Mono;
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: end;
+		}
+		.city{
+			fill: none;
+			stroke: black;
+			vector-effect: non-scaling-stroke;
+		}
+		.town{
+			fill: none;
+			stroke: black;
+			vector-effect: non-scaling-stroke;
+		}
+		.city-label{
+			font: 9px Roboto Mono;
+			font-weight: 400;
+			fill: black;
+			stroke: none;
+		}
+		.demoMapSelBtn-rect-noPress{
+			fill: #bbbbbb;
+			stroke: white;
+			stroke-width: 1px;
+		}
+		.demoMapSelBtn-text-noPress{
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: white;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.demoMapSelBtn-rect-press {
+			fill: white;
+			stroke: #bbbbbb;
+			stroke-width: 1px;
+		}
+		.demoMapSelBtn-text-press {
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.voteMapSelBtn-rect-noPress{
+			fill: #bbbbbb;
+			stroke: white;
+			stroke-width: 1px;
+		}
+		.voteMapSelBtn-text-noPress{
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: white;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.voteMapSelBtn-rect-press {
+			fill: white;
+			stroke: #bbbbbb;
+			stroke-width: 1px;
+		}
+		.voteMapSelBtn-text-press {
+			font: 10px "Roboto Mono";
+			font-weight: 400;
+			fill: #bbbbbb;
+			stroke: none;
+			text-anchor: middle;
+			dominant-baseline: central;
+		}
+		.selBtn-rect-hover{
+			fill: #cccccc;
+/*			stroke: white;
+			stroke-width: 1px;*/
+		}
+		.selBtn-text-hover{
+			fill: white;
+		}
+		.demoBars-title {
+			font: 18px "Roboto Mono";
+			font-weight: 300;
+			fill: #aaaaaa;
+			stroke: none;
+			text-anchor: middle;
+		}
+		.voteMap-title {
+			font: 18px "Roboto Mono";
+			font-weight: 300;
+			fill: #aaaaaa;
+			stroke: none;
+			text-anchor: middle;
+		}
+		.cd-boundaries {
+			stroke: white;
+			stroke-width: 0.8;
+      		stroke-linejoin: round;
+      		vector-effect: non-scaling-stroke;
+		}
+		.tracts-brushed {
+			/*stroke: blue;
+	  		stroke-width: 2px;*/
+	  		/*opacity: .5;*/
+/*	  		stroke-dasharray: 2, 2;*/
+	  		stroke-linejoin: round;
+		}
+		.hover {
+			stroke: "#ffffff";
+		}
+		.text-container {
+		    /*background: rgb( 240, 240, 240);*/
+		    width: 600px;
+		    text-align: justify;
+	  		text-wrap: normal;
+	  		margin-left: auto;
+    		margin-right: auto;
+		}
+
+		.leftColumn {
+		    width: 50%;
+		    /*height: 50px;*/
+		    float: left;
+		    display: inline-block;
+		    /*background: rgb(200, 200, 245);*/
+		}
+
+		.rightColumn {
+		    display: inline-block;
+		    float: left;
+		    width: 50%;
+		    margin-left: 30px;
+		    /*background: rgb( 200, 244, 244);*/
+		}

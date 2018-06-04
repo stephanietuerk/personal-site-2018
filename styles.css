@@ -2,10 +2,14 @@ body {
 	font-family: Open Sans;
 }
 
-.titlename {
+.name {
 	color: rgb(200,200,200);
 	text-align: center;
 	margin: 0 auto;
-	font-size: 30px;
-	letter-spacing: 6.67vw;
+	/*letter-spacing: 1.2rem;*/
+	line-height: 0.83em;
+}
+
+#tuerk {
+	/*text-indent: 1.2em;*/
 }
