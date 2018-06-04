@@ -43,7 +43,7 @@
 		d3.queue()
           	.defer(d3.json, "jsons/PA_CDs_2015.json")
 		    .defer(d3.tsv, "data/CD_AllData.tsv")
-		    .defer(d3.csv, "data/CT_AllData.csv")
+		    .defer(d3.tsv, "data/CT_AllData.tsv")
 		    .defer(d3.json, "data/PA_Cities.json")
 		    .await(makeMap); 
 
@@ -476,11 +476,11 @@
 
 
 
-		  //   var exploreText = voteMapContainer.append("text")
-				// .attr("class", "map-text")
-				// .attr("x", voteMapBoxWidth - 25)
-				// .attr("y", 50)
-				// .text("zoom and move map to explore"); 
+		    var exploreText = voteMapContainer.append("text")
+				.attr("class", "map-text")
+				.attr("x", voteMapBoxWidth - 25)
+				.attr("y", 50)
+				.text("zoom and move map to explore"); 
 
 			var placeNamesText = mapContainer.append("text")
 				.attr("class", "map-sel-text")
