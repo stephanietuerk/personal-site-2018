@@ -1,0 +1,125 @@
+	  	body {
+	  		font-family: "Roboto", Helvetica, sans-serif;
+	  	}
+	  	.active-drag {
+	  		/*stroke: white;*/
+	  		/*stroke-width: 1.5px;*/
+	  		/*opacity: .5;*/
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	  	.active-drag-others {
+	  		opacity: .3;
+	  	}
+	  	.active-mouseover {
+	  		stroke: white;
+	  		stroke-width: 2px;
+	  		opacity: .5;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
+	  	}
+	  	.bar-square {
+
+		}
+		.bars-line {
+		}
+		.bars-line-label{
+			font: 10px "Roboto";
+		}
+		.cd-boundaries {
+
+		}
+		.cd-boundaries-drag {
+
+		}
+		.cd-info-text {
+			font: 10.5px "Roboto";
+			font-weight: 400;
+			
+		}
+		.cd-info-text-header {
+			font: 11px "Roboto"
+			font-weight: 700;
+			
+			
+		}
+		.cd-info-text-label-sm {
+			font: 10px "Roboto";
+			font-weight: 400;
+			
+			
+		}
+		.cd-info-text-num {
+			
+			
+		}
+		.cd-info-text-cand {
+			
+			
+		}
+		.text-dem {
+			fill: #2437ff;
+		}
+		.text-rep {
+			fill: #f4003d;
+		}
+		.text-oth {
+			fill: #f6b500;
+		}
+		.congbar-square {
+			opacity: .8;
+		}
+		.display-data-dem {
+			/*font: bold 48px monospace;*/
+			font: bold 48px "Roboto";
+			fill: #2437ff;
+			stroke: none;
+			/*color: "#2437ff";*/
+		}
+		.display-data-rep {
+			font: bold 48px "Roboto";
+			fill: #f4003d;
+		}
+		.display-districts {
+			
+		}
+		.display-label {
+			font: 10.5px "Roboto";
+		}
+		.display-static {
+			font: 36px "Roboto Mono";
+			font-weight: 500;
+		}
+		.display-votes {
+			font-weight: 900;
+		}
+		.drag-bar {
+		}
+		.grid-square {
+
+		}
+		.start-text {
+			font: 42px "Roboto Mono";
+			font-weight: 400;
+		}
+		.start-smtext {
+			font: 18px "Roboto Mono";
+			font-weight: 400;
+		}
+		.start-button {
+			.style("border-radius", "8px")
+		}
+		.reset-box {
+			fill: #cccccc;
+			stroke: "none";
+			stroke-width: 1.5px;
+			/*border-radius: 8px;*/
+			stroke-linecap: round;
+		}
+		.reset-text {
+			font: 11px "Roboto Mono";
+			fill: white;
+			font-weight: 300;
+			text-align: center;
+			width: auto;
+		}

@@ -4,134 +4,8 @@
 	<meta charset="utf-8">
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
 	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
+	<link rel="stylesheet" type="text/css" href="flip.css">
   	<title>Flip the District</title> 
-  	<style>
-	  	body {
-	  		font-family: "Roboto", Helvetica, sans-serif;
-	  	}
-	  	.active-drag {
-	  		/*stroke: white;*/
-	  		/*stroke-width: 1.5px;*/
-	  		/*opacity: .5;*/
-	  		/*stroke-dasharray: 2, 2;*/
-	  		stroke-linecap: butt;
-	  	}
-	  	.active-drag-others {
-	  		opacity: .3;
-	  	}
-	  	.active-mouseover {
-	  		stroke: white;
-	  		stroke-width: 2px;
-	  		opacity: .5;
-	  		/*stroke-dasharray: 2, 2;*/
-	  		stroke-linecap: butt;
-	  	}
-	  	.bar-square {
-
-		}
-		.bars-line {
-		}
-		.bars-line-label{
-			font: 10px "Roboto";
-		}
-		.cd-boundaries {
-
-		}
-		.cd-boundaries-drag {
-
-		}
-		.cd-info-text {
-			font: 10.5px "Roboto";
-			font-weight: 400;
-			
-		}
-		.cd-info-text-header {
-			font: 11px "Roboto"
-			font-weight: 700;
-			
-			
-		}
-		.cd-info-text-label-sm {
-			font: 10px "Roboto";
-			font-weight: 400;
-			
-			
-		}
-		.cd-info-text-num {
-			
-			
-		}
-		.cd-info-text-cand {
-			
-			
-		}
-		.text-dem {
-			fill: #2437ff;
-		}
-		.text-rep {
-			fill: #f4003d;
-		}
-		.text-oth {
-			fill: #f6b500;
-		}
-		.congbar-square {
-			opacity: .8;
-		}
-		.display-data-dem {
-			/*font: bold 48px monospace;*/
-			font: bold 48px "Roboto";
-			fill: #2437ff;
-			stroke: none;
-			/*color: "#2437ff";*/
-		}
-		.display-data-rep {
-			font: bold 48px "Roboto";
-			fill: #f4003d;
-		}
-		.display-districts {
-			
-		}
-		.display-label {
-			font: 10.5px "Roboto";
-		}
-		.display-static {
-			font: 36px "Roboto Mono";
-			font-weight: 500;
-		}
-		.display-votes {
-			font-weight: 900;
-		}
-		.drag-bar {
-		}
-		.grid-square {
-
-		}
-		.start-text {
-			font: 42px "Roboto Mono";
-			font-weight: 400;
-		}
-		.start-smtext {
-			font: 18px "Roboto Mono";
-			font-weight: 400;
-		}
-		.start-button {
-			.style("border-radius", "8px")
-		}
-		.reset-box {
-			fill: #cccccc;
-			stroke: "none";
-			stroke-width: 1.5px;
-			/*border-radius: 8px;*/
-			stroke-linecap: round;
-		}
-		.reset-text {
-			font: 11px "Roboto Mono";
-			fill: white;
-			font-weight: 300;
-			text-align: center;
-			width: auto;
-		}
-  	</style>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="//d3js.org/topojson.v1.min.js"></script>
 	<script src="https://d3js.org/d3-array.v1.min.js"></script>
@@ -149,9 +23,7 @@
 
 	<script>
 	
-
-
-	//Visualization "global" variables
+	//Global color variables
 	var rColor = "#f4003d",
 		dColor = "#2437ff",
 		dMapColor = "#394bff",
@@ -180,8 +52,6 @@
 			.attr("x", 0)
 			.attr("y", 0);
 
-
-
 		var startBackground = startButtonContainer.append("image")
 			.attr("xlink:href", "background_text_big.png")
 			.attr("x", 0)
@@ -194,7 +64,6 @@
 			.attr("width", 360)
 			.attr("height", 80)
 			.style("fill", initialColor);
-
 
 		var startTitle = startButtonContainer.append("text")
 			.attr("class", "start-text")
@@ -243,7 +112,6 @@
 			.on("mouseout", function(d) {
 				d3.select(this).style("stroke", "#bbbbbb");
 			});
-			
 
 		var startEnterText = startButtonContainer.append("text")
 			.attr("class", "start-smtext")
@@ -259,9 +127,8 @@
 			.on("mouseout", function(d) {
 				startEnterBox.style("stroke", "#bbbbbb");
 			});
-
-
 		
+
 	function makeFlipViz () {
 
 		d3.selectAll("svg").remove();
@@ -299,10 +166,6 @@
 			};
 
 			// console.log(voteDataHolder);
-
-
-	
-
 
 
 		//		
