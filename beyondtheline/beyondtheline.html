@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900" rel='stylesheet'>
-	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700" rel='stylesheet'>
-	<link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600,600i,700,700i" rel="stylesheet">
+	<link href='//fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
+	<link href='//fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
 	<title>Pennsylvania Election Results</title>
 	<style>
 		h1 {/*font-family: "Crimson Text", serif;*/
@@ -15,45 +14,30 @@
     		margin-right: auto;
   		}
 		h2 {font-family: "Roboto Mono", sans-serif;
-  			font-size: 36px;
-  			font-weight:700;
+  			font-size: 30px;
+  			font-weight:400;
   			text-align: justify-all;
   			margin-left: auto;
     		margin-right: auto;
   		}
   		h3 {font-family: "Roboto Mono", sans-serif;
-  			font-size: 24px;
-  			font-weight: 400;
+  			font-size: 35px;
   			text-align: center;
   			margin-left: auto;
     		margin-right: auto;
   		}
 
-  		h4 {font-family: "Roboto Mono", sans-serif;
+  		h4 {font-family: "Roboto", sans-serif;
   			font-size: 20px;
-  			font-weight: 300;
-  			width: 600px;
-  			text-align: justify;
-	  		text-wrap: normal;
-	  		margin-left: auto;
-    		margin-right: auto;
-    		margin-bottom: 0px;
-    		/*line-height: 0.7;	*/		
+  			color: #872250;
+  			font-style: Semi-Bold Italic;
+  			text-align: center;  			
   		}
   		body {
 	  		font-family: "Roboto", Helvetica, sans-serif;
 	  		overflow-wrap: normal;
-	  		/*width: 1000px;*/
-	  		text-align: justify;
-	  		text-wrap: normal;
-	  		margin-left: auto;
-    		margin-right: auto;
-	  	}
-	  	p {
-	  		font-family: "Crimson Text", Helvetica, sans-serif;
-	  		overflow-wrap: normal;
-	  		/*width: 600px;*/
-	  		text-align: justify;
+	  		width: 1200px;
+	  		text-align: justify-all;
 	  		text-wrap: normal;
 	  		margin-left: auto;
     		margin-right: auto;
@@ -68,13 +52,13 @@
 			shape-rendering: crispEdges;
 		}
 		.y.axis path {
-			/*stroke-dasharray: 4, 4;*/
+			stroke-dasharray: 4, 4;
 		}
 		.zero.axis path {
 			stroke-dasharray: 4, 4;
 		}
 		.grid line {
-			/*stroke-dasharray: 4, 4;*/
+			stroke-dasharray: 4, 4;
 			stroke: #cccccc;
 			stroke-opacity: 0.7;
 			shape-rendering: crispEdges;
@@ -107,9 +91,7 @@
 			text-anchor: middle;
 		}
 		.colorBar-label {
-			font: 11px "Roboto Mono";
-			/*font: 12px sans-serif;*/
-			fill: #bbbbbb;
+			font: 10px sans-serif;
 			text-anchor: middle;
 		}
 		.color-bar-brushed {
@@ -240,43 +222,20 @@
 			stroke: none;
 			text-anchor: middle;
 		}
-		.vote-tracts {
+		.tracts-non-brushed {
+			stroke: none;
+			/*stroke: #bebebe;*/
       		stroke-linejoin: round;
-      		vector-effect: non-scaling-stroke;
 		}
 		.tracts-brushed {
-			/*stroke: blue;
-	  		stroke-width: 2px;*/
-	  		/*opacity: .5;*/
-/*	  		stroke-dasharray: 2, 2;*/
-	  		stroke-linejoin: round;
+			stroke: #bbbbbb;
+	  		stroke-width: 2px;
+	  		opacity: .5;
+	  		/*stroke-dasharray: 2, 2;*/
+	  		stroke-linecap: butt;
 		}
 		.hover {
 			stroke: "#ffffff";
-		}
-		.text-container {
-		    /*background: rgb( 240, 240, 240);*/
-		    width: 600px;
-		    text-align: justify;
-	  		text-wrap: normal;
-	  		margin-left: auto;
-    		margin-right: auto;
-		}
-
-		.leftColumn {
-		    width: 50%;
-		    /*height: 50px;*/
-		    float: left;
-		    display: inline-block;
-		    /*background: rgb(200, 200, 245);*/
-		}
-
-		.rightColumn {
-		    display: inline-block;
-		    float: left;
-		    width: 50%;
-		    margin-left: 30px;
-		    /*background: rgb( 200, 244, 244);*/
 		}
 
 	</style>
@@ -291,26 +250,14 @@
 
 </head>
 <body>
-	<h2 style=text-align:center>Beyond the County Line</h2>
-	<h3 style=text-align:center>New Scales of Understanding Election and Demographic Data</h3>
-<!-- 	<h4>Case Study: Pennsylvania</h4> -->
-	<div class="text-container">
-	<p>Why has the county become the default administrative unit at which we understand national election results? There are many practical reasons behind this choice. Counties boundaries are stable from year to year, and have readily available maps. In most states, votes are reported to the state at the county-level. And until recently, tabluating data at a smaller scale would have been a Herculean task. For example, while the state of Pennsylvania has sixty-seven counties, it has over 9200 voting districts. Additionally, for the vast majority of Americans, their county is a meaningful part of their geographic identity, in part because of the tradition of reporting results at this scale.</p>
-	<p>Nevertheless, county-level data often masks the very demographic disparities that are held by many as critical to understanding contemporary elections. For the most part, counties are abstractions that bear little relation to actual settlement patterns, and often encompass territory of vastly different population densities, and households with a wide variety of demographic characteristics. Additionally, the collective population of a county, unlike that of a congressional district, has no political agency in the context of national elections. Given that we live in an age in which there is little computational or labor cost to processing additional data, it will be interesting to see how long the red-blue maps we have grown accustomed to in election reporting and analysis remain drawn at the county level.</p>
-	<p>Of course, the rapidly increasing quantity of available data is giving rise to a fantasy of perfect accuracy, precision, and certainty in our understanding of society. There are many dangers of this dream, some of which were reflected in jaws left hanging agape the night of November 8, 2016, as the preditions of experts who had staked their reputations on the "objectivity" they achieved through relying solely on the soothsaying capacity of data rapidly reversed in only a few hours. Any analysis of data necessarily involves abstraction, and insights that are produced through larger quanitites of data need to be paired with an understanding about the limitations of the data, and the distortions the analysis may have produced.</p>
-	<p>
-	<h4>About the project &gt;&gt;</h4>
-	<p>The purpose of this work is two-fold. At one level, the project explores distortions produced by spatial abstractions that underlie both the administration of the state and maps themselves as a form of diagram. At a second level, the project allows the user to construct new knowledge of the contemporary relationship between election results and demographics, using the state of Pennsylvania as a case study. These goals are pursued through the decomposition of conventional spatial boundaries, and the subsequent re-agglomeration of their associated data onto different spatial groupings. </p>
-	<p>The project has two parts. The first creates a new data set by agglomerating election data at the scale of the voting district onto Pennsylvania's 3,217 census tracts, utilizing the Missouri Census Data Center's <a href="http://mcdc.missouri.edu/websas/geocorr_index.shtml">Geocorr14 geographic correspondence files</a>. This data is visualized in a traditional red-blue map showing the electoral margins of each census tract, offering a much more detailed understanding of how Pennsylvanians voted in both 2012 and 2016 elections than what is available through maps that show county level results. However, the choice to map election data by census tract was motivated by a desire not only to better understand voting patterns, but also to create a tool for exploring the relationships between voting patterns and demographic characteristics. Without converting voting data to the census tract level, the county is the smallest geographic scale at which demographic data produced by the US Census Bureau and election data coincide. With this newly created data set, election results and demographic data can now be directly compared at the much more granular census tract level. The bar chart orders census tracts by five selected demographics -- population density, percent of the population that is non-white and non-hispanic, unemployment rate, percent of the population with a bachelor's degree, and median income. The bars are colored by the vote margin of each census tract, allowing the user to visually understand the relationship, or lack thereof, between voting patterns and demographic characteristics. The visualization also allows the user to select census tracts by demographic criteria which are highlighted in the map, as a means to understand the state's demographic and political geography. This tool is partcularly useful in its ability to identify anomalous census tracts.</p>
-	<p>The second part of the project seeks to understand the demographics of Pennsylvania's Congressional Districts. (More to come on this.)</p>
-	</div>
-	</body>
-	</html>
+	<h2 style=text-align:center>Pennsylvania Election Results</h2>
 	<div id="votemap" style=text-align:center></div>
 	<div id="selector" style=text-align:center></div>
-	<div id="demoselector" style=text-align:center></div>
+<!-- 	<div id="voteselector" style=text-align:center></div>
+	<div id="demoselector" style=text-align:center></div> -->
 	<div id="barchart" style=text-align:center></div>
-	<div id="sorter" style=text-align:center></div>
+	<div id="voteplot" style=text-align:center></div>
+	<div id="demosmap" style=text-align:center></div>
 
 	<!-- Page elements and content go here. -->
 	<script>
@@ -326,7 +273,7 @@
 
 		d3.queue()
 		    .defer(d3.json, "jsons/PA_CensusTracts_2010.json") 
-		    .defer(d3.csv, "data/CT_AllData.csv")
+		    .defer(d3.tsv, "data/CT_AllData.tsv")
 		    .defer(d3.json, "data/PA_Cities.json")
 		    .await(makeViz); 
 
@@ -458,7 +405,7 @@
 		  	tractdata.forEach(function(d) {
 		  		var popChange = +d.TOTALPOP_CHANGE,
 		  			popDen = +d.POPDEN_2015,
-		  			// popDenChange = +d.POPDEN_CHANGE,
+		  			popDenChange = +d.POPDEN_CHANGE,
 		  			nonWhite = +d.NONWHITE_2015,
 		  			nonWhiteChange = +d.NONWHITE_CHANGE,
 		  			unempl = +d.UNEMPLOY_2015,
@@ -478,10 +425,10 @@
 		  		}
 		  		else {popDenByTract[d.GEO_ID] = popDen;}
 
-		  		// if (isNaN(popDenChange)) {
-		  		// 	popDenChangeByTract[d.GEO_ID] = "ERROR";
-		  		// }
-		  		// else {popDenChangeByTract[d.GEO_ID] = popDenChange;}
+		  		if (isNaN(popDenChange)) {
+		  			popDenChangeByTract[d.GEO_ID] = "ERROR";
+		  		}
+		  		else {popDenChangeByTract[d.GEO_ID] = popDenChange;}
 
 		  		if (isNaN(nonWhite)) {
 		  			popChangeByTract[d.GEO_ID] = "ERROR";
@@ -530,7 +477,7 @@
 		  		usp2016Totals = d3.values(usp2016TotalsByTract),
 		  		popChange = d3.values(popChangeByTract),
 		  		popDen = d3.values(popDenByTract),
-		  		// popDenChange = d3.values(popDenChangeByTract),
+		  		popDenChange = d3.values(popDenChangeByTract),
 		  		nonWhite = d3.values(nonWhiteByTract),
 		  		nonWhiteChange = d3.values(nonWhiteChangeByTract),
 		  		unemploy = d3.values(unemployByTract),
@@ -560,8 +507,7 @@
 			var voteMapContainer = d3.select("#votemap")
 				.append("svg")
 			    .attr("width", voteMapBoxWidth)
-			    .attr("height", voteMapBoxHeight)
-			    .append("g");
+			    .attr("height", voteMapBoxHeight);
 
 			var voteG = voteMapContainer.append("g");
 
@@ -581,8 +527,8 @@
 					mapZoomBox
 						.style("stroke", "none");
 				})
+			
 
-			 	
 
 			//Set projection information
 		  	var voteProjection = d3.geoAlbers()
@@ -618,7 +564,7 @@
 		    voteMapContainer
 				.call(zoom);
 
-		    
+
 
 		    //Set colors
 		    var voteColorRed = d3.scaleLinear()
@@ -627,7 +573,7 @@
 
 	      	var voteColorBlue = d3.scaleLinear()
 	      		.domain([-1,0])
-	      		.range(['#3c5bff', '#e6f0ff']);
+	      		.range(['#3c5bff', '#d2e4ff']);
 
 	      	var changeColorRed = d3.scaleLinear()
 	      		.domain([0,.5])
@@ -643,12 +589,13 @@
 
 	      	var seePlaces = "ON";
 
+
 	      	//Make map geometry elements
 		  	voteG.append("g")
 			    .selectAll("path")
 		    	.data(topojson.feature(pa, pa.objects.PA_CensusTracts_2010).features) 
 		      	.enter().append("path")
-		      	.attr("class", "tracts vote-tracts")
+		      	.attr("class", "tracts vote-tracts tracts-non-brushed")
 		      	.attr("tractno", function(d) {return d.properties.GEO_ID;})
 		      	.attr("d", votePath)
 		      	.style("fill", function(d) { 
@@ -674,7 +621,7 @@
 		      			}}
 		      	})
 		      	.style("stroke-width", "0.8px");
- 
+
 		    voteG.selectAll(".city")
 		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
 		    	.enter().append("path")
@@ -746,16 +693,6 @@
 				.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
 				.on("mouseout", function(d) {d3.select(this).style("cursor", "default");});
 
-			
-			function resetZoom() {
-				voteMapContainer
-					.transition()
-					.duration(750)
-						.call(zoom.transform, d3.zoomIdentity);
-			}
-					
-						
-
 			//
 			//
 			//Make Selector Buttons and Dynamic Titles
@@ -776,7 +713,6 @@
 				demoSelectorY = 165,
 				demoTitleY = 245,
 				demoLegendY = 265;
-				
 
 			var demoSelBoxWidth = 900,
 				demoSelBoxHeight = 110;
@@ -807,7 +743,22 @@
 				.each(makeVoteLegend);
 
 
-					
+			// var voteSelBoxWidth = 900,
+			// 	voteSelBoxHeight = 100;
+
+			// var voteSelContainer = d3.select("#voteselector")
+			// 	.append("svg")
+			// 	.attr("width", voteSelBoxWidth)
+			// 	.attr("height", voteSelBoxHeight);
+
+			// var demoSelBoxWidth = 900,
+			// 	demoSelBoxHeight = 100;
+
+			// var demoSelContainer= d3.select("#demoselector")
+			// 	.append("svg")
+			// 	.attr("width", demoSelBoxWidth)
+			// 	.attr("height", demoSelBoxHeight);
+
 			
 			//Set dimension variables
 			var voteDateLabels = ["2016", "2012", "CHANGE"],
@@ -1055,11 +1006,11 @@
 	        //style dynamic title of map
 	        voteMapTitle
 	        	.text(getVoteMapTitle(voteMapDate, voteMapRace));
+	   
 
 	        //style dynamic title of demoBars
 	        demoBarsTitle
 	        	.text(getDemoBarsTitle(demoVar, demoChange));
-	      
 			
 
 			//
@@ -1078,13 +1029,14 @@
 			    barHeight = barInnerHeight - barPadding.top - barPadding.bottom,
 			    colorBarWidth = 30,
 			    brushMargin = {top: 20, right: 10, bottom: 20, left: 40};
+			    // colorMargin = {top: 20, right: 5, bottom: 20, left: 5};
 
 			//define number of quantiles for ticks along Y axis
 			//controls scales of y grid lines as well as values on static y axis
 			//numQuants = 5 -> five quantiles shown on Y axis (i.e. 0.2, 0.4, 0.6, 0.8, 1)
 			var numQuants = 10;
 
-			var formatPercentile = d3.format(".0%");
+			var formatPercent = d3.format(".0%");
 
 			//gets data name according to selected variable
 			var demoData = getDemoVarName();
@@ -1103,13 +1055,14 @@
 				return +b[demoData] > +a[demoData] ? 1 : +b[demoData] < +a[demoData] ? -1 : 0;
         	});
 
+
             var barChartContainer = d3.select("#barchart").append("svg")
             	.attr("width", barChartWidth)
 	        	.attr("height", barChartHeight)
 	        	.attr("x", 0)
 	        	.attr("y", 0);
 
-			//this will pick up brushing drag on the color bar - make bar wider than visible graphics to facilitate this
+	  		//this will pick up brushing drag on the color bar - make bar wider than visible graphics to facilitate this
 			var barsColorBar = barChartContainer.append("svg")
 	        	.attr("width", colorBarWidth + 20)
 	        	.attr("height", barHeight)
@@ -1117,8 +1070,9 @@
 	        	.attr("y", barMargin.top + barPadding.top)
 	        	.on("click", handleColorBarsClick);
 
-	       	//"drag to select in map" label text
-	       	var colorBarLabel = barChartContainer.append("text")
+
+	        //"drag to select in map" label text
+	        var colorBarLabel = barChartContainer.append("text")
 	       		.attr("class", "colorBar-label")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
 	       		.attr("y", 15)
@@ -1135,7 +1089,7 @@
 	       		.text("in map")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
 	       		.attr("dy", "1.1em");
-
+	       	
 
 			var barsContainer = barChartContainer.append("svg")
 	            .attr("width", barOuterWidth)
@@ -1143,6 +1097,7 @@
 	            .append("g")
 	            .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
 
+	        
 	        //g for chart
 	        var innerBars = barsContainer.append("g")
 	        	.attr("transform", "translate(" + barPadding.left + "," + barPadding.top + ")");
@@ -1202,6 +1157,7 @@
 
 			//append color bars
 			var colorBars = barsColorBar.selectAll(".color-bar")
+			// barsColorBar.selectAll(".color-bar")
 				.data(tractdataSorted)
 				.enter()
 			  .append("rect")
@@ -1220,9 +1176,9 @@
 	            .style("fill", function(d) {
 	            	var tract = d.GEO_ID;
 	            	return (getVoteColor(tract));
-	            });
+	            	});
+			  	// .style("opacity", "1");
 
-	        console.log(tractdataSorted);
 	        //append bars
 	        innerBars.selectAll(".bar")
 	            .data(tractdataSorted)
@@ -1253,9 +1209,31 @@
 	            .style("fill", function(d) {
 	            	var tract = d.GEO_ID;
 	            	return (getVoteColor(tract));
-	            });
+	            	});
+			  	// .style("opacity", "1");
 
-	        //array of strings of values of quantile breaks
+			// innerBars.append("g")
+			//     .attr("class", "x axis")
+			//     .attr("id", "demoXAxisTop")
+			//     .attr("transform", "translate(0," + -10 + ")")
+			//     .call(barsXAxisTop);
+
+			// innerBars.append("g")
+			//     .attr("class", "x axis")
+			//     .attr("id", "demoXAxisBottom")
+			//     .attr("transform", "translate(0," + barHeight + ")")
+			//     .call(barsXAxisBottom);    
+
+			// innerBars.append("g")
+			//     .attr("class", "y axis")
+			//     .attr("id", "demoYAxis")
+			//     .attr("transform", "translate(" + barsX(0) + ",0)")
+			//     .call(barsYAxis);
+
+			// tractdata = tractdata.sort(function(a, b) {
+   //          		return d3.ascending(a.GEO_ID, b.GEO_ID);
+   //          	});
+   			//array of strings of values of quantile breaks
 	        //must be called after bars are appended
 			// var quantileVals = getQuantileValues(numQuants, demoVarMin, demoVarMax);
 
@@ -1345,77 +1323,27 @@
 			barsColorBar.append("g")
 				.attr("class", "brush")
 				.call(barBrush);
+			
+	        
 
-			// //
-			// //
-			// //Make Sort Buttons 
-			// ////////////////////////////////////////////////////
-
-			// //Make container
-			// var sortBoxWidth = 900,
-			// 	sortBoxHeight = 300;
-
-			// var sortContainer = d3.select("#sorter")
-			// 	.append("svg")
-			// 	.attr("width", sortBoxWidth)
-			// 	.attr("height", sortBoxHeight);
-
-			// var voteLegendY = 15,
-			// 	voteTitleY = 80,
-			// 	voteSelectorY = 120,
-			// 	demoSelectorY = 165,
-			// 	demoTitleY = 245,
-			// 	demoLegendY = 265;
-
-			// //Set dimension variables
-			// var sortVarLabels = ["POPULATION DENSITY", "PERCENT NON-WHITE", "UNEMPLOYMENT RATE", "EDUCATION", "INCOME"],
-			// 	sortChangeLabels = ["CHANGE 2010-2015"];
-
-			// var sortButtonWidth = voteDateButtonWidth,
-			// 	sortButtonHeight = 30;
-
-			// var sortVarBoxWidth = sortButtonWidth*sortVarLabels.length,
-			// 	sortVarBoxHeight = sortButtonHeight,
-			// 	sortChangeBoxWidth = sortButtonWidth*sortChangeLabels.length,
-			// 	sortChangeBoxHeight = sortButtonHeight
-			// 	sortSpacing = 15;
-
-			// var sortVarContainer = sortContainer.append("svg")
-			// 	.attr("class", "sortBtn-container")
-			// 	.attr("width", sortVarBoxWidth)
-			// 	.attr("height", sortVarBoxHeight)
-			// 	.attr("x", ((sortBoxWidth/2)-voteDateBoxWidth-sortSpacing))
-			// 	.attr("y", sortY);
-
-			// var sortChangeContainer = sortContainer.append("svg")
-			// 	.attr("class", "sortBtn-container")
-			// 	.attr("width", sortChangeBoxWidth)
-			// 	.attr("height", sortChangeBoxHeight)
-			// 	.attr("x", ((sortBoxWidth/2)-voteDateBoxWidth+sortSpacing+(sortButtonWidth*sortVarLabels.length)))
-			// 	.attr("y", sortY);
-
-			// var sortTitle = sortContainer.append("text")
-			// 	.attr("class", "demoBars-title")
-			// 	.attr("x", selBoxWidth/2)
-			// 	.attr("y", demoTitleY)
-
-			// var sortVarButtons = sortVarContainer.selectAll("g")
-			// 	.data(demoVarLabels)
-			// 	.enter()
-			// 	.append("g")
-			// 	.attr("class", "sortVar-buttons");
-
-			// var sortChangeButtons = sortChangeContainer.selectAll("g")
-			// 	.data(sortChangeLabels)
-			// 	.enter()
-			// 	.append("g")
-			// 	.attr("class", "sortChange-buttons");
+	        // //add a value label to the right of each bar
+	        // innerBars.append("text")
+	        //     .attr("class", "label")
+	        //     //y position of the label is halfway down the bar
+	        //     .attr("y", function (d) {
+	        //         return y(d.name) + y.rangeBand() / 2 + 4;
+	        //     })
+	        //     //x position is 3 pixels to the right of the bar
+	        //     .attr("x", function (d) {
+	        //         return x(d.value) + 3;
+	        //     })
+	        //     .text(function (d) {
+	        //         return d.value;
+	        //     });
 
 
 
-
-
-		   	////////////////////////////////////////////////////
+		    //
 	       	//
 	       	//FUNCTIONS WITHIN drawMap function
 	       	////////////////////////////////////////////////////
@@ -1518,6 +1446,14 @@
 		    }
 
 
+		    function resetZoom() {
+				voteMapContainer
+					.transition()
+					.duration(750)
+						.call(zoom.transform, d3.zoomIdentity);
+			}
+
+
 		    function togglePlaceNames () {
 		    //controls visibility of placenames on map via user input
 
@@ -1549,7 +1485,7 @@
 			}
 
 
-		    //
+			//
 	       	//
 	       	//SELECTOR FUNCTIONS
 	       	////////////////////////////////////////////////////
@@ -1559,10 +1495,7 @@
 	       	//Functions to register new selection
 	       	////////////////////////////////////////////////////
 
-		    function handleVoteDateButtonClick(d) {
-		    //updates global variable to newly chosen var via mouse click
-		    //reclasses buttons when one is clicked
-		    //reclassing changes graphic attributes to show new button as "selected" and others as "unselected"
+	       	function handleVoteDateButtonClick(d) {
 
 		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-rect-hover", false)
@@ -1583,7 +1516,12 @@
 		    		.classed("voteMapSelBtn-text-noPress", true);
 
 				voteMapDate = d; 
-				
+				console.log(voteMapDate);
+				console.log(voteMapRace);
+				// updateVoteMapTitle(); 
+				// updateVoteMap();
+				// updateDemoBars();
+
 				voteMapTitle
 	        		.text(getVoteMapTitle(voteMapDate, voteMapRace));
 
@@ -1605,7 +1543,6 @@
 				updateVoteMap();
 				updateDemoBars();
 		    }
-
 
 		    function handleVoteRaceButtonClick(d) {
 		    //updates global variable to newly chosen var via mouse click
@@ -1631,7 +1568,11 @@
 		    		.classed("voteMapSelBtn-text-noPress", true);
 
 				voteMapRace = d; 
-				
+				console.log(voteMapDate);
+				console.log(voteMapRace);
+				// updateVoteMapTitle(); 
+				// updateVoteMap();
+				// updateDemoBars();
 				voteMapTitle
 	        		.text(getVoteMapTitle(voteMapDate, voteMapRace));
 
@@ -1664,10 +1605,12 @@
 		    		.classed("demoBarsSelBtn-text-noPress", true);
 
 				demoVar = d; 
-				
+				console.log(demoVar);
+				console.log(demoChange);
+
 				demoBarsTitle
 	        		.text(getDemoBarsTitle(demoVar, demoChange));
-
+				// updateDemoBarsTitle(); 
 				updateDemoBars();
 		    }
 
@@ -1708,16 +1651,19 @@
 				
 				demoBarsTitle
 	        		.text(getDemoBarsTitle(demoVar, demoChange));
-
+				console.log(demoVar);
+				console.log(demoChange);
+				// updateDemoBarsTitle(); 
 				updateDemoBars();
 		    }
+
 
 		    //SELECTOR FUNCTIONS
 	       	//
 	       	//Functions to update elements based on new selection
 	       	////////////////////////////////////////////////////
 
-		    function getVoteMapTitle(voteMapDate, voteMapRace) {
+	        function getVoteMapTitle(voteMapDate, voteMapRace) {
 		    //updates map title according to selected date and race variables
 
         		if (voteMapDate == "CHANGE") {
@@ -1774,7 +1720,6 @@
     			}
     			return demoChangeText + demoVarText + " by Census Tract";
 		    }
-		 
 
 
 		    function updateVoteMap(d) {
@@ -1803,12 +1748,12 @@
 		    }
 
 
-			function updateDemoBars(d) {
+		    function updateDemoBars(d) {
 			//updates bar chart according to selected demographic variables
 
-            	var demoData = getDemoVarName();
-
-            	//sort data according to selected demographic
+				var demoData = getDemoVarName();
+ 
+    			//sort data according to selected demographic
             	//data sort handles NaNs and puts them at bottom of chart
             	var tractdataSorted = tractdata.sort(function(a, b) {
             		if(!isFinite(a[demoData] && !isFinite(b[demoData]))) {
@@ -1826,12 +1771,11 @@
             	var demoVarMin = d3.min(getDemoVar()),
 					demoVarMax = d3.max(getDemoVar());
 
-				
 				//scales for use with various axes
 			
 				//use with top and bottom axes
 				//takes in demo variable, returns x position along axis
-				var barsX = d3.scaleLinear()
+            	var barsX = d3.scaleLinear()
 					.domain([demoVarMin, demoVarMax]).nice()
 				    .range([0, barWidth]);
 
@@ -1848,7 +1792,6 @@
 					.domain([0, 1])
 				    .range([0, barHeight]);
 
-				
 				//Axes Assignments (pt 1)
 				//axis assignment for x grid lines
 				var xGridLines = d3.axisBottom()
@@ -1869,19 +1812,7 @@
 				d3.selectAll(".grid")
 					.remove();
 
-				// add X gridlines
-				// add Y gridlines
-				innerBars.append("g")			
-				    .attr("class", "grid")
-				    .attr("transform", "translate(0," + barHeight + ")")
-				    .call(xGridLines);
-
-				innerBars.append("g")
-					.attr("class", "grid")
-			    	.call(yGridLines);
-
-
-		  		//update selector bars
+				//update selector bars
 			    d3.selectAll(".color-bar")
 					.transition()
 						.duration(1200)
@@ -1931,7 +1862,7 @@
 			            	return getVoteColor(tract);
 			            });
 
-
+			    console.log(demoData);
 			    //array of strings of values of quantile breaks
 		        //must be called after bars are appended
 				var quantileVals = getQuantileValues(numQuants, demoData, demoVar, demoChange);
@@ -1963,7 +1894,7 @@
 				var barsYAxis = d3.axisLeft()
 					.scale(barsYQuantiles);
 
-				
+
 				//remove old axes
 				d3.select("#demoXAxisTop")
 				    .remove();
@@ -2032,7 +1963,70 @@
 
 			}
 
-			//SELECTOR FUNCTIONS
+
+			function updateVoteMapTitle() {
+		    	
+		    	voteMapTitle
+		        	.text(function() {
+		        		if (voteMapDate == "CHANGE") {
+		        			var dateText = "Change in Margin, 2012 - 2016";
+		        		}
+		        		else {
+		        			var dateText = voteMapDate;
+		        		}
+
+		        		if (voteMapRace == "PRESIDENT") {
+		        			var mapText = "US Presidential";
+		        		}
+		        		if (voteMapRace == "US SENATE") {
+							var mapText = "US Senate";
+		        		}
+		        		if (voteMapRace == "US CONGRESS") {
+		        			var mapText = "US Congressional";
+		        		}
+		        		return mapText + " Election: " + dateText;
+		        		});
+		    }
+
+
+		    function updateDemoBarsTitle() {
+
+		    	demoBarsTitle
+		    		.text(function() {
+		    			if (demoVar == "PERCENT NON-WHITE") {
+		    				var demoVarText = "Non-White, Non-Hispanic Population (% of total)";
+		    			}
+		    			if (demoVar == "UNEMPLOYMENT RATE") {
+		    				var demoVarText = "Unemployment Rate";
+		    			}
+		    			if (demoVar == "EDUCATION") {
+		    				var demoVarText = "% of Population with Bachelor's Degree";
+		    			}
+		    			if (demoVar == "INCOME") {
+		    				var demoVarText = "Median Income";
+		    			}
+		    			if (demoChange == "NO CHANGE") {
+		    				var demoChangeText = "",
+		    					demoDateText = "2015";
+
+		    				if (demoVar == "POPULATION DENSITY") {
+		    					var demoVarText = "Population Density";
+		    				}
+		    			}
+		    			if (demoChange == "CHANGE") {
+		    				var demoChangeText = "Change in ",
+		    					demoDateText = "2010-2015";
+
+		    				if (demoVar == "POPULATION DENSITY") {
+		    					var demoVarText = "Population";
+		    				}
+		    			}
+		    			return demoChangeText + demoVarText + " by Census Tract " + "(" + demoDateText +")";
+		    		})
+		    }
+
+
+		    //SELECTOR FUNCTIONS
 	       	//
 	       	//General graphics functions (no data changes)
 	       	////////////////////////////////////////////////////
@@ -2140,8 +2134,12 @@
 	    	}
 
 
+
+
+		    
+
+
 		    function handleSelButtonMouseover(d) {
-		    //changes color of button background on mouseover
 
 		    	d3.select(this).style("cursor", "pointer");
 
@@ -2163,8 +2161,6 @@
 
 
 		    function handleSelButtonMouseout(d) {
-		    //restores original color of button background on mouseout	
-
 		    	d3.select(this).style("cursor", "default");
 
 		    	d3.selectAll(".voteMapSelBtn-rect-date").filter(function() {return this.getAttribute("buttonVal") == d;})
@@ -2181,20 +2177,22 @@
 
 		    	d3.selectAll(".demoBarsSelBtn-text-change").filter(function() {return this.getAttribute("buttonVal") == d;})
 		    		.classed("selBtn-text-hover", false);
-
 		    }
 
 
-		    //
+			//
 	       	//
 	       	//HELPER functions 
 	       	////////////////////////////////////////////////////
-		    
+
 			function getDemoData(d) {
-			//returns data for demographic selection
 
 				if (demoChange == "NO CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
+						// if (isNaN(+d.POPDEN_2015)) {
+						// 	return 
+						// }
+						// else {return +d.POPDEN_2015;}
 						return +d.POPDEN_2015;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
@@ -2212,7 +2210,7 @@
 				}
 				if (demoChange == "CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						return +d.TOTALPOP_CHANGE;
+						return +d.POPDEN_CHANGE;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
 						return +d.NONWHITE_CHANGE;
@@ -2251,7 +2249,7 @@
 				}
 				if (demoChange == "CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
-						return popChange;
+						return popDenChange;
 					}
 					if (demoVar == "PERCENT NON-WHITE") {
 						return nonWhiteChange;
@@ -2267,6 +2265,7 @@
 					}
 				}
 			}
+
 
 			function getDemoVarName() {
 
@@ -2305,6 +2304,7 @@
 					}
 				}
 			}
+
 
 			function getQuantileValues(numQuants, demoData, demoVar, demoChange) {
 
@@ -2361,6 +2361,7 @@
 				}
 
 			}
+
 
 
 			function getTickFormat(demoVar, demoChange) {
@@ -2489,8 +2490,7 @@
 	      		} 
 		    }
 			
-			
-			function getChartLabels(demoVar, demoChange) {
+		    function getChartLabels(demoVar, demoChange) {
 				
 				if (demoChange == "NO CHANGE") {
 					if (demoVar == "POPULATION DENSITY") {
@@ -2541,18 +2541,6 @@
 			}
 
 
-			// // gridlines in x axis function
-			// function make_x_gridlines() {		
-			//     return d3.axisBottom(barsX);
-			//         // .ticks(5)
-			// }
-
-			// // gridlines in y axis function
-			// function make_y_gridlines() {		
-			//     return d3.axisLeft(barsY)
-			//         .ticks(10);
-			// }
-
 			function handleColorBarsClick() {
 
 				d3.selectAll(".vote-tracts")
@@ -2567,13 +2555,14 @@
                 	.classed("color-bar-brushed", false);
 			}
 
+
 			function highlightBrushedTracts(d) {
 
                 if (d3.event.selection != null) {
 
-					var brush_coords = d3.brushSelection(this);
+                	var brush_coords = d3.brushSelection(this);
 
-                    // set class of elements in brush selection to "color-bar-brushed"
+                	// set class of elements in brush selection to "color-bar-brushed"
                     colorBars.filter(function (){
 
                    		var x = d3.select(this).attr("x"),
@@ -2601,19 +2590,14 @@
 
             function isBrushed(brush_coords, y) {
 
-	            // var x0 = brush_coords[0][0],
-	            //     x1 = brush_coords[1][0],
-	            //     y0 = brush_coords[0][1],
-	            //     y1 = brush_coords[1][1];
-
-				var y0 = brush_coords[0],
+	            var y0 = brush_coords[0],
 		            y1 = brush_coords[1];	           
 
 	            return y0 <= y && y <= y1;
         	}
 
 
-	    	function getColorDomain(numColors) {
+			function getColorDomain(numColors) {
 
 		    	var numColorsRange = Array.from(new Array(numColors),(val,index)=>index+1);
 
@@ -2707,7 +2691,6 @@
                         // .attr("y", y)
                         .attr("dy", dy + "em");
 
-
                     while (word = words.pop()) {
 			            line.push(word);
 			            tspan.text(line.join(" "));
@@ -2770,8 +2753,6 @@
 			        }
 				});
 	    	}
-
-
 
 
 		}	
