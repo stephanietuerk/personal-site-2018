@@ -1,5 +1,5 @@
 body {
-	font-family: Lato;
+	font-family: Roboto Mono;
 }
 
 .name {
@@ -22,4 +22,46 @@ body {
 
 .pink {
 	background: pink;	
+}
+
+button {
+  background:none;
+  border:none;
+  outline: 0 none;
+}
+
+button:focus {
+	outline-color: white !important;}
+
+.open-arrow {
+	font-size:1.7rem;
+}
+.rotate {
+    -moz-transition: all .3s linear;
+	-webkit-transition: all .3s linear;
+	transition: all .3s linear;
+}
+.rotate.down{
+	-ms-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#toggle {
+	color: rgb(70,70,70);
+}
+
+#aboutproj {
+	font: 20px Roboto Mono;
+	color: rgb(70,70,70);
+}
+#explaintext {
+	font: 14px Crimson Text;
+}
+.panel {
+	margin: 10px 50px;
+	padding: 30px 40px 25px 40px;
+	/*border-top: 2px dotted #8c8b8b;*/
+	border-bottom: 2px dotted #8c8b8b;
 }

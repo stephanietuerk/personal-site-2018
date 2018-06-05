@@ -6,24 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- Bootstrap CSS -->
+    <!-- Title -->
+    <title>Flip the District</title> 
+
+    <!-- Custom CSS -->
+	<link rel="stylesheet" type="text/css" href="flip.css">
+	<link rel="stylesheet" type="text/css" href="/styles.css">
+
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	
     <!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,700" rel="stylesheet">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
 	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
 	<link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,700|Fira+Sans:400,700" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 
-	<!-- Custom CSS -->
-	<link rel="stylesheet" type="text/css" href="flip.css">
-
-
-
-  	<title>Flip the District</title> 
-
-  	<!-- js scripts -->
+ 	<!-- js scripts -->
   	<script src="//code.jquery.com/jquery.min.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="//d3js.org/topojson.v1.min.js"></script>
@@ -33,40 +34,58 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="jquery.textstretch.js"></script>
+
+   	<!-- jQuery -->
+   	<script>
+
+   	$(document).ready(function() {
+   		$("#toggle").click(function() {
+   			$("#explain-text").slideToggle();
+   		});
+   	});
+   
+   	$(document).ready(function(){
+	    $('.fa-angle-double-right').click(function(){
+	    	$(this).toggleClass("down");
+    	});
+    });
+	</script>
 
 </head>
 <body>
-<div id = "nav-placeholder"></div>
-<div id = "explaintext"></div>
-	<p>Most people are quite familiar with the potential for disparity between the popular and electoral vote in U.S. Presidential elections. But we hear less about similar misrepresentation in Congress, where the share of seats a party wins in the House of Representatives frequently does not match the share of votes that that party received, either within a state or at the national level.</p>
-	<p>
-	<p>This visualization helps users gain insight into how our winner-takes-all electoral system can create imbalances between the number of votes cast and number of seats awarded using data from the Pennsylvania 2016 Congressional elections. Users can interact with a series of bars that visualize the proportion of votes one by each party in each of Pennsylvania's eighteen Congressional districts. Dragging up or down on these bars allows users to play out scenarios with both more and less equitable representation.</p>
-</div>
-<div id ="flip" style=text-align:center></div>
-<div id ="resetAll" style=text-align:center></div>
+	<!-- nav bar -->
+	<div id="nav-placeholder"></div>
 
-	<!-- Navigation bar -->
+	<!-- project description -->
+	<div id="aboutproj" class="panel">
+		<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow down"></div></button></span>
+		</p>
+		<div id="explain-text">
+			<div id="explain-placeholder"></div>
+		</div>
+	</div>
+
+	<!-- visualization -->
+	<div id="flip" style=text-align:center></div>
+	<div id="resetAll" style=text-align:center></div>
+
+	<!-- jQuery -->
 	<script>
-	$.get("nav.html", function(data){
+
+	// get nav bar html
+	$.get("/nav.html", function(data){
     	$("#nav-placeholder").replaceWith(data);
 		});
-	</script>
-	<!--end of Navigation bar-->
 
-
-	<!-- Explain text -->
-
-	<script>
-
+	// get project description text
+	$.get("fliptext.html", function(data){
+    	$("#explain-placeholder").replaceWith(data);
+		});
 
 	</script>
+
 	<!-- d3 -->
 	<script>
-	
-	
-
-
 	
 	//Global color variables
 	var rColor = "#f4003d",
