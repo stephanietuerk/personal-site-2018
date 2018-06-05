@@ -1,6 +1,24 @@
 	  	body {
 	  		font-family: "Roboto", Helvetica, sans-serif;
 	  	}
+	  	.hrstyle1 {
+			background-color: #fff;
+			border-top: 2px dotted #8c8b8b;
+		}
+		#explaintext {
+			margin: 10px 50px;
+			padding: 5px 10px;
+			border: 2px dotted #8c8b8b
+		}
+		a{text-decoration:none;}
+		.stretch_it{
+		    white-space: nowrap;
+		}
+		.justify{
+		    text-align:justify;
+		}
+
+		/*.one{font-size:10px;}*/
 	  	.active-drag {
 	  		/*stroke: white;*/
 	  		/*stroke-width: 1.5px;*/
@@ -84,7 +102,13 @@
 			
 		}
 		.display-label {
-			font: 10.5px "Roboto";
+			font: 10.5px "Roboto Mono";
+			/*letter-spacing: */
+		}
+		.display-cong {
+			font: 14px "Roboto Mono";
+			letter-spacing: 1.2rem;
+			font-weight: 500
 		}
 		.display-static {
 			font: 36px "Roboto Mono";
