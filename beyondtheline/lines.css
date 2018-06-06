@@ -65,15 +65,15 @@ h1 {
 			stroke-width: 0;
 		}
 		.chart-label {
-			font: 11px sans-serif;
+			font: 11px Roboto Mono;
 			/*font: 12px sans-serif;*/
-			fill: #000;
+			fill: #bbbbbb;
 			text-anchor: end;
 		}
 		.chart-yaxis-label {
-			font: 11px sans-serif;
+			font: 11px Roboto Mono;
 			/*font: 12px sans-serif;*/
-			fill: #000;
+			fill:  #bbbbbb;
 			text-anchor: end;
 		}
 		.legend-labels text {
@@ -83,7 +83,7 @@ h1 {
 			text-anchor: middle;
 		}
 		.colorBar-label {
-			font: 10px sans-serif;
+			font: 11px Roboto Mono;
 			text-anchor: middle;
 		}
 		.color-bar-brushed {
@@ -105,6 +105,13 @@ h1 {
 		}
 		.map-text{
 			font: 14px Roboto Mono;
+			font-weight: 400;
+			fill: #cccccc;
+			stroke: none;
+			text-anchor: end;
+		}
+		.map-text-sm{
+			font: 11px Roboto Mono;
 			font-weight: 400;
 			fill: #cccccc;
 			stroke: none;

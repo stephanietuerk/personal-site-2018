@@ -68,13 +68,13 @@
 	</div>
 	<!-- visualization -->
 
-	<div id="votemap" style=text-align:center></div>
-	<div id="selector" style=text-align:center></div>
+	<div id="votemap" class="row justify-content-center"></div>
+	<div id="selector" class="row justify-content-center"></div>
 <!-- 	<div id="voteselector" style=text-align:center></div>
 	<div id="demoselector" style=text-align:center></div> -->
-	<div id="barchart" style=text-align:center></div>
-	<div id="voteplot" style=text-align:center></div>
-	<div id="demosmap" style=text-align:center></div>
+	<div id="barchart" class="row justify-content-center"></div>
+<!-- 	<div id="voteplot" style=text-align:center></div>
+	<div id="demosmap" style=text-align:center></div> -->
 
 	<!-- jQuery -->
 	<script>
@@ -400,6 +400,7 @@
 		      			}}
 		      	})
 		      	.style("stroke-width", "0.8px");
+		    
 		    voteG.selectAll(".city")
 		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
 		    	.enter().append("path")
@@ -412,6 +413,7 @@
 		    		}
 		    		if (seePlaces == "OFF") {return "hidden";}
 		    		});
+		    
 		    voteG.selectAll(".city-label")
 		    	.data(topojson.feature(cities, cities.objects.PA_Cities).features)
 		    	.enter().append("text")
@@ -431,35 +433,45 @@
 		    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -5 : 5; })
     			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; })
     			.text(function(d) {return d.properties.City;});
+		    
 		    var exploreText = voteMapContainer.append("text")
 				.attr("class", "map-text")
-				.attr("x", voteMapBoxWidth - 25)
-				.attr("y", 50)
+				.attr("x", voteMapBoxWidth - 15)
+				.attr("y", 45)
 				.text("zoom and move map to explore"); 
+
+			var howText = voteMapContainer.append("text")
+				.attr("class", "map-text-sm")
+				.attr("x", voteMapBoxWidth - 15)
+				.attr("y", 535)
+				.text("double click or pinch to zoom");
+			
 			var placeNamesText = voteMapContainer.append("text")
 				.attr("class", "map-sel-text")
-				.attr("x", voteMapBoxWidth - 25)
+				.attr("x", voteMapBoxWidth - 15)
 				.attr("y", 25)
 				.text(function() {
 					if (seePlaces == "ON") {return "placenames: on";}
 					if (seePlaces == "OFF") {return "placenames: off";}
 				});
+			
 			var placeNamesBox = voteMapContainer.append("rect")
 				.attr("class", "click-overlay")
 				.attr("width", 120)
 				.attr("height", 20)
-				.attr("x", voteMapBoxWidth - 135)
+				.attr("x", voteMapBoxWidth - 125)
 				.attr("y", 10)
 				.on("click", togglePlaceNames)
 				.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
 				.on("mouseout", function(d) {d3.select(this).style("cursor", "default");});
+			
 			var resetTextBox = voteMapContainer.append("rect")
 				.attr("class", "click-overlay-variable")
 				.attr("id", "resetClickOverlay")
 				.attr("width", 120)
 				.attr("height", 30)
-				.attr("x", voteMapBoxWidth - 135)
-				.attr("y", 35)
+				.attr("x", voteMapBoxWidth - 125)
+				.attr("y", 30)
 				.attr("pointer-events", "none")
 				.on("click", resetZoom)
 				.on("mouseover", function(d) {d3.select(this).style("cursor", "pointer");})
@@ -743,8 +755,8 @@
 		    //MAKE Bar Chart
 		    ////////////////////////////////////////////////////
 		    
-		    var barChartWidth = 900
-		    	barMargin = {top: 20, right: 20, bottom: 20, left: 40},
+		    var barChartWidth = 920
+		    	barMargin = {top: 20, right: 5, bottom: 20, left: 60},
 		    	barPadding = {top: 40, right: 40, bottom: 40, left: 40},
 		    	barOuterWidth = 870,
 		    	barOuterHeight = popChange.length + barMargin.top + barPadding.top + barMargin.bottom + barPadding.bottom,
@@ -799,20 +811,20 @@
 	        var colorBarLabel = barChartContainer.append("text")
 	       		.attr("class", "colorBar-label")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
-	       		.attr("y", 15)
+	       		.attr("y", 8)
 	       		.text("drag to")
 	       		.append("tspan")
 	       		.text("select")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
-	       		.attr("dy", "1.1em")
+	       		.attr("dy", "1.3em")
 	       		.append("tspan")
 	       		.text("tracts")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
-	       		.attr("dy", "1.1em")
+	       		.attr("dy", "1.3em")
 	       		.append("tspan")
 	       		.text("in map")
 	       		.attr("x", barChartWidth - colorBarWidth - brushMargin.right + (colorBarWidth/2) - 10)
-	       		.attr("dy", "1.1em");
+	       		.attr("dy", "1.3em");
 	       	
 			var barsContainer = barChartContainer.append("svg")
 	            .attr("width", barOuterWidth)
@@ -1071,7 +1083,9 @@
 		    //Turns on bounding box for map when zoomed
 		    //Scales placename labels on zoom
 		    	voteG.attr("transform", d3.event.transform);
+		    	
 		    	var zoomScale = d3.zoomTransform(this).k;
+		    	
 		    	//controls scale and visibility of cities
 		    	voteG.selectAll(".city")
 		    		.attr("d", votePath.pointRadius(function(d) {
@@ -1081,21 +1095,22 @@
 		    		}))
 		    		.attr("visibility", function(d) {
 		    			if (seePlaces == "ON") {
-		    				if (zoomScale >= 3) {return "visible";}
-		    				if (zoomScale < 3) {
+		    				if (zoomScale >= 1.7) {return "visible";}
+		    				if (zoomScale < 1.7) {
 		    					if (+d.properties.Population >= 28500) {return "visible";}
 		    					if (+d.properties.Population < 28500) {return "hidden";}
 		    				}
 		    			}
 		    		if (seePlaces == "OFF") {return "hidden";}
 		    		});
+		    	
 		    	//controls scale and visibility of city labels
 		    	voteG.selectAll(".city-label")
 		    		.style("font-size", function() {return 9/zoomScale + "px";})
 		    		.attr("visibility", function(d) {
 		    			if (seePlaces == "ON") {
-		    				if (zoomScale >= 3) {return "visible";}
-		    				if (zoomScale < 3) {
+		    				if (zoomScale >= 1.7) {return "visible";}
+		    				if (zoomScale < 1.7) {
 		    					if (+d.properties.Population >= 28500) {return "visible";}
 		    					if (+d.properties.Population < 28500) {return "hidden";}
 		    				}
@@ -1108,6 +1123,7 @@
 			    		else {return .7/zoomScale+"em";}})
 			    	.attr("x", function(d) { return d.geometry.coordinates[0] > -77.1945 ? -7/zoomScale : 7/zoomScale; })
 	    			.style("text-anchor", function(d) { return d.geometry.coordinates[0] > -77.1945 ? "end" : "start"; });
+	    		
 	    		//
 	    		exploreText
 	    			.text(function() {
@@ -1119,11 +1135,20 @@
 	    				if (zoomScale >= 1.2) 
 	    					return "black";
 	    			});
+	    		
+	    		howText
+	    			.text(function() {
+	    				if (zoomScale >= 1.2) {
+	    					return "";}
+	    				else {return "double click or pinch to zoom";}
+	    			})
+
 	    		placeNamesText
 	    			.style("fill", function() {
 	    				if (zoomScale >= 1.2) 
 	    					return "black";
 	    			});
+	    		
 	    		resetTextBox
 	    			.attr("pointer-events", function() {
 	    				if (zoomScale >= 1.2) {
@@ -1601,12 +1626,14 @@
 				    .call(barsZeroAxis);
 				var chartXLabel = getChartLabels(demoVar, demoChange)[0],
 					chartYLabel = getChartLabels(demoVar, demoChange)[1];
+				
 				//top X axis title
 				innerBars.append("text")
 					.attr("class", "chart-label")
 					.attr("y", -40)
 					.attr("x", barWidth)
 					.text(chartXLabel);
+				
 				//top Y axis title
 				innerBars.append("text")
 					.attr("class", "chart-yaxis-label")
