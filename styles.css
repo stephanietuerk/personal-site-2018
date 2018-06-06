@@ -24,16 +24,32 @@ button:focus {
 	font-size:1.7rem;
 }
 .rotate {
-    -moz-transition: all .3s linear;
-	-webkit-transition: all .3s linear;
-	transition: all .3s linear;
+    -moz-transition: all .4s linear;
+	-webkit-transition: all .4s linear;
+	transition: all .4s linear;
 }
+
 .rotate.down{
 	-ms-transform: rotate(90deg);
 	-moz-transform: rotate(90deg);
 	-webkit-transform: rotate(90deg);
     transform: rotate(90deg);
 }
+
+/*.rotate-open {
+    -moz-transition: all .8s linear;
+	-webkit-transition: all .8s linear;
+	transition: all .8s linear;
+}
+
+.rotate-open.slid {
+	-ms-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}*/
+
+
 
 #toggle {
 	color: rgb(70,70,70);
@@ -45,6 +61,7 @@ button:focus {
 }
 #explaintext {
 	font: 14px Crimson Text;
+	display: hidden;
 }
 .panel {
 	margin: 0px 0px 15px 0px;

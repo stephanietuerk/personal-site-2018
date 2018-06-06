@@ -34,12 +34,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 
+
    	<!-- jQuery -->
    	<script>
+   	$(window).on("load", function(){
+   		$('.fa-angle-double-right').delay(3000).toggleClass("down");	
+   		$("#slider").delay(800).slideDown(1500);
+
+   	});
 
    	$(document).ready(function() {
    		$("#toggle").click(function() {
-   			$("#explain-text").slideToggle();
+   			$("#slider").slideToggle();
    		});
    	});
    
@@ -59,10 +65,16 @@
 	<!-- project description -->
 	<div class="container">
 		<div id="aboutproj" class="panel">
-			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow down"></div></button></span>
+			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow"></div></button></span>
 			</p>
-			<div id="explain-text">
-				<div id="explain-placeholder"></div>
+			<div id="slider" style="display:none;">
+				<p>"Demographics is destiny."</p>
+				<p></p>
+				<p>Or is it? </p>
+				<p></p>
+				<p>By dragging up or down on these bars, users can play out different scenarios with either more or less equitable representation.</p>
+<!-- 			<div id="explain-text">
+				<div id="explain-placeholder"></div> -->
 			</div>
 		</div>
 	</div>
@@ -70,11 +82,9 @@
 
 	<div id="votemap" class="row justify-content-center"></div>
 	<div id="selector" class="row justify-content-center"></div>
-<!-- 	<div id="voteselector" style=text-align:center></div>
-	<div id="demoselector" style=text-align:center></div> -->
+
 	<div id="barchart" class="row justify-content-center"></div>
-<!-- 	<div id="voteplot" style=text-align:center></div>
-	<div id="demosmap" style=text-align:center></div> -->
+
 
 	<!-- jQuery -->
 	<script>
