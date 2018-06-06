@@ -36,6 +36,12 @@
    	<!-- jQuery -->
    	<script>
 
+   	$(window).on("load", function(){
+   		$('.fa-angle-double-right').delay(3000).toggleClass("down");	
+   		$("#explain-text").delay(800).slideDown(1500);
+
+   	});
+
    	$(document).ready(function() {
    		$("#toggle").click(function() {
    			$("#explain-text").slideToggle();
@@ -47,7 +53,7 @@
 	    	$(this).toggleClass("down");
     	});
     });
-    
+
 	</script>
 
 </head>
@@ -58,9 +64,14 @@
 	<!-- project description -->
 	<div class="container">
 		<div id="aboutproj" class="panel">
-			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow down"></div></button></span>
+			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow"></div></button></span>
 			</p>
-			<div id="explain-text">
+			<div id="explain-text" style="display:none;">
+<!-- 				<p>Most people are familiar with the potential for disparity between the popular and electoral vote in U.S. Presidential elections. But we hear less about similar misrepresentation in Congress, where the share of seats a party wins in the House of Representatives frequently does not match the share of votes that that party received, either within a state or at the national level.</p>
+				<p></p>
+				<p>This visualization helps people gain insight into how winner-takes-all electoral systems can create imbalances between the number of votes cast and number of seats awarded, using data from the Pennsylvania 2016 Congressional elections. Users can interact with a series of bars that visualize the proportion of votes one by each party in each of Pennsylvania's eighteen Congressional districts.</p>
+				<p></p>
+				<p>By dragging up or down on these bars, users can play out different scenarios with either more or less equitable representation.</p> -->
 				<div id="explain-placeholder"></div>
 			</div>
 		</div>

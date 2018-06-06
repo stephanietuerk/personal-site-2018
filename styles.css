@@ -36,21 +36,6 @@ button:focus {
     transform: rotate(90deg);
 }
 
-/*.rotate-open {
-    -moz-transition: all .8s linear;
-	-webkit-transition: all .8s linear;
-	transition: all .8s linear;
-}
-
-.rotate-open.slid {
-	-ms-transform: rotate(90deg);
-	-moz-transform: rotate(90deg);
-	-webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
-}*/
-
-
-
 #toggle {
 	color: rgb(70,70,70);
 }
@@ -59,7 +44,7 @@ button:focus {
 	font: 20px Roboto Mono;
 	color: rgb(70,70,70);
 }
-#explaintext {
+#explain-text {
 	font: 14px Crimson Text;
 	display: hidden;
 }
