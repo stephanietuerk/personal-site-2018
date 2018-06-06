@@ -180,13 +180,16 @@
 			.attr("x", 400)
 			.attr("y", 305)
 			.style("fill", "#bbbbbb")
+			.style("stroke", "white")
+			.style("stroke-width", "1px")
 			.on("click", makeFlipViz)
 			.on("mouseover", function(d) {
-				d3.select(this).style("stroke", "white");
-			})
+					d3.select(this).style("stroke", "white");
+				})
 			.on("mouseout", function(d) {
-				d3.select(this).style("stroke", "#bbbbbb");
+					d3.select(this).style("stroke", "#bbbbbb");
 			});
+			
 
 		var startEnterText = startButtonContainer.append("text")
 			.attr("class", "start-smtext")
@@ -198,6 +201,7 @@
 			.on("click", makeFlipViz)
 			.on("mouseover", function(d) {
 				startEnterBox.style("stroke", "white");
+				startEnterBox.style("stroke-width", "3px");
 			})
 			.on("mouseout", function(d) {
 				startEnterBox.style("stroke", "#bbbbbb");
