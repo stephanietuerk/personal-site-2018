@@ -57,17 +57,18 @@
 	<div id="nav-placeholder"></div>
 
 	<!-- project description -->
-	<div id="aboutproj" class="panel">
-		<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow down"></div></button></span>
-		</p>
-		<div id="explain-text">
-			<div id="explain-placeholder"></div>
+	<div class="container">
+		<div id="aboutproj" class="panel">
+			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow down"></div></button></span>
+			</p>
+			<div id="explain-text">
+				<div id="explain-placeholder"></div>
+			</div>
 		</div>
 	</div>
-
 	<!-- visualization -->
-	<div id="flip" style=text-align:center></div>
-	<div id="resetAll" style=text-align:center></div>
+		<div id="flip" class="row justify-content-center"></div>
+		<div id="resetAll" class="row justify-content-center"></div>
 
 	<!-- jQuery -->
 	<script>
@@ -100,7 +101,7 @@
 	//Create visualization container
 	//////////////////////////////////////////////
 		var flipContainer = d3.select("#flip").append("svg")
-			.attr("class", "container")
+			.attr("class", "vizContainer")
 			.attr("width", 906)
 			.attr("height", 800);
 
@@ -110,7 +111,7 @@
 	/////////////////////////////////////////////
 
 		var startButtonContainer = flipContainer.append("svg")
-			.attr("class", "container")
+			.attr("class", "vizContainer")
 			.attr("width", 906)
 			.attr("height", 700)
 			.attr("x", 0)
@@ -203,7 +204,7 @@
 		//Create visualization container
 		//////////////////////////////////////////////
 		var flipContainer = d3.select("#flip").append("svg")
-				.attr("class", "container")
+				.attr("class", "vizContainer")
 				.attr("width", 906)
 				.attr("height", 700);
 

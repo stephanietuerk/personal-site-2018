@@ -10,3 +10,12 @@
     display: inline-block;
     float:none;
 }
+
+.dropdown-item {
+	font-size: 75% ;
+}
+
+.dropdown-menu {
+	padding: 7px 15px 7px 0px;
+	border-radius: 0;
+}
