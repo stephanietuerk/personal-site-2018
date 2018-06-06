@@ -3,25 +3,12 @@ body {
 }
 
 .name {
-	/*font-family: Fira Sans;*/
 	color: rgb(200,200,200);
 	text-align: center;
 	margin: 0 auto;
 	letter-spacing: 1.5rem;
 	line-height: 0.83em;
 	padding: 40px 10px;
-}
-
-.dropdown-item {
-	font-family: Roboto Mono;
-}
-
-#tuerk {
-	/*text-indent: 1.2em;*/
-}
-
-.pink {
-	background: pink;	
 }
 
 button {

@@ -21,8 +21,6 @@
 	<link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,700" rel="stylesheet">
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'>
 	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,100,300,700' rel='stylesheet'>
-	<link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,700|Fira+Sans:400,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 
  	<!-- js scripts -->
   	<script src="//code.jquery.com/jquery.min.js"></script>
@@ -49,6 +47,7 @@
 	    	$(this).toggleClass("down");
     	});
     });
+    
 	</script>
 
 </head>
@@ -210,7 +209,7 @@
 
 
 		//Read in Data and create visualization from that 
-		d3.tsv("data/CD_VoteData.tsv", function(data) {
+		d3.tsv("CD_VoteData.tsv", function(data) {
 			
 			//nest data by CD	
 			var cdData = d3.nest()
@@ -423,7 +422,7 @@
 					.attr("y", 15);
 
 
-				d3.json("jsons/PA_CongDist_2015.json", function(error, pa) {
+				d3.json("PA_CongDist_2015.json", function(error, pa) {
 				  if (error) return console.error(error);
 				  
 				
