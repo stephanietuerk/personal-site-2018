@@ -44,9 +44,11 @@ button:focus {
 	font: 20px Roboto Mono;
 	color: rgb(70,70,70);
 }
-#explain-text {
-	font: 16px Crimson Text;
+#project-description {
 	display: hidden;
+}
+.describe-text {
+	font: 16px Crimson Text;
 }
 .panel {
 	margin: 0px 0px 15px 0px;

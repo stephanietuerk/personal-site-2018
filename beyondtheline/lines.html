@@ -37,15 +37,16 @@
 
    	<!-- jQuery -->
    	<script>
+
    	$(window).on("load", function(){
    		$('.fa-angle-double-right').delay(3000).toggleClass("down");	
-   		$("#explain-text").delay(800).slideDown(1500);
+   		$("#project-description").delay(800).slideDown(1500);
 
    	});
 
    	$(document).ready(function() {
    		$("#toggle").click(function() {
-   			$("#explain-text").slideToggle();
+   			$("#project-description").slideToggle();
    		});
    	});
    
@@ -67,7 +68,7 @@
 		<div id="aboutproj" class="panel">
 			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow"></div></button></span>
 			</p>
-			<div id="explain-text" style="display:none;">
+			<div id="project-description" class="describe-text" style="display:none;">
 				<p>"Demographics is destiny."</p>
 				<p></p>
 				<p>Or is it? </p>
