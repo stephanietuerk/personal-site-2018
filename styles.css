@@ -45,7 +45,7 @@ button:focus {
 	color: rgb(70,70,70);
 }
 #explain-text {
-	font: 14px Crimson Text;
+	font: 16px Crimson Text;
 	display: hidden;
 }
 .panel {
