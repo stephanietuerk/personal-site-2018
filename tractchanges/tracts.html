@@ -10,7 +10,7 @@
     <title>Pennsylvania Election Results</title>
 
     <!-- Custom CSS -->
-	<link rel="stylesheet" type="text/css" href="lines.css">
+	<link rel="stylesheet" type="text/css" href="tracts.css">
 	<link rel="stylesheet" type="text/css" href="/styles.css">
 
     <!-- External CSS -->
@@ -85,7 +85,7 @@
 		});
 
 	// get project description text
-	$.get("linestext.html", function(data){
+	$.get("tractstext.html", function(data){
     	$("#explain-placeholder").replaceWith(data);
 		});
 
