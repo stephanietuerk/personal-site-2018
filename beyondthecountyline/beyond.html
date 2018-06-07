@@ -58,24 +58,29 @@
 
 </head>
 <body>
-	<!-- nav bar -->
-	<div id="nav-placeholder"></div>
 
-	<!-- project description -->
-	<div class="container">
-		<div id="aboutproj" class="panel">
-			<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow"></div></button></span>
-			</p>
-			<div id="project-description" class="describe-text" style="display:none;">
-				<div id="explain-placeholder"></div>	
+	<div class="container-fluid">
+
+		<!-- nav bar -->
+		<div id="nav-placeholder"></div>
+
+		<!-- project description -->
+		
+			<div id="aboutproj" class="row justify-content-center">
+				<div class="col-8">
+				<p>Project description <span><button id="toggle"><div class="fa fa-angle-double-right rotate open-arrow"></div></button></span>
+				</p></div>
+				<div id="project-description" class="col-8 describe-text panel" style="display:none;">
+					<div id="explain-placeholder"></div>	
+				</div>
 			</div>
-		</div>
-	</div>
-	<!-- visualization -->
-	<div id="votemap" class="row justify-content-center"></div>
-	<div id="selector" class="row justify-content-center"></div>
-	<div id="barchart" class="row justify-content-center"></div>
+	
+		<!-- visualization -->
+		<div id="votemap" class="row justify-content-center"></div>
+		<div id="selector" class="row justify-content-center"></div>
+		<div id="barchart" class="row justify-content-center"></div>
 
+	</div>
 	<!-- jQuery -->
 	<script>
 

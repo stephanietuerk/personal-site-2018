@@ -1,4 +1,4 @@
-h1 {
+		h1 {
 	  		font-family: "Roboto Mono";
   			font-size: 90px;
   			text-align: justify-all;
@@ -28,7 +28,7 @@ h1 {
   		body {
 	  		font-family: "Roboto", Helvetica, sans-serif;
 	  		overflow-wrap: normal;
-	  		width: 1200px;
+	  		/*width: 1200px;*/
 	  		text-align: justify-all;
 	  		text-wrap: normal;
 	  		margin-left: auto;

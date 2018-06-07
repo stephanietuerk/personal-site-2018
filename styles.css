@@ -2,13 +2,14 @@ body {
 	font-family: Roboto Mono;
 }
 
-.name {
+.my-name {
 	color: rgb(200,200,200);
 	text-align: center;
 	margin: 0 auto;
-	letter-spacing: 1.5rem;
+	font-size: 5vw;
+	letter-spacing: 1.4rem;
 	line-height: 0.83em;
-	padding: 40px 10px;
+	padding: 10px 10px;
 }
 
 button {
