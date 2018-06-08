@@ -51,6 +51,9 @@ button:focus {
 .describe-text {
 	font: 16px Crimson Text;
 }
+.describe-title {
+	padding: 5px, 0px, 150px, 0px;
+}
 .panel {
 	margin: 0px 0px 15px 0px;
 	padding: 30px 40px 15px 40px;
