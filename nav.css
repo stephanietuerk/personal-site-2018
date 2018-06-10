@@ -2,6 +2,11 @@
     background-color: #e8e8e8!important;
 }
 
+.nav-home-text {
+/*	color: #bbbbbb;*/
+/*	font-size: .8rem;*/
+}
+
 .navbar-nav {
 	float: none;
 	margin:0 auto;
