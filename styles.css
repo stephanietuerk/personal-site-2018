@@ -12,6 +12,11 @@ body {
 	padding: 10px 10px;
 }
 
+.go-home{
+	color: rgb(200, 200, 200);
+	font: Roboto Mono;
+	font-size: 11px;
+}
 button {
   background: none;
   border: none;
